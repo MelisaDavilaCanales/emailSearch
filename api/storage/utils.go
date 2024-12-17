@@ -2,7 +2,6 @@ package storage
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -42,13 +41,13 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 	fmt.Println("Response Body (as string):", string(bodyContent)) // Mostrar como texto
 
 	// Intentar decodificar JSON si es válido
-	var jsonBody interface{}
-	if jsonErr := json.Unmarshal(bodyContent, &jsonBody); jsonErr == nil {
-		prettyJSON, _ := json.MarshalIndent(jsonBody, "", "  ") // Formatear bonito
-		fmt.Println("Response Body (as JSON):", string(prettyJSON))
-	} else {
-		fmt.Println("Response Body is not valid JSON.")
-	}
+	// var jsonBody interface{}
+	// if jsonErr := json.Unmarshal(bodyContent, &jsonBody); jsonErr == nil {
+	// 	prettyJSON, _ := json.MarshalIndent(jsonBody, "", "  ") // Formatear bonito
+	// 	fmt.Println("Response Body (as JSON):", string(prettyJSON))
+	// } else {
+	// 	fmt.Println("Response Body is not valid JSON.")
+	// }
 	fmt.Println("Response ContentLength:", resp.ContentLength)
 	fmt.Println("=========================================")
 

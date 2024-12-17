@@ -1,13 +1,29 @@
 package models
 
 type Response struct {
-	StatusCode int         `json:"status"`
-	Data       interface{} `json:"data"`
+	Data    interface{} `json:"data"`
+	Message string      `json:"message"`
 }
 
-func NewResponse(statusCode int, data interface{}) *Response {
+func NewResponse(Message string, data interface{}) *Response {
 	return &Response{
-		StatusCode: statusCode,
-		Data:       data,
+		Message: Message,
+		Data:    data,
+	}
+}
+
+type EmailsResponseData struct {
+	TotalPages int            `json:"totalPages"`
+	Page       int            `json:"page"`
+	PageSize   int            `json:"pageSize"`
+	Emails     []EmailSummary `json:"emails"`
+}
+
+func NewEmailsResponseData(totalPages, page, pageSize int, emails []EmailSummary) *EmailsResponseData {
+	return &EmailsResponseData{
+		TotalPages: totalPages,
+		Page:       page,
+		PageSize:   pageSize,
+		Emails:     emails,
 	}
 }

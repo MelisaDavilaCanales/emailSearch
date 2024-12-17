@@ -25,6 +25,19 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, responseError.Error(), responseError.StatusCode)
 	}
 
+	if emailHitsData.Total.Value == 0 {
+		data := models.NewEmailsResponseData(0, 0, 0, []models.EmailSummary{})
+		response := models.Response{
+			Message: "No emails found",
+			Data:    data,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	totalPages := int(math.Ceil(float64(emailHitsData.Total.Value) / float64(max)))
 
 	emails := make([]models.EmailSummary, 0)
@@ -38,16 +51,15 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	data := map[string]interface{}{
-		"totalPages": totalPages,
-		"page":       page,
-		"pageSize":   pageSize,
-		"emails":     emails,
+	data := models.NewEmailsResponseData(totalPages, page, pageSize, emails)
+	response := models.Response{
+		Message: "Emails found successfully",
+		Data:    data,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 func GetEmail(w http.ResponseWriter, r *http.Request) {

@@ -35,8 +35,15 @@ func GetEmails(term, field string, from, max int) (*models.EmailHitsData, *model
 	var query string
 
 	if term == "" || field == "" {
+		fmt.Println("$$$$$$$$$$$$$$$$$$$$$$ Getting all emails")
+		fmt.Println("term: " + term)
+		fmt.Println("filed: " + field)
+
 		query = buildAllEmailsQuery(from, max)
 	} else {
+		fmt.Println("$$$$$$$$$$$$$$$$$$$$$$ Filtered all emails")
+		fmt.Println("term: " + term)
+		fmt.Println("filed: " + field)
 		query = buildFilteredEmailsQuery(term, field, from, max)
 	}
 
