@@ -1,6 +1,7 @@
 package models
 
 type Person struct {
+	Id    string `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
@@ -21,5 +22,8 @@ type PersonHit struct {
 	Type   string  `json:"_type"`
 	ID     string  `json:"_id"`
 	Score  float64 `json:"_score"`
-	Person Person  `json:"_source"`
+	Person struct {
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	} `json:"_source"`
 }

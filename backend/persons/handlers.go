@@ -16,26 +16,32 @@ func GetAllPersons(w http.ResponseWriter, r *http.Request) {
 
 	page, pageSize, from, max := utils.ProcessPaginatedParams(pageStr, pageSizeStr)
 
-	hitsData, err := storage.GetAllPersons(from, max)
+	personHitsData, err := storage.GetAllPersons(from, max)
 	if err != nil {
 		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting persons", err)
-
 		http.Error(w, responseError.Error(), responseError.StatusCode)
 	}
 
-	totalPages := int(math.Ceil(float64(hitsData.Total.Value) / float64(max)))
+	persons := make([]models.Person, len(personHitsData.Hits))
+	for i, personHit := range personHitsData.Hits {
+		persons[i] = models.Person{
+			Id:    personHit.ID,
+			Name:  personHit.Person.Name,
+			Email: personHit.Person.Email,
+		}
+	}
+
+	totalPages := int(math.Ceil(float64(personHitsData.Total.Value) / float64(max)))
 	data := map[string]interface{}{
 		"totalPages": totalPages,
 		"page":       page,
 		"pageSize":   pageSize,
-		"persons":    hitsData.Hits,
+		"persons":    persons,
 	}
 
-	response := models.NewResponse(http.StatusOK, data)
-
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(response.StatusCode)
-	json.NewEncoder(w).Encode(response)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(data)
 
 }
 
