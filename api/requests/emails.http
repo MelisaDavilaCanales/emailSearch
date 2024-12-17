@@ -11,7 +11,7 @@ GET http://localhost:8080/emails/2e0essnNRZmQa
 
 
 ### EMAILS EMPTY
-GET http://localhost:8080/searchEmails?page=10&page_size=10&term=charles@capstoneenergy.com&field=from&sort=asc
+GET http://localhost:8080/emails?page=10&page_size=10&term=charles@capstoneenergy.com&field=from&sort=asc
 
 ### EMAILS EMPTY
 GET http://localhost:8080/searchEmails
