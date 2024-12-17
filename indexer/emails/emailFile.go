@@ -123,6 +123,7 @@ func MapHeaderLine(key string, value string, email *models.Email) error {
 	return nil
 }
 
+// ############# Centrar el formato de la fecha y verificar error en el parseo y comentarios
 // Convertir a formato ISO 8601 compatible con ZincSearch
 func convertToDate(date string) (string, error) {
 	cleanedDate := cleanDateString(date)

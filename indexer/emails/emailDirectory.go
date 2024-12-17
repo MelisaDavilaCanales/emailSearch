@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"indexer/config"
 )
 
 // ProcessEmailDirectory retrieves the directory path from the command-line arguments, processes the specified directory,
@@ -15,7 +17,7 @@ func ProcessEmailDirectory(emailPathCh chan string) {
 		log.Fatal(err, " please provide a valid directory, example: go run main.go <directory>")
 	}
 
-	path := dir + "/maildir"
+	path := dir + config.EMAIL_DIR_SUBPATH
 	if err = scanDirectory(path, emailPathCh); err != nil {
 		// ############ Camibiar el Log.Fatal
 		log.Fatal(err)

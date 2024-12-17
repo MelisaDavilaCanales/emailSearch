@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"strings"
+
+	"indexer/config"
 )
 
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {
@@ -14,7 +15,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 		return nil, err
 	}
 
-	req.SetBasicAuth(os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"))
+	req.SetBasicAuth(config.DB_USER, config.DB_PASSWORD)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36")
 
@@ -34,18 +35,17 @@ func CreateIndex(indexName, indexDataStr string) error {
 		return nil
 	}
 
-	url := os.Getenv("ZINC_SEARCH_API_URL") + "index"
+	url := config.CREATE_INDEX_API_URL
 
 	indexData := strings.NewReader(indexDataStr)
 
-	res, err := DoRequest("POST", url, indexData)
+	res, err := DoRequest(http.MethodPost, url, indexData)
 	if err != nil {
 		return err
 	}
 
 	if res.StatusCode != http.StatusCreated {
 		bodyBytes, err := io.ReadAll(res.Body)
-
 		if err != nil {
 			fmt.Println("Error reading response body")
 		}
@@ -66,7 +66,8 @@ func CreateIndex(indexName, indexDataStr string) error {
 }
 
 func checkIndexExists(indexName string) bool {
-	url := os.Getenv("ZINC_SEARCH_API_URL") + "index/" + indexName
+	url := config.CHECK_INDEX_EXISTS_API_URL + indexName
+	fmt.Println("URL Checking if index exists:", url)
 	_, err := DoRequest("GET", url, nil)
 
 	return err == nil

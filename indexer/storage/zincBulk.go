@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
+	"net/http"
 
+	"indexer/config"
 	"indexer/models"
 )
 
@@ -16,7 +17,7 @@ type validBulkData interface {
 
 // SendBulk sends data in bulkV2 format via a POST request to the ZincSearch API.
 func SendBulk[T validBulkData](bulk T) error {
-	url := os.Getenv("ZINC_SEARCH_API_URL") + "_bulkv2"
+	url := config.SEND_BULK_API_URL
 
 	switch any(bulk).(type) {
 	case *models.PersonBulkData:
@@ -28,7 +29,7 @@ func SendBulk[T validBulkData](bulk T) error {
 		return fmt.Errorf("failed to marshal bulk data: %w", err)
 	}
 
-	resp, err := DoRequest("POST", url, bytes.NewBuffer(bulkData))
+	resp, err := DoRequest(http.MethodPost, url, bytes.NewBuffer(bulkData))
 	if err != nil {
 		return fmt.Errorf("failed to send bulk: %w to API ZincSearch", err)
 	}
