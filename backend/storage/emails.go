@@ -11,26 +11,6 @@ import (
 	"strings"
 )
 
-func GetMail(id string) (*models.Email, *models.ResponseError) {
-
-	var ResponseData *models.EmailDocResponse
-
-	url := os.Getenv("ZINC_SEARCH_API_URL") + constant.EMAIL_INDEX_NAME + "/_doc/" + id
-
-	res, err := DoRequest("GET", url, nil)
-	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error making request", err)
-	}
-	defer res.Body.Close()
-
-	err = json.NewDecoder(res.Body).Decode(&ResponseData)
-	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error decoding response body", err)
-	}
-
-	return &ResponseData.Email, nil
-}
-
 func GetAllEmails(from, max int) (*models.EmailHitsData, *models.ResponseError) {
 
 	var ResponseData models.EmailSearchResponse
@@ -60,6 +40,26 @@ func GetAllEmails(from, max int) (*models.EmailHitsData, *models.ResponseError) 
 	}
 
 	return &ResponseData.EmailHitsData, nil
+}
+
+func GetMail(id string) (*models.Email, *models.ResponseError) {
+
+	var ResponseData *models.EmailDocResponse
+
+	url := os.Getenv("ZINC_SEARCH_API_URL") + constant.EMAIL_INDEX_NAME + "/_doc/" + id
+
+	res, err := DoRequest("GET", url, nil)
+	if err != nil {
+		return nil, models.NewResponseError(http.StatusInternalServerError, "Error making request", err)
+	}
+	defer res.Body.Close()
+
+	err = json.NewDecoder(res.Body).Decode(&ResponseData)
+	if err != nil {
+		return nil, models.NewResponseError(http.StatusInternalServerError, "Error decoding response body", err)
+	}
+
+	return &ResponseData.Email, nil
 }
 
 func SearchEmails(term, field string, from, max int) (*models.EmailHitsData, *models.ResponseError) {

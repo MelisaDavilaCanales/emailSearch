@@ -24,11 +24,11 @@ type Email struct {
 
 // EmailSummary is the struct for a summarized email document with only the most important fields
 type EmailSummary struct {
-	MessageID string `json:"message_id"`
-	Date      string `json:"date"`
-	From      string `json:"from"`
-	To        string `json:"to"`
-	Subject   string `json:"subject"`
+	Id      string `json:"id"`
+	Date    string `json:"date"`
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
 }
 
 // EmailSearchResponse is the struct for the response of a search query from Elasticsearch
@@ -44,11 +44,16 @@ type EmailHitsData struct {
 }
 
 type EmailHit struct {
-	Index string       `json:"_index"`
-	Type  string       `json:"_type"`
-	ID    string       `json:"_id"`
-	Score float64      `json:"_score"`
-	Email EmailSummary `json:"_source"`
+	Index string  `json:"_index"`
+	Type  string  `json:"_type"`
+	ID    string  `json:"_id"`
+	Score float64 `json:"_score"`
+	Email struct {
+		Date    string `json:"date"`
+		From    string `json:"from"`
+		To      string `json:"to"`
+		Subject string `json:"subject"`
+	} `json:"_source"`
 }
 
 // EmailDocResponse is the struct for the response of a single email document from Elasticsearch

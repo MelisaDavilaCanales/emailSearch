@@ -11,6 +11,45 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+func GetAllEmails(w http.ResponseWriter, r *http.Request) {
+
+	pageStr := r.URL.Query().Get("page")
+	pageSizeStr := r.URL.Query().Get("page_size")
+
+	page, pageSize, from, max := utils.ProcessPaginatedParams(pageStr, pageSizeStr)
+
+	emailHitsData, err := storage.GetAllEmails(from, max)
+	if err != nil {
+		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting emails", err)
+
+		http.Error(w, responseError.Error(), responseError.StatusCode)
+	}
+
+	totalPages := int(math.Ceil(float64(emailHitsData.Total.Value) / float64(max)))
+
+	emails := make([]models.EmailSummary, 0)
+	for _, hit := range emailHitsData.Hits {
+		emails = append(emails, models.EmailSummary{
+			Id:      hit.ID,
+			Date:    hit.Email.Date,
+			From:    hit.Email.From,
+			To:      hit.Email.To,
+			Subject: hit.Email.Subject,
+		})
+	}
+
+	data := map[string]interface{}{
+		"totalPages": totalPages,
+		"page":       page,
+		"pageSize":   pageSize,
+		"emails":     emails,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(data)
+}
+
 func GetEmail(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "id")
@@ -22,44 +61,9 @@ func GetEmail(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, responseError.Error(), responseError.StatusCode)
 	}
 
-	data := map[string]interface{}{
-		"email": email,
-	}
-
-	response := models.NewResponse(http.StatusOK, data)
-
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(response.StatusCode)
-	json.NewEncoder(w).Encode(response)
-}
-
-func GetAllEmails(w http.ResponseWriter, r *http.Request) {
-
-	pageStr := r.URL.Query().Get("page")
-	pageSizeStr := r.URL.Query().Get("page_size")
-
-	page, pageSize, from, max := utils.ProcessPaginatedParams(pageStr, pageSizeStr)
-
-	hitsData, err := storage.GetAllEmails(from, max)
-	if err != nil {
-		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting emails", err)
-
-		http.Error(w, responseError.Error(), responseError.StatusCode)
-	}
-
-	totalPages := int(math.Ceil(float64(hitsData.Total.Value) / float64(max)))
-	data := map[string]interface{}{
-		"totalPages": totalPages,
-		"page":       page,
-		"pageSize":   pageSize,
-		"emails":     hitsData.Hits,
-	}
-
-	response := models.NewResponse(http.StatusOK, data)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(response.StatusCode)
-	json.NewEncoder(w).Encode(response)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(email)
 }
 
 func SearchEmails(w http.ResponseWriter, r *http.Request) {
