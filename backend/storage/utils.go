@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -10,10 +9,6 @@ import (
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {
 	req, err := http.NewRequest(method, url, data)
 	if err != nil {
-		fmt.Println("-------------------------------------------------------------- ")
-		fmt.Println("------------------------------------ENTRO AQUI1-------------------------- ")
-		fmt.Println("-------------------------------------------------------------- ")
-
 		return nil, err
 	}
 
@@ -22,21 +17,15 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("-------------------------------------------------------------- ")
-		fmt.Println("------------------------------------ENTRO AQUI2-------------------------- ")
-		fmt.Println("-------------------------------------------------------------- ")
 		return resp, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("-------------------------------------------------------------- ")
-		fmt.Println("------------------------------------ENTRO AQUI3-------------------------- ")
-		fmt.Println("-------------------------------------------------------------- ")
-		return resp, err
-	}
-	fmt.Println(resp.StatusCode)
-	fmt.Println(string(body))
+	// body, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	return resp, err
+	// }
+	// fmt.Println(resp.StatusCode)
+	// fmt.Println(string(body))
 
 	return resp, nil
 }

@@ -73,9 +73,9 @@ func SearchEmails(w http.ResponseWriter, r *http.Request) {
 
 	hitsData, err := storage.SearchEmails(term, field, from, max)
 	if err != nil {
-		// responseError := models.NewResponseError(http.StatusInternalServerError, "Error searching emails", err)
+		responseError := models.NewResponseError(http.StatusInternalServerError, "Error searching emails", err)
 
-		http.Error(w, "responseError.Error()", 700)
+		http.Error(w, responseError.Error(), responseError.StatusCode)
 	}
 
 	totalPages := int(math.Ceil(float64(hitsData.Total.Value) / float64(max)))

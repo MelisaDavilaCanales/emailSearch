@@ -14,7 +14,7 @@ import (
 func GetAllPersons(from, max int) (*models.PersonHitsData, *models.ResponseError) {
 
 	var ResponseData models.PersonSearchResponse
-
+	//sort=name& =asc
 	query := fmt.Sprintf(`
 		{
 			"search_type": "matchall",

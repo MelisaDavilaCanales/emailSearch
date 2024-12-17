@@ -3,8 +3,8 @@ GET http://localhost:8080/emails
 
 
 ###
-GET http://localhost:8080/emails/2dM3TqgEsjT
+GET http://localhost:8080/emails/2dYkolN9QoX
 
 
 ###
-GET http://localhost:8080/searchEmails?page=10&page_size=2&term=charles&field=from&sort=asc
+GET http://localhost:8080/searchEmails?page=10&page_size=1&term=&sort=asc

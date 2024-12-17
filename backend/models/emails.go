@@ -29,7 +29,6 @@ type EmailSummary struct {
 	From      string `json:"from"`
 	To        string `json:"to"`
 	Subject   string `json:"subject"`
-	Content   string `json:"content"`
 }
 
 // EmailSearchResponse is the struct for the response of a search query from Elasticsearch
