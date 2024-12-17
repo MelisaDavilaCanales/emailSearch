@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"indexer/models"
 	"os"
+
+	"indexer/models"
 )
 
 // validBulkData defines the valid data types for sending a bulkV2 request to the ZincSearch API.
@@ -31,7 +32,11 @@ func SendBulk[T validBulkData](bulk T) error {
 	if err != nil {
 		return fmt.Errorf("failed to send bulk: %w to API ZincSearch", err)
 	}
-	defer resp.Body.Close()
+
+	err = resp.Body.Close()
+	if err != nil {
+		return fmt.Errorf("failed to close response body: %w", err)
+	}
 
 	switch any(bulk).(type) {
 	case *models.PersonBulkData:

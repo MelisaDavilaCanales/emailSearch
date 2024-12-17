@@ -2,6 +2,7 @@ package storage
 
 import (
 	"fmt"
+
 	"indexer/config"
 	"indexer/constant"
 )
@@ -12,7 +13,6 @@ func CreateEmailIndex() error {
 }
 
 func buildEmailIndex() string {
-
 	indexData := fmt.Sprintf(`{
 		"name": "%v",
 		"storage_type": "disk",

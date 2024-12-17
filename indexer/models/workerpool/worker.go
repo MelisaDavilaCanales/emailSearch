@@ -14,11 +14,11 @@ type Worker[Input any, Output any] struct {
 //
 // Parameters:
 //
-//	- id: The identifier for the worker.
-//	- taskExecutor: The function that will execute the tasks.
-//	- taskQueueCh: The channel that the worker will listen to and take tasks.
-//	- resultChList: A list of channels through which the result returned by the taskExecutor will be sent.
-//	- wg: A *sync.WaitGroup that the worker belongs to, used to decrement the counter when the worker finish.
+//   - id: The identifier for the worker.
+//   - taskExecutor: The function that will execute the tasks.
+//   - taskQueueCh: The channel that the worker will listen to and take tasks.
+//   - resultChList: A list of channels through which the result returned by the taskExecutor will be sent.
+//   - wg: A *sync.WaitGroup that the worker belongs to, used to decrement the counter when the worker finish.
 //
 // Returns:
 // A pointer to a Worker instance configured with the provided parameters.
@@ -45,8 +45,10 @@ func NewWorker[Input any, Output any](
 func (w *Worker[Input, Output]) Start() {
 	go func() {
 		defer w.wg.Done()
+
 		for task := range w.taskQueueCh {
 			result, err := w.taskExecutor(w.Id, task)
+
 			if len(w.resultChList) > 0 {
 				for _, resultCh := range w.resultChList {
 					resultCh <- Result[Output]{Value: result, Err: err}

@@ -9,5 +9,5 @@ package models
 type Batch interface {
 	Reset()
 	GetBatchID() int
-	AddItem(item interface{}) error
+	AddItem(interface{}) error
 }

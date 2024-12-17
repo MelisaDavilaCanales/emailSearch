@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+
 	"indexer/constant"
 )
 
@@ -74,12 +75,14 @@ func (eb *EmailBatch) AddItem(item interface{}) error {
 	email, ok := item.(Email)
 	if !ok {
 		return fmt.Errorf("item is not of type Email")
-
 	}
+
 	if eb.IsFull() {
 		return fmt.Errorf("batch is full")
 	}
+
 	eb.Emails[eb.NextIndex] = email
 	eb.NextIndex++
+
 	return nil
 }

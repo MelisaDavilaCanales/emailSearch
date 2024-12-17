@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"sync"
+	"time"
+
 	"indexer/config"
 	"indexer/constant"
 	"indexer/emails"
@@ -9,14 +13,11 @@ import (
 	models_wp "indexer/models/workerpool"
 	"indexer/persons"
 	"indexer/storage"
-	"log"
-	"sync"
-	"time"
 )
 
 func main() {
-
 	timeInit := time.Now()
+
 	if err := config.LoadEnvVars(); err != nil {
 		log.Fatal("Error loading .env file: ", err)
 	}
@@ -36,6 +37,7 @@ func main() {
 	var wgProcessDir, wgProcessEmailFiles, wgProcessAndSendEmails, wgStructurePersons, wgBuildAndSendPersonBulk sync.WaitGroup
 
 	wgProcessDir.Add(1)
+
 	go func() {
 		defer close(emailPathCh)
 		defer wgProcessDir.Done()
@@ -52,8 +54,10 @@ func main() {
 	wpStructurePersons.Start()
 
 	wgBuildAndSendPersonBulk.Add(1)
+
 	go func() {
 		wgStructurePersons.Wait()
+
 		defer wgBuildAndSendPersonBulk.Done()
 		persons.BuildAndSendPersonBulk()
 	}()
@@ -64,5 +68,4 @@ func main() {
 
 	timeSince := time.Since(timeInit)
 	fmt.Println("Indexing Time: ", timeSince)
-
 }

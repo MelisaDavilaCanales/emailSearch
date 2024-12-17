@@ -2,6 +2,7 @@ package persons
 
 import (
 	"fmt"
+
 	"indexer/constant"
 	"indexer/models"
 	"indexer/storage"
@@ -10,7 +11,6 @@ import (
 // BuildAndSendPersonBulk constructs a bulk of persons using the "Persons" map defined and populated in the process.go file.
 // It adds all Person entries from the map to the bulk and then sends the bulk to the ZincSearch API.
 func BuildAndSendPersonBulk() {
-
 	personBulk := models.NewPersonBulkData(constant.PERSON_INDEX_NAME, models.Persons{})
 
 	for email, name := range Persons {

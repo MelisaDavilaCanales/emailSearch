@@ -31,9 +31,9 @@ func NewBatchManager(batchesCount int, batchSize int) *BatchManager {
 //
 // Parameters:
 //   - newBatchFunc: The function must return a new Batch instance. It receives the batch id and the batch size as parameters.
-func (bm *BatchManager) InitBatches(newBatchFunc func(id int, batchSize int) Batch) {
+func (bm *BatchManager) InitBatches(newBatchFunc func(id int) Batch) {
 	for i := 0; i < bm.BatchesCount; i++ {
-		newBatch := newBatchFunc(i+1, bm.BatchSize)
+		newBatch := newBatchFunc(i + 1)
 		bm.Batches = append(bm.Batches, newBatch)
 	}
 }
@@ -46,5 +46,6 @@ func (bm *BatchManager) GetBatchById(id int) (Batch, error) {
 			return bulk, nil
 		}
 	}
+
 	return nil, fmt.Errorf("batch with id %d not found", id)
 }

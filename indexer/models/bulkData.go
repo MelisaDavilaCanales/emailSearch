@@ -5,7 +5,7 @@ import "indexer/constant"
 // EmailBulkData represents the structure required to send a bulkV2 of emails to the ZincSearch API.
 type EmailBulkData struct {
 	Index  string                          `json:"index"`
-	Emails [constant.EMAIL_BULK_SIZE]Email `json:"records"`
+	Emails [constant.EMAIL_BULK_SIZE]Email `json:"records"` //nolint:tagliatelle // The field name sent in the BulkV2 request is "records"
 }
 
 // NewEmailBulkData Creates a new EmailBulkData instance.
@@ -26,7 +26,7 @@ func NewEmailBulkData(indexName string, emails [constant.EMAIL_BULK_SIZE]Email) 
 // PersonBulkData represents the structure required to send a bulkV2 of persons to the ZincSearch API.
 type PersonBulkData struct {
 	Index   string  `json:"index"`
-	Persons Persons `json:"records"`
+	Persons Persons `json:"records"` //nolint:tagliatelle // The field name sent in the BulkV2 request is "records"
 }
 
 // NewPersonBulkData Creates a new PersonBulkData instance.

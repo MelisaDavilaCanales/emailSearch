@@ -1,0 +1,78 @@
+run:
+  concurrency: 4
+  timeout: 5m
+  issues-exit-code: 10
+  tests: false
+  modules-download-mode: readonly
+  allow-parallel-runners: true
+  allow-serial-runners: true
+output:
+  formats:
+    - format: colored-line-number
+      path: stdout
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
+  path-prefix: ""
+  sort-results: false
+  show-stats: true
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - goimports
+    - govet
+    - staticcheck
+    - unused
+    - whitespace
+    - wsl
+    - musttag
+    - tagliatelle
+    - gci
+    - importas
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  # golint:
+  # min-confidence: 0.8
+  # exclude-rules:
+  #   - path: "_test\.go"
+  #     text: "should have comment"
+  unused:
+    field-writes-are-uses: false
+    post-statements-are-reads: false
+    exported-fields-are-used: false
+    parameters-are-used: false
+    local-variables-are-used: false
+    generated-is-used: true
+  tagliatelle:
+    case:
+      use-field-name: true
+      rules:
+        json: snake
+        mapstructure: kebab
+        env: upperSnake
+        envconfig: upperSnake
+  gci:
+    custom-order: true
+    sections:
+      - standard
+      - default
+      - blank
+      - dot
+      - localmodule
+  # importas:
+  #   no-extra-aliases: true
+  #   alias:
+  #     - pkg: "github.com/Agustincou/go-crud-api-example/internal/errors"
+  #       alias: apierrors
+
+issues:
+  exclude:
+    - "var `_` is unused"
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0

@@ -2,6 +2,7 @@ package emails
 
 import (
 	"fmt"
+
 	"indexer/constant"
 	"indexer/models"
 	models_wp "indexer/models/workerpool"
@@ -14,7 +15,7 @@ var EmailBatchManager *models.BatchManager
 // The manager is set up with the number of batches and batch size defined in the constants.
 func init() {
 	EmailBatchManager = models.NewBatchManager(constant.EMAIL_BATCHES_COUNT, constant.EMAIL_BATCH_SIZE)
-	EmailBatchManager.InitBatches(func(id int, batchSize int) models.Batch {
+	EmailBatchManager.InitBatches(func(id int) models.Batch {
 		return models.NewEmailBatch(id)
 	})
 }
@@ -48,7 +49,6 @@ func ProcessAndSendEmails(idWorker int, data models_wp.Result[models.Email]) (bo
 
 // buildEmailBatch retrieves the batch based on the ID, adds the email to the batch, and returns the batch.
 func buildEmailBatch(idBatch int, email models.Email) (*models.EmailBatch, error) {
-
 	myBatch, err := EmailBatchManager.GetBatchById(idBatch)
 	if err != nil {
 		return &models.EmailBatch{}, fmt.Errorf("failed to get batch: %w", err)
@@ -58,11 +58,16 @@ func buildEmailBatch(idBatch int, email models.Email) (*models.EmailBatch, error
 		return &models.EmailBatch{}, fmt.Errorf("failed to add email to batch: %w", err)
 	}
 
-	return myBatch.(*models.EmailBatch), nil
+	//################## Que retornar nil o &models.EmailBatch{}
+	batch, ok := myBatch.(*models.EmailBatch)
+	if !ok {
+		return nil, fmt.Errorf("failed to cast batch")
+	}
+
+	return batch, nil
 }
 
 func createBulk(batch *models.EmailBatch) *models.EmailBulkData {
-
 	bulk := models.NewEmailBulkData(constant.EMAIL_INDEX_NAME, batch.Emails)
 	return bulk
 }

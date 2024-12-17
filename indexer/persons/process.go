@@ -2,11 +2,12 @@ package persons
 
 import (
 	"fmt"
-	"indexer/models"
-	models_wp "indexer/models/workerpool"
 	"regexp"
 	"strings"
 	"sync"
+
+	"indexer/models"
+	models_wp "indexer/models/workerpool"
 )
 
 var (
@@ -28,7 +29,7 @@ func init() {
 // StructurePersons is a function that takes an email and processes the data to extract the individuals who send and receive the email.
 // It extracts the email addresses from the From, To, and Cc fields and their corresponding names from the X-From, X-To, and X-Cc fields.
 // The data is cleaned and each person, along with their email, is added to the Persons map.
-func StructurePersons(idWorker int, data models_wp.Result[models.Email]) (models.Person, error) {
+func StructurePersons(_ int, data models_wp.Result[models.Email]) (models.Person, error) {
 	if data.Err != nil {
 		return models.Person{}, data.Err
 	}
@@ -57,7 +58,6 @@ func StructurePersons(idWorker int, data models_wp.Result[models.Email]) (models
 
 // cleanNamePerson is a function that cleans up the names of individuals by removing any unwanted characters or tags.
 func cleanNamePerson(names *[]string) {
-
 	for i, name := range *names {
 		re := regexp.MustCompile(`<[^>]*>`)
 		matches := re.FindStringSubmatch(name)
@@ -65,9 +65,9 @@ func cleanNamePerson(names *[]string) {
 		if len(matches) > 0 {
 			nameClean := re.ReplaceAllString(name, "")
 			(*names)[i] = strings.TrimSpace(nameClean)
-		} else {
-			(*names)[i] = strings.TrimSpace(name)
 		}
+
+		(*names)[i] = strings.TrimSpace(name)
 	}
 }
 
@@ -99,15 +99,16 @@ func processAndAppend(emails, names []string) {
 			if emails[i] == "" || names[i] == "" {
 				continue
 			}
+
 			appendPerson(emails[i], names[i])
 		}
 	}
 }
 
 // appendPerson is a function that adds a record to the Persons map, using a mutex to prevent data loss or duplication.
-func appendPerson(correo, nombre string) error {
+func appendPerson(correo, nombre string) {
 	if correo == "" || nombre == "" {
-		return nil
+		return
 	}
 
 	TotalPersons++
@@ -117,12 +118,11 @@ func appendPerson(correo, nombre string) error {
 
 	if _, exists := Persons[correo]; exists {
 		ExistingPersons++
-		return nil
-	} else {
-		fmt.Println(correo)
-		UniquePersons++
 	}
 
+	UniquePersons++
+
+	fmt.Println(correo)
+
 	Persons[correo] = nombre
-	return nil
 }

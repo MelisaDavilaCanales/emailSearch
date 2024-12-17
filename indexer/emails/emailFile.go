@@ -3,16 +3,16 @@ package emails
 import (
 	"bufio"
 	"fmt"
-	"indexer/models"
 	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	"indexer/models"
 )
 
 // ProcessEmailsFiles reads and processes the email file, iterate the file line by line to parse and storing it in an Email structure.
-func ProcessEmailsFiles(workerId int, path string) (models.Email, error) {
-
+func ProcessEmailsFiles(_ int, path string) (models.Email, error) {
 	var (
 		email          = models.Email{}
 		isHeaderFinish = false
@@ -33,6 +33,7 @@ func ProcessEmailsFiles(workerId int, path string) (models.Email, error) {
 		if line == "" {
 			isHeaderFinish = true
 		}
+
 		if !isHeaderFinish {
 			ParseHeaderLine(line, &email, &currentKey)
 		} else {
@@ -40,9 +41,14 @@ func ProcessEmailsFiles(workerId int, path string) (models.Email, error) {
 			emailContent.WriteString("\n")
 		}
 	}
-	file.Close()
+
+	if err := file.Close(); err != nil {
+		fmt.Printf("Error closing file: %v\n", err)
+		return email, err
+	}
 
 	email.Content = emailContent.String()
+
 	return email, nil
 }
 
@@ -54,11 +60,19 @@ func ParseHeaderLine(line string, email *models.Email, currentKey *string) {
 		*currentKey = headerLine[0]
 		key := headerLine[0]
 		value := headerLine[1]
-		MapHeaderLine(key, value, email)
-	} else {
-		key := *currentKey
-		value := line
-		MapHeaderLine(key, value, email)
+
+		err := MapHeaderLine(key, value, email)
+		if err != nil {
+			fmt.Printf("??? Error mapping header line: %v\n", err)
+		}
+	}
+
+	key := *currentKey
+	value := line
+
+	err := MapHeaderLine(key, value, email)
+	if err != nil {
+		fmt.Printf("??? Error mapping header line: %v\n", err)
 	}
 }
 
@@ -72,6 +86,7 @@ func MapHeaderLine(key string, value string, email *models.Email) error {
 		if err != nil {
 			return err
 		}
+
 		email.Date = formatedDate
 	case "From":
 		email.From = value
@@ -104,6 +119,7 @@ func MapHeaderLine(key string, value string, email *models.Email) error {
 	case "X-FileName":
 		email.XFileName += value
 	}
+
 	return nil
 }
 
@@ -117,6 +133,7 @@ func convertToDate(date string) (string, error) {
 	}
 
 	time := parsedTime.Format("2006-01-02T15:04:05-07:00")
+
 	return time, nil
 }
 
