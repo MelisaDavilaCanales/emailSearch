@@ -17,7 +17,9 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 	}
 
 	SetHeaders(req)
+
 	client := &http.Client{}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return resp, err
@@ -42,11 +44,16 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 	// Intentar decodificar JSON si es válido
 	var jsonBody interface{}
 	if jsonErr := json.Unmarshal(bodyContent, &jsonBody); jsonErr == nil {
-		prettyJSON, _ := json.MarshalIndent(jsonBody, "", "  ") // Formatear bonito
+		prettyJSON, err := json.MarshalIndent(jsonBody, "", "  ") // Formatear bonito
+		if err != nil {
+			fmt.Println("Error formatting JSON:", err)
+		}
+
 		fmt.Println("Response Body (as JSON):", string(prettyJSON))
 	} else {
 		fmt.Println("Response Body is not valid JSON.")
 	}
+
 	fmt.Println("Response ContentLength:", resp.ContentLength)
 	fmt.Println("=========================================")
 
@@ -73,9 +80,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 }
 
 func SetHeaders(req *http.Request) {
-
 	req.SetBasicAuth(config.DB_USER, config.DB_PASSWORD)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36")
-
 }

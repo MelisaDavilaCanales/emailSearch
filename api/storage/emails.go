@@ -25,7 +25,7 @@ func GetMail(id string) (*models.Email, *models.ResponseError) {
 		errResponse := models.NewResponseError(http.StatusNotFound, "Error getting email", fmt.Errorf("id no found %s", id))
 		return nil, errResponse
 	}
-	defer res.Body.Close()
+	defer res.Body.Close() //nolint:errcheck
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
@@ -38,6 +38,7 @@ func GetMail(id string) (*models.Email, *models.ResponseError) {
 
 func GetEmails(term, field string, from, max int) (*models.EmailHitsData, error) {
 	var ResponseData models.EmailSearchResponse
+
 	var query string
 
 	if term == "" || field == "" {
@@ -53,7 +54,7 @@ func GetEmails(term, field string, from, max int) (*models.EmailHitsData, error)
 		return nil, err
 	}
 
-	defer res.Body.Close()
+	defer res.Body.Close() //nolint:errcheck
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {

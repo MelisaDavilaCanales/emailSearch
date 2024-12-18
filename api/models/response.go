@@ -13,9 +13,9 @@ func NewResponse(Message string, data interface{}) *Response {
 }
 
 type EmailsResponseData struct {
-	TotalPages int            `json:"totalPages"`
+	TotalPages int            `json:"total_pages"`
 	Page       int            `json:"page"`
-	PageSize   int            `json:"pageSize"`
+	PageSize   int            `json:"page_size"`
 	Emails     []EmailSummary `json:"emails"`
 }
 
@@ -29,9 +29,9 @@ func NewEmailsResponseData(totalPages, page, pageSize int, emails []EmailSummary
 }
 
 type PersonResponseData struct {
-	TotalPages int      `json:"totalPages"`
+	TotalPages int      `json:"total_pages"`
 	Page       int      `json:"page"`
-	PageSize   int      `json:"pageSize"`
+	PageSize   int      `json:"page_size"`
 	Persons    []Person `json:"persons"`
 }
 

@@ -6,6 +6,7 @@ type Person struct {
 	Email string `json:"email"`
 }
 
+//nolint:tagliatelle
 type PersonSearchResponse struct {
 	PersonHitsData PersonHitsData `json:"hits"`
 }
@@ -17,6 +18,7 @@ type PersonHitsData struct {
 	Hits []PersonHit `json:"hits"`
 }
 
+//nolint:tagliatelle
 type PersonHit struct {
 	Index  string  `json:"_index"`
 	Type   string  `json:"_type"`

@@ -12,8 +12,8 @@ import (
 
 // sort=name& =asc
 func GetPersons(term, field string, from, max int) (*models.PersonHitsData, error) {
-
 	var ResponseData models.PersonSearchResponse
+
 	var query string
 
 	if term == "" || field == "" {
@@ -24,11 +24,12 @@ func GetPersons(term, field string, from, max int) (*models.PersonHitsData, erro
 
 	url := config.GET_PERSONS_API_URL
 	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
+
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %s", err)
 	}
 
-	defer res.Body.Close()
+	defer res.Body.Close() //nolint:errcheck
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {

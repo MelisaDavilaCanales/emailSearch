@@ -36,6 +36,9 @@ linters-settings:
   errcheck:
     check-type-assertions: true
     check-blank: true
+  exclude:
+    - "res.Body.Close"
+    - "Close"
   # golint:
   # min-confidence: 0.8
   # exclude-rules:

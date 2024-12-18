@@ -32,6 +32,8 @@ type EmailSummary struct {
 }
 
 // EmailSearchResponse is the struct for the response of a search query from Elasticsearch
+//
+//nolint:tagliatelle
 type EmailSearchResponse struct {
 	EmailHitsData EmailHitsData `json:"hits"`
 }
@@ -43,6 +45,7 @@ type EmailHitsData struct {
 	Hits []EmailHit `json:"hits"`
 }
 
+//nolint:tagliatelle
 type EmailHit struct {
 	Index string  `json:"_index"`
 	Type  string  `json:"_type"`
@@ -57,6 +60,8 @@ type EmailHit struct {
 }
 
 // EmailDocResponse is the struct for the response of a single email document from Elasticsearch
+//
+//nolint:tagliatelle
 type EmailDocResponse struct {
 	Index string `json:"_index"`
 	ID    string `json:"_id"`

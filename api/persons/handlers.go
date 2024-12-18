@@ -38,7 +38,13 @@ func GetPersonsHandler(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
+
+		err = json.NewEncoder(w).Encode(response)
+		if err != nil {
+			responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
+			http.Error(w, responseError.Error(), responseError.StatusCode)
+		}
+
 		return
 	}
 
@@ -49,7 +55,12 @@ func GetPersonsHandler(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(response)
+
+		err = json.NewEncoder(w).Encode(response)
+		if err != nil {
+			responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
+			http.Error(w, responseError.Error(), responseError.StatusCode)
+		}
 
 		return
 	}
@@ -72,5 +83,10 @@ func GetPersonsHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
+		http.Error(w, responseError.Error(), responseError.StatusCode)
+	}
 }

@@ -19,8 +19,8 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 	field := r.URL.Query().Get("field")
 
 	page, pageSize, from, max := utils.ProcessPaginatedParams(pageStr, pageSizeStr)
-
 	emailHitsData, err := storage.GetEmails(term, field, from, max)
+
 	if err != nil {
 		responseError := models.NewResponseError(http.StatusInternalServerError, "Error searching emails", err)
 		http.Error(w, responseError.Error(), responseError.StatusCode)
@@ -39,7 +39,13 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
+
+		err = json.NewEncoder(w).Encode(response)
+		if err != nil {
+			responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
+			http.Error(w, responseError.Error(), responseError.StatusCode)
+		}
+
 		return
 	}
 
@@ -48,9 +54,16 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 	if page > totalPages {
 		data := models.NewEmailsResponseData(totalPages, page, pageSize, []models.EmailSummary{})
 		response := models.NewResponse("Page out of range", data)
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(response)
+		err = json.NewEncoder(w).Encode(response)
+
+		if err != nil {
+			responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
+			http.Error(w, responseError.Error(), responseError.StatusCode)
+		}
+
 		return
 	}
 
@@ -73,11 +86,15 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
+		http.Error(w, responseError.Error(), responseError.StatusCode)
+	}
 }
 
 func GetEmailHandler(w http.ResponseWriter, r *http.Request) {
-
 	id := chi.URLParam(r, "id")
 
 	email, err := storage.GetMail(id)
@@ -87,18 +104,31 @@ func GetEmailHandler(w http.ResponseWriter, r *http.Request) {
 				Message: "Email not found",
 				Data:    nil,
 			}
+
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(response)
+
+			errEncode := json.NewEncoder(w).Encode(response)
+			if errEncode != nil {
+				responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
+				http.Error(w, responseError.Error(), responseError.StatusCode)
+			}
+
 			return
 		}
 
 		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting email", err)
 		http.Error(w, responseError.Error(), responseError.StatusCode)
+
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(email)
+
+	errEncode := json.NewEncoder(w).Encode(email)
+	if errEncode != nil {
+		responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
+		http.Error(w, responseError.Error(), responseError.StatusCode)
+	}
 }

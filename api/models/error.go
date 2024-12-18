@@ -6,9 +6,9 @@ import (
 )
 
 type ResponseError struct {
-	StatusCode int    `json:"status"`
+	StatusCode int    `json:"status_code"`
 	Message    string `json:"message"`
-	Err        error  `json:"error"`
+	Err        error  `json:"error"` //nolint:tagliatelle
 }
 
 func NewResponseError(statusCode int, message string, err error) *ResponseError {
