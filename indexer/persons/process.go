@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
 )
@@ -57,9 +58,10 @@ func StructurePersons(_ int, data models_wp.Result[models.Email]) (models.Person
 }
 
 // cleanNamePerson is a function that cleans up the names of individuals by removing any unwanted characters or tags.
+// X-To: "Barksdale, Melanie R." <mbarksda@ems.jsc.nasa.gov>
 func cleanNamePerson(names *[]string) {
 	for i, name := range *names {
-		re := regexp.MustCompile(`<[^>]*>`)
+		re := regexp.MustCompile(constant.TAG_CONTENT_REGEX)
 		matches := re.FindStringSubmatch(name)
 
 		if len(matches) > 0 {
@@ -118,6 +120,7 @@ func appendPerson(correo, nombre string) {
 
 	if _, exists := Persons[correo]; exists {
 		ExistingPersons++
+		return
 	}
 
 	UniquePersons++

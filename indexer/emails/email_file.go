@@ -2,13 +2,36 @@ package emails
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
 	"time"
 
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
+)
+
+type HeaderKey string
+
+const (
+	MESSAGE_ID                HeaderKey = "Message-ID"
+	DATE                      HeaderKey = "Date"
+	FROM                      HeaderKey = "From"
+	TO                        HeaderKey = "To"
+	SUBJECT                   HeaderKey = "Subject"
+	CC                        HeaderKey = "Cc"
+	X_CC                      HeaderKey = "X-cc"
+	MIME_VERSION              HeaderKey = "Mime-Version"
+	CONTENT_TYPE              HeaderKey = "Content-Type"
+	CONTENT_TRANSFER_ENCODING HeaderKey = "Content-Transfer-Encoding"
+	BCC                       HeaderKey = "Bcc"
+	X_FROM                    HeaderKey = "X-From"
+	X_TO                      HeaderKey = "X-To"
+	X_BCC                     HeaderKey = "X-bcc"
+	X_FOLDER                  HeaderKey = "X-Folder"
+	X_ORIGIN                  HeaderKey = "X-Origin"
+	X_FILE_NAME               HeaderKey = "X-FileName"
 )
 
 // ProcessEmailsFiles reads and processes the email file, iterate the file line by line to parse and storing it in an Email structure.
@@ -61,85 +84,73 @@ func ParseHeaderLine(line string, email *models.Email, currentKey *string) {
 		key := headerLine[0]
 		value := headerLine[1]
 
-		err := MapHeaderLine(key, value, email)
+		err := MapHeaderLine(HeaderKey(key), value, email)
 		if err != nil {
-			fmt.Printf("??? Error mapping header line: %v\n", err)
+			fmt.Printf("Error mapping header line: %v\n", err)
 		}
+
+		return
 	}
 
 	key := *currentKey
 	value := line
 
-	err := MapHeaderLine(key, value, email)
+	err := MapHeaderLine(HeaderKey(key), value, email)
 	if err != nil {
-		fmt.Printf("??? Error mapping header line: %v\n", err)
+		fmt.Printf("Error mapping header line: %v\n", err)
 	}
 }
 
 // MapHeaderLine maps the value of a header line to the appropriate field in the Email structure.
-func MapHeaderLine(key string, value string, email *models.Email) error {
+func MapHeaderLine(key HeaderKey, value string, email *models.Email) error {
 	switch key {
-	case "Message-ID":
+	case MESSAGE_ID:
 		email.MessageID = value
-	case "Date":
-		formatedDate, err := convertToDate(value)
+	case DATE:
+		formatedDate, err := ConvertDateFormat(value)
 		if err != nil {
 			return err
 		}
-
 		email.Date = formatedDate
-	case "From":
+	case FROM:
 		email.From = value
-	case "To":
+	case TO:
 		email.To += value
-	case "Subject":
+	case SUBJECT:
 		email.Subject += value
-	case "Cc":
+	case CC:
 		email.Cc += value
-	case "X-cc":
+	case X_CC:
 		email.XCc += value
-	case "Mime-Version":
+	case MIME_VERSION:
 		email.MimeVersion += value
-	case "Content-Type":
+	case CONTENT_TYPE:
 		email.ContentType += value
-	case "Content-Transfer-Encoding":
+	case CONTENT_TRANSFER_ENCODING:
 		email.ContentTransferEncoding += value
-	case "Bcc":
+	case BCC:
 		email.Bcc += value
-	case "X-From":
+	case X_FROM:
 		email.XFrom += value
-	case "X-To":
+	case X_TO:
 		email.XTo += value
-	case "X-bcc":
+	case X_BCC:
 		email.XBcc += value
-	case "X-Folder":
+	case X_FOLDER:
 		email.XFolder += value
-	case "X-Origin":
+	case X_ORIGIN:
 		email.XOrigin += value
-	case "X-FileName":
+	case X_FILE_NAME:
 		email.XFileName += value
+	default:
+		return errors.New("unknown header key")
 	}
 
 	return nil
 }
 
-// ############# Centrar el formato de la fecha y verificar error en el parseo y comentarios
-// Convertir a formato ISO 8601 compatible con ZincSearch
-func convertToDate(date string) (string, error) {
-	cleanedDate := cleanDateString(date)
+func ConvertDateFormat(date string) (time.Time, error) {
+	time, err := time.Parse(constant.DATE_FORMAT, date)
 
-	parsedTime, err := time.Parse("Mon, _2 Jan 2006 15:04:05 -0700", cleanedDate)
-	if err != nil {
-		return "", err
-	}
-
-	time := parsedTime.Format("2006-01-02T15:04:05-07:00")
-
-	return time, nil
-}
-
-// Función para eliminar la abreviatura de la zona horaria, con expresion regular para eliminanr lo que esté entre paréntesis
-func cleanDateString(date string) string {
-	reg := regexp.MustCompile(`\s\([^\)]+\)`)
-	return reg.ReplaceAllString(date, "")
+	return time, err
 }
