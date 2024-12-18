@@ -3,9 +3,9 @@ package persons
 import (
 	"fmt"
 
-	"indexer/constant"
-	"indexer/models"
-	"indexer/storage"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
 // BuildAndSendPersonBulk constructs a bulk of persons using the "Persons" map defined and populated in the process.go file.

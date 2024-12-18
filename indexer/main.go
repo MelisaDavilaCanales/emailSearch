@@ -6,13 +6,13 @@ import (
 	"sync"
 	"time"
 
-	"indexer/config"
-	"indexer/constant"
-	"indexer/emails"
-	"indexer/models"
-	models_wp "indexer/models/workerpool"
-	"indexer/persons"
-	"indexer/storage"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/emails"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
+	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/persons"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
 func main() {

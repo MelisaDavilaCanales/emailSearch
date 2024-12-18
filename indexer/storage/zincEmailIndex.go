@@ -3,8 +3,8 @@ package storage
 import (
 	"fmt"
 
-	"indexer/config"
-	"indexer/constant"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 )
 
 func CreateEmailIndex() error {

@@ -1,6 +1,6 @@
 package models
 
-import "indexer/constant"
+import "github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 
 // EmailBulkData represents the structure required to send a bulkV2 of emails to the ZincSearch API.
 type EmailBulkData struct {

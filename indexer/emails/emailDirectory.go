@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"indexer/config"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
 )
 
 // ProcessEmailDirectory retrieves the directory path from the command-line arguments, processes the specified directory,

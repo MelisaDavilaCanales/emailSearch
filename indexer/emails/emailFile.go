@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"indexer/models"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 )
 
 // ProcessEmailsFiles reads and processes the email file, iterate the file line by line to parse and storing it in an Email structure.

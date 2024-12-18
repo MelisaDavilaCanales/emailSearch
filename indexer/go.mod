@@ -1,4 +1,4 @@
-module indexer
+module github.com/MelisaDavilaCanales/emailSearch/indexer
 
 go 1.21.1
 

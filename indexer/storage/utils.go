@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"indexer/config"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
 )
 
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
-	"indexer/models"
-	models_wp "indexer/models/workerpool"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
+	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
 )
 
 var (

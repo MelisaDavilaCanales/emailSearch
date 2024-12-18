@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"indexer/config"
-	"indexer/models"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 )
 
 // validBulkData defines the valid data types for sending a bulkV2 request to the ZincSearch API.

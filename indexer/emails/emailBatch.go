@@ -3,10 +3,10 @@ package emails
 import (
 	"fmt"
 
-	"indexer/constant"
-	"indexer/models"
-	models_wp "indexer/models/workerpool"
-	"indexer/storage"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
+	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
 var EmailBatchManager *models.BatchManager

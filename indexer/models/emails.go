@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"indexer/constant"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 )
 
 type Email struct {
