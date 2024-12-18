@@ -27,3 +27,19 @@ func NewEmailsResponseData(totalPages, page, pageSize int, emails []EmailSummary
 		Emails:     emails,
 	}
 }
+
+type PersonResponseData struct {
+	TotalPages int      `json:"totalPages"`
+	Page       int      `json:"page"`
+	PageSize   int      `json:"pageSize"`
+	Persons    []Person `json:"persons"`
+}
+
+func NewPersonResponseData(totalPages, page, pageSize int, persons []Person) *PersonResponseData {
+	return &PersonResponseData{
+		TotalPages: totalPages,
+		Page:       page,
+		PageSize:   pageSize,
+		Persons:    persons,
+	}
+}
