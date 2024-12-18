@@ -1,12 +1,13 @@
 package storage
 
 import (
-	"backend/config"
-	"backend/models"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
+
+	"backend/config"
+	"backend/models"
 )
 
 func GetMail(id string) (*models.Email, *models.ResponseError) {

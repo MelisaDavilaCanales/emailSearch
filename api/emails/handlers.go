@@ -1,14 +1,15 @@
 package emails
 
 import (
-	"backend/models"
-	"backend/storage"
-	"backend/utils"
 	"encoding/json"
 	"math"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+
+	"backend/models"
+	"backend/storage"
+	"backend/utils"
 )
 
 func GetEmails(w http.ResponseWriter, r *http.Request) {

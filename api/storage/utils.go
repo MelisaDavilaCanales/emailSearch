@@ -1,12 +1,13 @@
 package storage
 
 import (
-	"backend/config"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+
+	"backend/config"
 )
 
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {

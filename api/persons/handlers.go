@@ -1,13 +1,14 @@
 package persons
 
 import (
-	"backend/models"
-	"backend/storage"
-	"backend/utils"
 	"encoding/json"
 	"fmt"
 	"math"
 	"net/http"
+
+	"backend/models"
+	"backend/storage"
+	"backend/utils"
 )
 
 func GetPersonsHandler(w http.ResponseWriter, r *http.Request) {

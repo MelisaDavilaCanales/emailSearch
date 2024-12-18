@@ -1,11 +1,12 @@
 package config
 
 import (
-	"backend/constant"
 	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
+
+	"backend/constant"
 )
 
 var (

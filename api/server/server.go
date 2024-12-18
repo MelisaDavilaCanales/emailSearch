@@ -1,9 +1,6 @@
 package server
 
 import (
-	"backend/config"
-	"backend/emails"
-	"backend/persons"
 	"fmt"
 	"net/http"
 
@@ -11,6 +8,10 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
+
+	"backend/config"
+	"backend/emails"
+	"backend/persons"
 )
 
 type Server struct {
