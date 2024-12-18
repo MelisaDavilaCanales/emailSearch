@@ -17,8 +17,7 @@ type BatchManager struct {
 //   - batchesCount: The number of batches to be managed by the BatchManager.
 //   - batchSize: The size of each batch.
 //
-// Returns:
-//   - A pointer to the BatchManager instance.
+// Returns a pointer to the BatchManager instance.
 func NewBatchManager(batchesCount int, batchSize int) *BatchManager {
 	return &BatchManager{
 		Batches:      make([]Batch, 0, batchesCount),

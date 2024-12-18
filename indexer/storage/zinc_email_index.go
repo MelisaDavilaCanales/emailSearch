@@ -7,6 +7,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 )
 
+// CreateEmailIndex creates an index for storing emails.
 func CreateEmailIndex() error {
 	indexDataStr := buildEmailIndex()
 	return CreateIndex(constant.EMAIL_INDEX_NAME, indexDataStr)

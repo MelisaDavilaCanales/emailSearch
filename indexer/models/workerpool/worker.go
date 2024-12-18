@@ -20,14 +20,8 @@ type Worker[Input any, Output any] struct {
 //   - resultChList: A list of channels through which the result returned by the taskExecutor will be sent.
 //   - wg: A *sync.WaitGroup that the worker belongs to, used to decrement the counter when the worker finish.
 //
-// Returns:
-// A pointer to a Worker instance configured with the provided parameters.
-func NewWorker[Input any, Output any](
-	id int,
-	taskExecutor TaskExecutor[Input, Output],
-	tasksCh chan Input,
-	wg *sync.WaitGroup,
-	resultChList []chan Result[Output],
+// Returns a pointer to a Worker instance configured with the provided parameters.
+func NewWorker[Input any, Output any](id int, taskExecutor TaskExecutor[Input, Output], tasksCh chan Input, wg *sync.WaitGroup, resultChList []chan Result[Output],
 ) *Worker[Input, Output] {
 	return &Worker[Input, Output]{
 		Id:           id,
@@ -39,9 +33,9 @@ func NewWorker[Input any, Output any](
 }
 
 // Start begins the worker's task processing.
-// The worker listens to the task channel, it is executed by the taskExecutor, and the result is sent by resultChanels
-// The worker continues processing until the task channel is closed.
-// Note: The worker does not handle errors internally; errors are passed through the result.
+// The worker listens to the task channel, it is executed by the taskExecutor, and the result is sent by resultChanels.
+// Continues processing until the task channel is closed.
+// The worker does not handle errors internally; errors are passed through the result.
 func (w *Worker[Input, Output]) Start() {
 	go func() {
 		defer w.wg.Done()

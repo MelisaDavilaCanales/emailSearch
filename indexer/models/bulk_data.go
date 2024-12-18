@@ -14,8 +14,7 @@ type EmailBulkData struct {
 //   - indexName: The name of the ZincSearch index for Emails.
 //   - emails: The array of Email to be sent in the bulkV2 request.
 //
-// Returns:
-//   - A pointer to the new EmailBulkData instance.
+// Returns a pointer to the new EmailBulkData instance.
 func NewEmailBulkData(indexName string, emails [constant.EMAIL_BULK_SIZE]Email) *EmailBulkData {
 	return &EmailBulkData{
 		Index:  indexName,
@@ -35,8 +34,7 @@ type PersonBulkData struct {
 //   - indexName: The name of the ZincSearch index for Persons.
 //   - persons: it's a slice of Person to be sent in the bulkV2 request.
 //
-// Returns:
-//   - A pointer to the new PersonBulkData instance.
+// Returns a pointer to the new PersonBulkData instance.
 func NewPersonBulkData(indexName string, persons Persons) *PersonBulkData {
 	return &PersonBulkData{
 		Index:   indexName,

@@ -12,26 +12,28 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 )
 
-type HeaderKey string
+// headerKey represents the key of an email header.
+type headerKey string
 
+// Constants for the header keys in an email.
 const (
-	MESSAGE_ID                HeaderKey = "Message-ID"
-	DATE                      HeaderKey = "Date"
-	FROM                      HeaderKey = "From"
-	TO                        HeaderKey = "To"
-	SUBJECT                   HeaderKey = "Subject"
-	CC                        HeaderKey = "Cc"
-	X_CC                      HeaderKey = "X-cc"
-	MIME_VERSION              HeaderKey = "Mime-Version"
-	CONTENT_TYPE              HeaderKey = "Content-Type"
-	CONTENT_TRANSFER_ENCODING HeaderKey = "Content-Transfer-Encoding"
-	BCC                       HeaderKey = "Bcc"
-	X_FROM                    HeaderKey = "X-From"
-	X_TO                      HeaderKey = "X-To"
-	X_BCC                     HeaderKey = "X-bcc"
-	X_FOLDER                  HeaderKey = "X-Folder"
-	X_ORIGIN                  HeaderKey = "X-Origin"
-	X_FILE_NAME               HeaderKey = "X-FileName"
+	MESSAGE_ID                headerKey = "Message-ID"
+	DATE                      headerKey = "Date"
+	FROM                      headerKey = "From"
+	TO                        headerKey = "To"
+	SUBJECT                   headerKey = "Subject"
+	CC                        headerKey = "Cc"
+	X_CC                      headerKey = "X-cc"
+	MIME_VERSION              headerKey = "Mime-Version"
+	CONTENT_TYPE              headerKey = "Content-Type"
+	CONTENT_TRANSFER_ENCODING headerKey = "Content-Transfer-Encoding"
+	BCC                       headerKey = "Bcc"
+	X_FROM                    headerKey = "X-From"
+	X_TO                      headerKey = "X-To"
+	X_BCC                     headerKey = "X-bcc"
+	X_FOLDER                  headerKey = "X-Folder"
+	X_ORIGIN                  headerKey = "X-Origin"
+	X_FILE_NAME               headerKey = "X-FileName"
 )
 
 // ProcessEmailsFiles reads and processes the email file, iterate the file line by line to parse and storing it in an Email structure.
@@ -84,7 +86,7 @@ func ParseHeaderLine(line string, email *models.Email, currentKey *string) {
 		key := headerLine[0]
 		value := headerLine[1]
 
-		err := MapHeaderLine(HeaderKey(key), value, email)
+		err := MapHeaderLine(headerKey(key), value, email)
 		if err != nil {
 			fmt.Printf("Error mapping header line: %v\n", err)
 		}
@@ -95,19 +97,19 @@ func ParseHeaderLine(line string, email *models.Email, currentKey *string) {
 	key := *currentKey
 	value := line
 
-	err := MapHeaderLine(HeaderKey(key), value, email)
+	err := MapHeaderLine(headerKey(key), value, email)
 	if err != nil {
 		fmt.Printf("Error mapping header line: %v\n", err)
 	}
 }
 
 // MapHeaderLine maps the value of a header line to the appropriate field in the Email structure.
-func MapHeaderLine(key HeaderKey, value string, email *models.Email) error {
+func MapHeaderLine(key headerKey, value string, email *models.Email) error {
 	switch key {
 	case MESSAGE_ID:
 		email.MessageID = value
 	case DATE:
-		formatedDate, err := ConvertDateFormat(value)
+		formatedDate, err := convertDateFormat(value)
 		if err != nil {
 			return err
 		}
@@ -149,7 +151,7 @@ func MapHeaderLine(key HeaderKey, value string, email *models.Email) error {
 	return nil
 }
 
-func ConvertDateFormat(date string) (time.Time, error) {
+func convertDateFormat(date string) (time.Time, error) {
 	time, err := time.Parse(constant.DATE_FORMAT, date)
 
 	return time, err

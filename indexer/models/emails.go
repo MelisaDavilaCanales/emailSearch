@@ -7,6 +7,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 )
 
+// Email represents the structure of an email.
 type Email struct {
 	MessageID               string    `json:"message_id"`
 	Date                    time.Time `json:"date"`
@@ -46,6 +47,8 @@ type EmailBatch struct {
 //
 // Parameters:
 //   - idBatch: The Id for the EmailBatch.
+//
+// Returns a pointer to the new EmailBatch instance.
 func NewEmailBatch(idBatch int) *EmailBatch {
 	return &EmailBatch{
 		Id:        idBatch,

@@ -7,6 +7,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 )
 
+// CreatePersonIndex creates an index for storing persons.
 func CreatePersonIndex() error {
 	indexDataStr := buildPersonIndex()
 	return CreateIndex(constant.PERSON_INDEX_NAME, indexDataStr)

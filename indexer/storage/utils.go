@@ -9,6 +9,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
 )
 
+// DoRequest sends an HTTP request to the specified URL with the specified method and data.
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {
 	req, err := http.NewRequest(method, url, data)
 	if err != nil {
@@ -29,6 +30,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 	return res, nil
 }
 
+// CreateIndex creates an index with the specified name and data.
 func CreateIndex(indexName, indexDataStr string) error {
 	isExist := checkIndexExists(indexName)
 	if isExist {

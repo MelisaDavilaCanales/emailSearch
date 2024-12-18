@@ -13,8 +13,7 @@ import (
 
 var (
 	// Persons is the Map to add the people, it is used to avoid duplicates and then all the data will be added to a batch as structured Persons
-	Persons map[string]string
-	// mu is the mutex instance used to protect access to the Persons map and prevent race conditions.
+	Persons         map[string]string
 	mu              sync.Mutex
 	ExistingPersons int
 	UniquePersons   int
@@ -57,7 +56,6 @@ func StructurePersons(_ int, data models_wp.Result[*models.Email]) (models.Perso
 }
 
 // cleanNamePerson is a function that cleans up the names of individuals by removing any unwanted characters or tags.
-// X-To: "Barksdale, Melanie R." <mbarksda@ems.jsc.nasa.gov>
 func cleanNamePerson(names *[]string) {
 	for i, name := range *names {
 		re := regexp.MustCompile(constant.TAG_CONTENT_REGEX)
