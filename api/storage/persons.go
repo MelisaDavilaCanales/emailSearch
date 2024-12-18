@@ -1,11 +1,11 @@
 package storage
 
 import (
-	"backend/constant"
+	"backend/config"
 	"backend/models"
 	"encoding/json"
 	"fmt"
-	"os"
+	"net/http"
 	"strings"
 )
 
@@ -21,9 +21,8 @@ func GetPersons(term, field string, from, max int) (*models.PersonHitsData, erro
 		query = buildFilteredPersonsQuery(term, field, from, max)
 	}
 
-	url := os.Getenv("ZINC_SEARCH_API_URL") + constant.PERSON_INDEX_NAME + "/_search"
-
-	res, err := DoRequest("POST", url, strings.NewReader(query))
+	url := config.GET_PERSONS_API_URL
+	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %s", err)
 	}

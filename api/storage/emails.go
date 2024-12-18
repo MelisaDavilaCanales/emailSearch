@@ -1,21 +1,20 @@
 package storage
 
 import (
-	"backend/constant"
+	"backend/config"
 	"backend/models"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 )
 
 func GetMail(id string) (*models.Email, *models.ResponseError) {
 	var ResponseData *models.EmailDocResponse
 
-	url := os.Getenv("ZINC_SEARCH_API_URL") + constant.EMAIL_INDEX_NAME + "/_doc/" + id
+	url := config.GET_EMAIL_API_URL + id
 
-	res, err := DoRequest("GET", url, nil)
+	res, err := DoRequest(http.MethodGet, url, nil)
 	if err != nil {
 		errResponse := models.NewResponseError(http.StatusNotFound, "Error making request", err)
 		return nil, errResponse
@@ -46,9 +45,9 @@ func GetEmails(term, field string, from, max int) (*models.EmailHitsData, error)
 		query = buildFilteredEmailsQuery(term, field, from, max)
 	}
 
-	url := os.Getenv("ZINC_SEARCH_API_URL") + constant.EMAIL_INDEX_NAME + "/_search"
+	url := config.GET_EMAILS_API_URL
 
-	res, err := DoRequest("POST", url, strings.NewReader(query))
+	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
 		return nil, err
 	}

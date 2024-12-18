@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	if err := config.GetEnvVars(); err != nil {
+	if err := config.LoadEnvVars(); err != nil {
 		log.Fatal("Error loading .env file: ", err)
 	}
 

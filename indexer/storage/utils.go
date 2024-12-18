@@ -67,8 +67,7 @@ func CreateIndex(indexName, indexDataStr string) error {
 
 func checkIndexExists(indexName string) bool {
 	url := config.CHECK_INDEX_EXISTS_API_URL + indexName
-	fmt.Println("URL Checking if index exists:", url)
-	_, err := DoRequest("GET", url, nil)
+	_, err := DoRequest(http.MethodGet, url, nil)
 
 	return err == nil
 }
