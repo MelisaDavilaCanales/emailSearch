@@ -36,6 +36,10 @@ const (
 	X_FILE_NAME               headerKey = "X-FileName"
 )
 
+var TotalEmails int
+var TotalEmailsValid int
+var TotalEmailsInvalid int
+
 // ProcessEmailsFiles reads and processes the email file, iterate the file line by line to parse and storing it in an Email structure.
 func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 	var (
@@ -43,14 +47,13 @@ func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 		isHeaderFinish = false
 		emailContent   strings.Builder
 		currentKey     string
+		messageIdField string
 	)
 
 	file, err := os.Open(path)
 	if err != nil {
 		LogErrorToCSV(path, err)
 		return nil, err
-	} else {
-		LogErrorToCSV(path, nil)
 	}
 	defer file.Close() //nolint:errcheck
 
@@ -71,6 +74,20 @@ func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 	}
 
 	email.Content = emailContent.String()
+	messageIdField = email.MessageID
+
+	TotalEmails++
+
+	err = validateEmailStructure(messageIdField, emailContent.String())
+	if err != nil {
+		TotalEmailsInvalid++
+
+		LogErrorToCSV(path, err)
+
+		return nil, err
+	}
+
+	TotalEmailsValid++
 
 	emailData := models.EmailData{
 		EmailPath:   path,
@@ -80,29 +97,37 @@ func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 	return &emailData, nil
 }
 
+// validateEmailStructure validates the correct structure of the email.
+func validateEmailStructure(messageIdField, content string) error {
+	if messageIdField == "" {
+		return errors.New("eaderstructure invalid: Message-ID field is empty")
+	}
+
+	if strings.TrimSpace(content) == "" {
+		return errors.New("empty content")
+	}
+
+	return nil
+}
+
 // ParseHeaderLine processes a header line and assigns its value to the corresponding field in the Email structure.
 // If the line is not in key-value format, it's considered part of the content of the previous field and is appended to the current key's value.
 func ParseHeaderLine(line string, email *models.Email, currentKey *string) {
+	var key, value string
+
 	headerLine := strings.SplitN(line, ": ", 2)
 	if len(headerLine) == 2 {
 		*currentKey = headerLine[0]
-		key := headerLine[0]
-		value := headerLine[1]
-
-		err := MapHeaderLine(headerKey(key), value, email)
-		if err != nil {
-			fmt.Printf("Error mapping header line: %v\n", err)
-		}
-
-		return
+		key = headerLine[0]
+		value = headerLine[1]
+	} else {
+		key = *currentKey
+		value = line
 	}
-
-	key := *currentKey
-	value := line
 
 	err := MapHeaderLine(headerKey(key), value, email)
 	if err != nil {
-		fmt.Printf("Error mapping header line: %v\n", err)
+		fmt.Printf("Error %v\n on email: %s", err, email.MessageID)
 	}
 }
 
@@ -149,7 +174,7 @@ func MapHeaderLine(key headerKey, value string, email *models.Email) error {
 	case X_FILE_NAME:
 		email.XFileName += value
 	default:
-		return errors.New("unknown header key")
+		return nil
 	}
 
 	return nil

@@ -43,26 +43,13 @@ func CreateIndex(indexName, indexDataStr string) error {
 
 	res, err := DoRequest(http.MethodPost, url, indexData)
 	if err != nil {
-		return err
+		return fmt.Errorf("create index request status %s: %w", res.Status, err)
 	}
 
 	if res.StatusCode != http.StatusCreated {
-		bodyBytes, err := io.ReadAll(res.Body)
-		if err != nil {
-			fmt.Println("Error reading response body")
-		}
-
-		bodyString := string(bodyBytes)
-
-		return fmt.Errorf("status code: %d, response body: %s", res.StatusCode, bodyString)
+		return fmt.Errorf("create index status: %s", res.Status)
 	}
-
-	closeErr := res.Body.Close()
-	if closeErr != nil {
-		fmt.Println("Error closing response body:", closeErr)
-	}
-
-	fmt.Println("Index created successfully")
+	defer res.Body.Close() // nolint: errcheck
 
 	return nil
 }

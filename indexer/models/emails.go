@@ -1,7 +1,7 @@
 package models
 
 import (
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
@@ -45,7 +45,7 @@ type EmailData struct {
 type EmailBatch struct {
 	Id        int
 	Size      int
-	Emails    [constant.EMAIL_BATCH_SIZE]Email
+	EmailData [constant.EMAIL_BATCH_SIZE]EmailData
 	NextIndex int
 }
 
@@ -59,7 +59,7 @@ func NewEmailBatch(idBatch int) *EmailBatch {
 	return &EmailBatch{
 		Id:        idBatch,
 		Size:      constant.EMAIL_BATCH_SIZE,
-		Emails:    [constant.EMAIL_BATCH_SIZE]Email{},
+		EmailData: [constant.EMAIL_BATCH_SIZE]EmailData{},
 		NextIndex: 0,
 	}
 }
@@ -71,7 +71,7 @@ func (eb *EmailBatch) GetBatchID() int {
 
 // Reset resets all Emails in the EmailBatch, resetting it to an empty state.
 func (eb *EmailBatch) Reset() {
-	eb.Emails = [constant.EMAIL_BATCH_SIZE]Email{}
+	eb.EmailData = [constant.EMAIL_BATCH_SIZE]EmailData{}
 	eb.NextIndex = 0
 }
 
@@ -82,16 +82,16 @@ func (eb *EmailBatch) IsFull() bool {
 
 // AddItem adds an Email to the EmailBatch.
 func (eb *EmailBatch) AddItem(item interface{}) error {
-	email, ok := item.(Email)
+	emailData, ok := item.(EmailData)
 	if !ok {
-		return fmt.Errorf("item is not of type Email")
+		return errors.New("item is not of type emailData")
 	}
 
 	if eb.IsFull() {
-		return fmt.Errorf("batch is full")
+		return errors.New("batch is full")
 	}
 
-	eb.Emails[eb.NextIndex] = email
+	eb.EmailData[eb.NextIndex] = emailData
 	eb.NextIndex++
 
 	return nil

@@ -1,7 +1,6 @@
 package persons
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 	"sync"
@@ -119,8 +118,6 @@ func appendPerson(correo, nombre string) {
 	}
 
 	UniquePersons++
-
-	fmt.Println(correo)
 
 	Persons[correo] = nombre
 }

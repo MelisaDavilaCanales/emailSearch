@@ -2,7 +2,6 @@ package emails
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -11,16 +10,18 @@ import (
 
 // ProcessEmailDirectory retrieves the directory path from the command-line arguments, processes the specified directory,
 // and scans it for email files, and sends their paths to the provided channel.
-func ProcessEmailDirectory(emailPathCh chan string) {
+func ProcessEmailDirectory(emailPathCh chan string) error {
 	dir, err := getDirectory()
 	if err != nil {
-		log.Fatal(err, " please provide a valid directory, example: go run main.go <directory>")
+		return err
 	}
 
 	path := dir + config.EMAIL_DIR_SUBPATH
 	if err = scanDirectory(path, emailPathCh); err != nil {
-		fmt.Println(err)
+		return err
 	}
+
+	return nil
 }
 
 // getDirectory retrieves the directory path from the command-line arguments and verifies it's existence.
@@ -34,10 +35,10 @@ func getDirectory() (string, error) {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			return "", fmt.Errorf("directory does not exist: %s", dirPath)
+			return "", fmt.Errorf("directory %s does not exist:", dirPath)
 		}
 
-		return "", fmt.Errorf("error checking directory: %v", err)
+		return "", fmt.Errorf("checking directory: %v", err)
 	}
 
 	return dirPath, nil
@@ -47,7 +48,7 @@ func getDirectory() (string, error) {
 func scanDirectory(path string, emailPathCh chan string) error {
 	files, err := os.ReadDir(path)
 	if err != nil {
-		return fmt.Errorf("error reading directory: %v", err)
+		return fmt.Errorf("reading directory: %v", err)
 	}
 
 	for _, file := range files {

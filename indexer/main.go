@@ -23,11 +23,11 @@ func main() {
 	}
 
 	if err := storage.CreateEmailIndex(); err != nil {
-		log.Fatal("Error creating email index: ", err)
+		fmt.Println("Error creating email index: ", err)
 	}
 
 	if err := storage.CreatePersonIndex(); err != nil {
-		log.Fatal("Error creating person index: ", err)
+		fmt.Println("Error creating person index: ", err)
 	}
 
 	emailPathCh := make(chan string, constant.BUFFER_CAPACITY)
@@ -41,7 +41,11 @@ func main() {
 	go func() {
 		defer close(emailPathCh)
 		defer wgProcessDir.Done()
-		emails.ProcessEmailDirectory(emailPathCh)
+
+		err := emails.ProcessEmailDirectory(emailPathCh)
+		if err != nil {
+			log.Fatal("Error processing email directory: ", err, " Please provide a valid directory, example: go run main.go <directory>")
+		}
 	}()
 
 	wpProcessEmailsFiles := models_wp.NewWorkerPool(emails.ProcessEmailsFiles, &wgProcessEmailFiles, constant.PROCESS_EMAILS_WORKERS_COUNT, emailPathCh, emailStructCh1, emailStructCh2)
@@ -68,4 +72,7 @@ func main() {
 
 	timeSince := time.Since(timeInit)
 	fmt.Println("Indexing Time: ", timeSince)
+	fmt.Printf("TotalEmails: %v\n", emails.TotalEmails)
+	fmt.Printf("TotalEmailsValid: %v\n", emails.TotalEmailsValid)
+	fmt.Printf("TotalEmailsInvalid: %v\n", emails.TotalEmailsInvalid)
 }

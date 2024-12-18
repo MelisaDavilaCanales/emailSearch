@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fmt"
+	"errors"
 	"os"
 	"runtime"
 
@@ -51,15 +51,15 @@ func SetEnvVars() error {
 	}
 
 	if os.Getenv("DB_USER") == "" {
-		return fmt.Errorf("DB_USER environment variable not set")
+		return errors.New("DB_USER environment variable not set")
 	}
 
 	if os.Getenv("DB_PASSWORD") == "" {
-		return fmt.Errorf("DB_PASSWORD environment variable not set")
+		return errors.New("DB_PASSWORD environment variable not set")
 	}
 
 	if os.Getenv("ZINC_SEARCH_API_URL") == "" {
-		return fmt.Errorf("ZINC_SEARCH_API_URL environment variable not set")
+		return errors.New("ZINC_SEARCH_API_URL environment variable not set")
 	}
 
 	setGlobalEnvVars()

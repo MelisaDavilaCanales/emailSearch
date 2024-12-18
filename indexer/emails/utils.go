@@ -2,7 +2,7 @@ package emails
 
 import (
 	"encoding/csv"
-	"log"
+	"fmt"
 	"os"
 	"time"
 
@@ -13,7 +13,8 @@ import (
 func LogErrorToCSV(filePath string, err error) {
 	f, fileErr := os.OpenFile("error_log.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if fileErr != nil {
-		log.Fatalf("error opening CSV file: %v", fileErr)
+		fmt.Printf("Error opening error log CSV file: %v\n", fileErr)
+		return
 	}
 	defer f.Close() //nolint:errcheck
 
@@ -22,13 +23,15 @@ func LogErrorToCSV(filePath string, err error) {
 
 	fileInfo, errStat := f.Stat()
 	if errStat != nil {
-		log.Fatalf("error checking file status: %v", err)
+		fmt.Printf("Error checking status of error log file: %v\n", err)
+		return
 	}
 
 	if fileInfo.Size() == 0 {
-		err := writer.Write([]string{"Timestamp", "FilePath", "ErrorMessage"})
+		err := writer.Write([]string{"timestamp", "filePath", "errorMessage"})
 		if err != nil {
-			log.Fatalf("error writing CSV header: %v", err)
+			fmt.Printf("Error writing header to error log CSV file: %v\n", err)
+			return
 		}
 	}
 
@@ -36,10 +39,10 @@ func LogErrorToCSV(filePath string, err error) {
 	record := []string{
 		logTime,
 		filePath,
-		"err.Error()",
+		err.Error(),
 	}
 
 	if err := writer.Write(record); err != nil {
-		log.Fatalf("error writing to CSV file: %v", err)
+		fmt.Printf("Error writing error record to CSV log file: %v\n", err)
 	}
 }

@@ -26,18 +26,14 @@ func SendBulk[T validBulkData](bulk T) error {
 
 	bulkData, err := json.Marshal(bulk)
 	if err != nil {
-		return fmt.Errorf("failed to marshal bulk data: %w", err)
+		return fmt.Errorf("marshal bulk: %w", err)
 	}
 
 	resp, err := DoRequest(http.MethodPost, url, bytes.NewBuffer(bulkData))
 	if err != nil {
-		return fmt.Errorf("failed to send bulk: %w to API ZincSearch", err)
+		return fmt.Errorf("send bulk: %w", err)
 	}
-
-	err = resp.Body.Close()
-	if err != nil {
-		return fmt.Errorf("failed to close response body: %w", err)
-	}
+	defer resp.Body.Close() // nolint: errcheck
 
 	switch any(bulk).(type) {
 	case *models.PersonBulkData:

@@ -1,6 +1,7 @@
 package emails
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
@@ -28,10 +29,10 @@ func ProcessAndSendEmails(idWorker int, data models_wp.Result[*models.EmailData]
 	}
 
 	idBatch := idWorker
-	email := data.Value.EmailStruct
+	emailData := data.Value
 	path := data.Value.EmailPath
 
-	batch, err := addToEmailBatch(idBatch, email)
+	batch, err := addToEmailBatch(idBatch, emailData)
 	if err != nil {
 		LogErrorToCSV(path, err)
 		return false, err
@@ -40,7 +41,11 @@ func ProcessAndSendEmails(idWorker int, data models_wp.Result[*models.EmailData]
 	if batch.IsFull() {
 		bulk := createBulk(batch)
 		if err := storage.SendBulk(bulk); err != nil {
-			return false, fmt.Errorf("failed to send batch: %w", err)
+			for _, emailData := range batch.EmailData {
+				LogErrorToCSV(emailData.EmailPath, fmt.Errorf("send data bulk: %w", err))
+			}
+
+			return false, fmt.Errorf("send data bulk: %w", err)
 		}
 
 		batch.Reset()
@@ -50,25 +55,38 @@ func ProcessAndSendEmails(idWorker int, data models_wp.Result[*models.EmailData]
 }
 
 // addToEmailBatch retrieves the batch based on the ID, adds the email to the batch, and returns the batch.
-func addToEmailBatch(idBatch int, email *models.Email) (*models.EmailBatch, error) {
+func addToEmailBatch(idBatch int, emailData *models.EmailData) (*models.EmailBatch, error) {
 	myBatch, err := EmailBatchManager.GetBatchById(idBatch)
 	if err != nil {
-		return &models.EmailBatch{}, fmt.Errorf("failed to get batch: %w", err)
+		return &models.EmailBatch{}, fmt.Errorf("get batch: %w", err)
 	}
 
-	if err = myBatch.AddItem(email); err != nil {
-		return &models.EmailBatch{}, fmt.Errorf("failed to add email to batch: %w", err)
+	if err = myBatch.AddItem(*emailData); err != nil {
+		return &models.EmailBatch{}, fmt.Errorf("add email to batch: %w", err)
 	}
 
 	batch, ok := myBatch.(*models.EmailBatch)
 	if !ok {
-		return nil, fmt.Errorf("failed to cast batch")
+		return nil, errors.New("cast emailBatch")
 	}
 
 	return batch, nil
 }
 
 func createBulk(batch *models.EmailBatch) *models.EmailBulkData {
-	bulk := models.NewEmailBulkData(constant.EMAIL_INDEX_NAME, batch.Emails)
+	var dataToBulk [constant.EMAIL_BATCH_SIZE]models.Email
+
+	for i, emailData := range batch.EmailData {
+		if emailData.EmailStruct == nil {
+			LogErrorToCSV(batch.EmailData[i].EmailPath, errors.New("Email struct is nil"))
+
+			continue
+		}
+
+		dataToBulk[i] = *emailData.EmailStruct
+	}
+
+	bulk := models.NewEmailBulkData(constant.EMAIL_INDEX_NAME, dataToBulk)
+
 	return bulk
 }

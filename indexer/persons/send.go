@@ -21,6 +21,6 @@ func BuildAndSendPersonBulk() {
 	}
 
 	if err := storage.SendBulk(personBulk); err != nil {
-		fmt.Println("failed to send bulk: %w", err)
+		fmt.Println(err)
 	}
 }
