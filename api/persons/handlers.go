@@ -1,10 +1,10 @@
 package persons
 
 import (
-	"encoding/json"
 	"fmt"
-	"math"
 	"net/http"
+
+	"github.com/go-chi/render"
 
 	"backend/models"
 	"backend/storage"
@@ -12,14 +12,14 @@ import (
 )
 
 func GetPersons(w http.ResponseWriter, r *http.Request) {
-	pageStr := r.URL.Query().Get("page")
+	pageNumberStr := r.URL.Query().Get("page")
 	pageSizeStr := r.URL.Query().Get("page_size")
-	term := r.URL.Query().Get("term")
-	field := r.URL.Query().Get("field")
+	searchTerm := r.URL.Query().Get("term")
+	searchfield := r.URL.Query().Get("field")
 
-	page, pageSize, from, max := utils.ProcessPaginatedParams(pageStr, pageSizeStr)
+	page, pageSize, resultsFrom, maxResults := utils.ProcessPaginatedParams(pageNumberStr, pageSizeStr)
 
-	personHitsData, err := storage.GetPersons(term, field, from, max)
+	personHitsData, err := storage.GetPersons(searchTerm, searchfield, resultsFrom, maxResults)
 	if err != nil {
 		responseError := models.NewResponseError(http.StatusInternalServerError, "Error searching persons", err)
 		http.Error(w, responseError.Error(), responseError.StatusCode)
@@ -31,36 +31,17 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 
 	if personHitsData.Total.Value == 0 {
 		data := models.NewPersonResponseData(0, 0, 0, []models.Person{})
-		response := models.Response{
-			Message: "No persons found",
-			Data:    data,
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
-		err = json.NewEncoder(w).Encode(response)
-		if err != nil {
-			responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
-			http.Error(w, responseError.Error(), responseError.StatusCode)
-		}
+		response := models.NewResponse("No persons found", data)
+		render.JSON(w, r, response)
 
 		return
 	}
 
-	totalPages := int(math.Ceil(float64(personHitsData.Total.Value) / float64(max)))
+	totalPages := utils.GetTotalPages(personHitsData.Total.Value, maxResults)
 	if page > totalPages {
 		data := models.NewEmailsResponseData(totalPages, page, pageSize, []models.EmailSummary{})
 		response := models.NewResponse("Page out of range", data)
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-
-		err = json.NewEncoder(w).Encode(response)
-		if err != nil {
-			responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
-			http.Error(w, responseError.Error(), responseError.StatusCode)
-		}
+		render.JSON(w, r, response)
 
 		return
 	}
@@ -76,17 +57,6 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := models.NewPersonResponseData(totalPages, page, pageSize, persons)
-	response := models.Response{
-		Message: "Persons found successfully",
-		Data:    data,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		responseError := models.NewResponseError(http.StatusInternalServerError, "Error encoding response", err)
-		http.Error(w, responseError.Error(), responseError.StatusCode)
-	}
+	response := models.NewResponse("Persons found successfully", data)
+	render.JSON(w, r, response)
 }

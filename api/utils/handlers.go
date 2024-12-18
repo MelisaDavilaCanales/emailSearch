@@ -24,8 +24,8 @@ func ProcessPaginatedParams(pageParam, sizeParam string) (int, int, int, int) {
 		pageSize = 10
 	}
 
-	if pageSize > 100 {
-		pageSize = 100
+	if pageSize > 50 {
+		pageSize = 50
 	}
 
 	from := (page - 1) * pageSize

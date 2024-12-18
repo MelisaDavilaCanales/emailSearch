@@ -1,8 +1,11 @@
 ###
-GET http://localhost:8080/persons?page=7&page_size=10
+GET http://localhost:8080/persons?page=7&page_size=25
 
 ###
-GET http://localhost:8080/persons?page=10&page_size=10&term=steve&field=email&sort=asc
+GET http://localhost:8080/persons?page=25&page_size=10&term=steve&field=email&sort=asc
+
+###
+GET http://localhost:8080/persons?page=5&page_size=10&term=steve&field=email&sort=asc
 
 ###
 GET http://localhost:8080/persons?page=10&page_size=10&term=tumedañaste&field=name&sort=asc

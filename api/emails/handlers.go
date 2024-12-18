@@ -12,14 +12,14 @@ import (
 )
 
 func GetEmails(w http.ResponseWriter, r *http.Request) {
-	PageNumberStr := r.URL.Query().Get("page")
+	pageNumberStr := r.URL.Query().Get("page")
 	pageSizeStr := r.URL.Query().Get("page_size")
-	SearchTerm := r.URL.Query().Get("term")
-	Searchfield := r.URL.Query().Get("field")
+	searchTerm := r.URL.Query().Get("term")
+	searchfield := r.URL.Query().Get("field")
 
-	pageNumber, pageSize, from, MaxResults := utils.ProcessPaginatedParams(PageNumberStr, pageSizeStr)
+	pageNumber, pageSize, resultsFrom, maxResults := utils.ProcessPaginatedParams(pageNumberStr, pageSizeStr)
 
-	emailHitsData, err := storage.GetEmails(SearchTerm, Searchfield, from, MaxResults)
+	emailHitsData, err := storage.GetEmails(searchTerm, searchfield, resultsFrom, maxResults)
 	if err != nil {
 		responseError := models.NewResponseError(http.StatusInternalServerError, "Error searching emails", err)
 		http.Error(w, responseError.Error(), responseError.StatusCode)
@@ -35,7 +35,7 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	totalPages := utils.GetTotalPages(emailHitsData.Total.Value, MaxResults)
+	totalPages := utils.GetTotalPages(emailHitsData.Total.Value, maxResults)
 	if pageNumber > totalPages {
 		data := models.NewEmailsResponseData(totalPages, pageNumber, pageSize, []models.EmailSummary{})
 		response := models.NewResponse("Page out of range", data)

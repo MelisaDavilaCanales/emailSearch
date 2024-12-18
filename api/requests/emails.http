@@ -1,5 +1,5 @@
 ###
-GET http://localhost:8080/emails
+GET http://localhost:8080/emails?page_size=500
 
 
 ### Email not found
@@ -11,7 +11,7 @@ GET http://localhost:8080/emails/2e4GVvsrl5K
 
 
 ### EMAILS EMPTY
-GET http://localhost:8080/emails?page=1&page_size=5&term=charlesDeDavila&field=from&sort=asc
+GET http://localhost:8080/emails?page=1&page_size=100&term=charles&field=from&sort=asc
 
 ### EMAILS EMPTY
 GET http://localhost:8080/emails
