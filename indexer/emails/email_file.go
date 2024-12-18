@@ -35,7 +35,7 @@ const (
 )
 
 // ProcessEmailsFiles reads and processes the email file, iterate the file line by line to parse and storing it in an Email structure.
-func ProcessEmailsFiles(_ int, path string) (models.Email, error) {
+func ProcessEmailsFiles(_ int, path string) (*models.Email, error) {
 	var (
 		email          = models.Email{}
 		isHeaderFinish = false
@@ -46,7 +46,7 @@ func ProcessEmailsFiles(_ int, path string) (models.Email, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		fmt.Printf("Error opening path: %v\n", err)
-		return email, err
+		return &email, err
 	}
 
 	scanner := bufio.NewScanner(file)
@@ -67,12 +67,12 @@ func ProcessEmailsFiles(_ int, path string) (models.Email, error) {
 
 	if err := file.Close(); err != nil {
 		fmt.Printf("Error closing file: %v\n", err)
-		return email, err
+		return &email, err
 	}
 
 	email.Content = emailContent.String()
 
-	return email, nil
+	return &email, nil
 }
 
 // ParseHeaderLine processes a header line and assigns its value to the corresponding field in the Email structure.

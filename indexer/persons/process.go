@@ -30,7 +30,7 @@ func init() {
 // StructurePersons is a function that takes an email and processes the data to extract the individuals who send and receive the email.
 // It extracts the email addresses from the From, To, and Cc fields and their corresponding names from the X-From, X-To, and X-Cc fields.
 // The data is cleaned and each person, along with their email, is added to the Persons map.
-func StructurePersons(_ int, data models_wp.Result[models.Email]) (models.Person, error) {
+func StructurePersons(_ int, data models_wp.Result[*models.Email]) (models.Person, error) {
 	if data.Err != nil {
 		return models.Person{}, data.Err
 	}

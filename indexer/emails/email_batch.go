@@ -22,7 +22,7 @@ func init() {
 
 // ProcessAndSendEmails retrieves the appropriate batch based on the worker ID, adds the email to the batch, and if the batch is full,
 // creates a bulk of emails whith the elements of that batch and sends it to the API.
-func ProcessAndSendEmails(idWorker int, data models_wp.Result[models.Email]) (bool, error) {
+func ProcessAndSendEmails(idWorker int, data models_wp.Result[*models.Email]) (bool, error) {
 	if data.Err != nil {
 		return false, data.Err
 	}
@@ -48,7 +48,7 @@ func ProcessAndSendEmails(idWorker int, data models_wp.Result[models.Email]) (bo
 }
 
 // buildEmailBatch retrieves the batch based on the ID, adds the email to the batch, and returns the batch.
-func buildEmailBatch(idBatch int, email models.Email) (*models.EmailBatch, error) {
+func buildEmailBatch(idBatch int, email *models.Email) (*models.EmailBatch, error) {
 	myBatch, err := EmailBatchManager.GetBatchById(idBatch)
 	if err != nil {
 		return &models.EmailBatch{}, fmt.Errorf("failed to get batch: %w", err)
