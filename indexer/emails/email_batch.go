@@ -78,7 +78,7 @@ func createBulk(batch *models.EmailBatch) *models.EmailBulkData {
 
 	for i, emailData := range batch.EmailData {
 		if emailData.EmailStruct == nil {
-			LogErrorToCSV(batch.EmailData[i].EmailPath, errors.New("Email struct is nil"))
+			LogErrorToCSV(batch.EmailData[i].EmailPath, errors.New("email struct is nil"))
 
 			continue
 		}

@@ -35,7 +35,7 @@ func getDirectory() (string, error) {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			return "", fmt.Errorf("directory %s does not exist:", dirPath)
+			return "", fmt.Errorf("directory %s does not exist", dirPath)
 		}
 
 		return "", fmt.Errorf("checking directory: %v", err)
