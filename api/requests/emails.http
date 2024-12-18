@@ -7,11 +7,11 @@ GET http://localhost:8080/emails/2dYkolN9QoX
 
 
 ### ONE EMAIL SUCESS
-GET http://localhost:8080/emails/2e0essnNRZmQa
+GET http://localhost:8080/emails/2e4GVvsrl5K
 
 
 ### EMAILS EMPTY
-GET http://localhost:8080/emails?page=10&page_size=10&term=charles@12345345342342&field=from&sort=asc
+GET http://localhost:8080/emails?page=1&page_size=5&term=charles&field=from&sort=asc
 
 ### EMAILS EMPTY
 GET http://localhost:8080/emails

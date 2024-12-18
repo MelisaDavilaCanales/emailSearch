@@ -25,6 +25,10 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, responseError.Error(), responseError.StatusCode)
 	}
 
+	if emailHitsData == nil {
+		return
+	}
+
 	if emailHitsData.Total.Value == 0 {
 		data := models.NewEmailsResponseData(0, 0, 0, []models.EmailSummary{})
 		response := models.Response{
@@ -39,6 +43,15 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 	}
 
 	totalPages := int(math.Ceil(float64(emailHitsData.Total.Value) / float64(max)))
+
+	if page > totalPages {
+		data := models.NewEmailsResponseData(totalPages, page, pageSize, []models.EmailSummary{})
+		response := models.NewResponse("Page out of range", data)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
 
 	emails := make([]models.EmailSummary, 0)
 	for _, hit := range emailHitsData.Hits {
@@ -62,18 +75,45 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func GetEmail(w http.ResponseWriter, r *http.Request) {
+func GetEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "id")
 
 	email, err := storage.GetMail(id)
 	if err != nil {
-		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting email", err)
+		if err.StatusCode == http.StatusNotFound {
+			response := models.Response{
+				Message: "Email not found",
+				Data:    nil,
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(response)
+			return
+		}
 
+		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting email", err)
 		http.Error(w, responseError.Error(), responseError.StatusCode)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(email)
 }
+
+// if err != nil {
+// 	log.Printf("Error recibido en GetMail: %v", err)
+
+// 	if errors.Is(err, config.ErrIDNotFound) {
+// 		log.Println("ENTRÓ en el bloque de ErrIDNotFound")
+// 		response := map[string]interface{}{
+// 			"message": "Email not found",
+// 			"data":    nil,
+// 		}
+// 		w.Header().Set("Content-Type", "application/json")
+// 		w.WriteHeader(http.StatusOK)
+// 		json.NewEncoder(w).Encode(response)
+// 		return
+// 	}
+// }

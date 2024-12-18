@@ -6,12 +6,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 	"strings"
 )
 
-func GetAllPersons(from, max int) (*models.PersonHitsData, *models.ResponseError) {
+func GetAllPersons(from, max int) (*models.PersonHitsData, error) {
 
 	var ResponseData models.PersonSearchResponse
 	//sort=name& =asc
@@ -28,19 +27,19 @@ func GetAllPersons(from, max int) (*models.PersonHitsData, *models.ResponseError
 
 	res, err := DoRequest("POST", url, bytes.NewBuffer([]byte(query)))
 	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error making request", err)
+		return nil, fmt.Errorf("error making request: %s", err)
 	}
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error decoding response body", err)
+		return nil, fmt.Errorf("error decoding response body: %s", err)
 	}
 
 	return &ResponseData.PersonHitsData, nil
 }
 
-func SearchPersons(term, field string, from, max int) (*models.PersonHitsData, *models.ResponseError) {
+func SearchPersons(term, field string, from, max int) (*models.PersonHitsData, error) {
 
 	var ResponseData models.PersonSearchResponse
 
@@ -61,14 +60,14 @@ func SearchPersons(term, field string, from, max int) (*models.PersonHitsData, *
 
 	res, err := DoRequest("POST", url, strings.NewReader(query))
 	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error making request", err)
+		return nil, fmt.Errorf("error making request: %s", err)
 	}
 
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error decoding response body", err)
+		return nil, fmt.Errorf("error decoding response body: %s", err)
 	}
 
 	return &ResponseData.PersonHitsData, nil

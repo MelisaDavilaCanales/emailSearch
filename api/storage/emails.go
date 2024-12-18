@@ -11,39 +11,38 @@ import (
 )
 
 func GetMail(id string) (*models.Email, *models.ResponseError) {
-
 	var ResponseData *models.EmailDocResponse
 
 	url := os.Getenv("ZINC_SEARCH_API_URL") + constant.EMAIL_INDEX_NAME + "/_doc/" + id
 
 	res, err := DoRequest("GET", url, nil)
 	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error making request", err)
+		errResponse := models.NewResponseError(http.StatusNotFound, "Error making request", err)
+		return nil, errResponse
+	}
+
+	if res.StatusCode == 400 {
+		errResponse := models.NewResponseError(http.StatusNotFound, "Error getting email", fmt.Errorf("id no found %s", id))
+		return nil, errResponse
 	}
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error decoding response body", err)
+		errResponse := models.NewResponseError(http.StatusInternalServerError, "Error decoding response body", err)
+		return nil, errResponse
 	}
 
 	return &ResponseData.Email, nil
 }
 
-func GetEmails(term, field string, from, max int) (*models.EmailHitsData, *models.ResponseError) {
+func GetEmails(term, field string, from, max int) (*models.EmailHitsData, error) {
 	var ResponseData models.EmailSearchResponse
 	var query string
 
 	if term == "" || field == "" {
-		fmt.Println("$$$$$$$$$$$$$$$$$$$$$$ Getting all emails")
-		fmt.Println("term: " + term)
-		fmt.Println("filed: " + field)
-
 		query = buildAllEmailsQuery(from, max)
 	} else {
-		fmt.Println("$$$$$$$$$$$$$$$$$$$$$$ Filtered all emails")
-		fmt.Println("term: " + term)
-		fmt.Println("filed: " + field)
 		query = buildFilteredEmailsQuery(term, field, from, max)
 	}
 
@@ -51,14 +50,14 @@ func GetEmails(term, field string, from, max int) (*models.EmailHitsData, *model
 
 	res, err := DoRequest("POST", url, strings.NewReader(query))
 	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error making request", err)
+		return nil, err
 	}
 
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, models.NewResponseError(http.StatusInternalServerError, "Error decoding response body", err)
+		return nil, fmt.Errorf("error decoding response body: %s", err)
 	}
 
 	return &ResponseData.EmailHitsData, nil
