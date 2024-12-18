@@ -5,6 +5,8 @@ import (
 	"strconv"
 )
 
+// ProcessPaginatedParams processes pagination parameters (page and size),
+// setting limits on values if they are invalid or out of range.
 func ProcessPaginatedParams(pageParam, sizeParam string) (int, int, int, int) {
 	if pageParam == "" {
 		pageParam = "1"
@@ -34,6 +36,7 @@ func ProcessPaginatedParams(pageParam, sizeParam string) (int, int, int, int) {
 	return page, pageSize, from, max
 }
 
+// GetTotalPages calculates the total number of pages based on total records and page size.
 func GetTotalPages(totalRecords, max int) int {
 	return int(math.Ceil(float64(totalRecords) / float64(max)))
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/config"
 )
 
+// DoRequest sends an HTTP request to the specified URL with the specified method and data.
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {
 	req, err := http.NewRequest(method, url, data)
 	if err != nil {

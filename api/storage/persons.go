@@ -10,7 +10,6 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 )
 
-// sort=name& =asc
 func GetPersons(term, field string, from, max int) (*models.PersonHitsData, error) {
 	var (
 		ResponseData models.PersonSearchResponse
