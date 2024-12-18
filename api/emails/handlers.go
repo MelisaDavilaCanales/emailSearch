@@ -6,9 +6,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 
-	"backend/models"
-	"backend/storage"
-	"backend/utils"
+	"github.com/MelisaDavilaCanales/emailSearch/api/models"
+	"github.com/MelisaDavilaCanales/emailSearch/api/storage"
+	"github.com/MelisaDavilaCanales/emailSearch/api/utils"
 )
 
 func GetEmails(w http.ResponseWriter, r *http.Request) {

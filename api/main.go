@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"backend/config"
-	"backend/server"
+	"github.com/MelisaDavilaCanales/emailSearch/api/config"
+	"github.com/MelisaDavilaCanales/emailSearch/api/server"
 )
 
 func main() {

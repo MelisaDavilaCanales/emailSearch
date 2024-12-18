@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"backend/config"
-	"backend/models"
+	"github.com/MelisaDavilaCanales/emailSearch/api/config"
+	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 )
 
 // sort=name& =asc

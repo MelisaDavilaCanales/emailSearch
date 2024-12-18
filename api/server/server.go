@@ -9,9 +9,9 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 
-	"backend/config"
-	"backend/emails"
-	"backend/persons"
+	"github.com/MelisaDavilaCanales/emailSearch/api/config"
+	"github.com/MelisaDavilaCanales/emailSearch/api/emails"
+	"github.com/MelisaDavilaCanales/emailSearch/api/persons"
 )
 
 type Server struct {

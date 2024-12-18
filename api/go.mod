@@ -1,4 +1,4 @@
-module backend
+module github.com/MelisaDavilaCanales/emailSearch/api
 
 go 1.21.1
 

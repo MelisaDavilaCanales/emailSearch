@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	"backend/config"
+	"github.com/MelisaDavilaCanales/emailSearch/api/config"
 )
 
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {

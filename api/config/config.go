@@ -6,7 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"backend/constant"
+	"github.com/MelisaDavilaCanales/emailSearch/api/constant"
 )
 
 var (
