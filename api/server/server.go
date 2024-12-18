@@ -48,9 +48,9 @@ func AddRoutes(router chi.Router) {
 		w.Write([]byte("Welcome to the API")) //nolint:errcheck
 	})
 
-	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		http.ServeFile(w, r, "../../frontend/index.html")
+	router.NotFound(func(w http.ResponseWriter, _ *http.Request) {
+		// http.ServeFile(w, r, "/frontend/index.html")
+		w.Write([]byte("404 Not Found")) //nolint:errcheck
 	})
 
 	emails.AddEmailRoutes(router)
