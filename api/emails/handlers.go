@@ -6,16 +6,17 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 
+	"github.com/MelisaDavilaCanales/emailSearch/api/constant"
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 	"github.com/MelisaDavilaCanales/emailSearch/api/storage"
 	"github.com/MelisaDavilaCanales/emailSearch/api/utils"
 )
 
 func GetEmails(w http.ResponseWriter, r *http.Request) {
-	pageNumberStr := r.URL.Query().Get("page")
-	pageSizeStr := r.URL.Query().Get("page_size")
-	searchTerm := r.URL.Query().Get("term")
-	searchfield := r.URL.Query().Get("field")
+	pageNumberStr := r.URL.Query().Get(constant.PAGE_NUMBER_PARAM)
+	pageSizeStr := r.URL.Query().Get(constant.PAGE_SIZE_PARAM)
+	searchTerm := r.URL.Query().Get(constant.SEARCH_TERM_PARAM)
+	searchfield := r.URL.Query().Get(constant.SEARCH_FIELD_PARAM)
 
 	pageNumber, pageSize, resultsFrom, maxResults := utils.ProcessPaginatedParams(pageNumberStr, pageSizeStr)
 
@@ -61,7 +62,7 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetEmail(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	id := chi.URLParam(r, constant.ID_PARAM)
 
 	email, err := storage.GetMail(id)
 	if err != nil {

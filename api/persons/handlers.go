@@ -6,16 +6,17 @@ import (
 
 	"github.com/go-chi/render"
 
+	"github.com/MelisaDavilaCanales/emailSearch/api/constant"
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 	"github.com/MelisaDavilaCanales/emailSearch/api/storage"
 	"github.com/MelisaDavilaCanales/emailSearch/api/utils"
 )
 
 func GetPersons(w http.ResponseWriter, r *http.Request) {
-	pageNumberStr := r.URL.Query().Get("page")
-	pageSizeStr := r.URL.Query().Get("page_size")
-	searchTerm := r.URL.Query().Get("term")
-	searchfield := r.URL.Query().Get("field")
+	pageNumberStr := r.URL.Query().Get(constant.PAGE_NUMBER_PARAM)
+	pageSizeStr := r.URL.Query().Get(constant.PAGE_SIZE_PARAM)
+	searchTerm := r.URL.Query().Get(constant.SEARCH_TERM_PARAM)
+	searchfield := r.URL.Query().Get(constant.SEARCH_FIELD_PARAM)
 
 	page, pageSize, resultsFrom, maxResults := utils.ProcessPaginatedParams(pageNumberStr, pageSizeStr)
 
