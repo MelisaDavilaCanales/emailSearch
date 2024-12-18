@@ -1,11 +1,11 @@
 package server
 
 import (
+	"backend/config"
 	"backend/emails"
 	"backend/persons"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -48,7 +48,7 @@ func NewServer() Server {
 }
 
 func (s *Server) Run() error {
-	port := os.Getenv("API_PORT")
+	port := config.API_PORT
 	fmt.Println("Server running on port:", port)
 
 	return http.ListenAndServe(":"+port, s.Router)

@@ -101,19 +101,3 @@ func GetEmailHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(email)
 }
-
-// if err != nil {
-// 	log.Printf("Error recibido en GetMail: %v", err)
-
-// 	if errors.Is(err, config.ErrIDNotFound) {
-// 		log.Println("ENTRÓ en el bloque de ErrIDNotFound")
-// 		response := map[string]interface{}{
-// 			"message": "Email not found",
-// 			"data":    nil,
-// 		}
-// 		w.Header().Set("Content-Type", "application/json")
-// 		w.WriteHeader(http.StatusOK)
-// 		json.NewEncoder(w).Encode(response)
-// 		return
-// 	}
-// }

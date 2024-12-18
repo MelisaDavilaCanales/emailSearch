@@ -1,12 +1,12 @@
 package storage
 
 import (
+	"backend/config"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {
@@ -73,7 +73,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 func SetHeaders(req *http.Request) {
 
-	req.SetBasicAuth(os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"))
+	req.SetBasicAuth(config.DB_USER, config.DB_PASSWORD)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36")
 
