@@ -29,6 +29,12 @@ type Email struct {
 	Content                 string    `json:"content"`
 }
 
+// EmailData represents the structure of an email and its path.
+type EmailData struct {
+	EmailPath   string
+	EmailStruct *Email
+}
+
 // EmailBatch implements the Batch interface.
 //
 // Fields:

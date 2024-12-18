@@ -31,8 +31,8 @@ func main() {
 	}
 
 	emailPathCh := make(chan string, constant.BUFFER_CAPACITY)
-	emailStructCh1 := make(chan models_wp.Result[*models.Email], constant.BUFFER_CAPACITY)
-	emailStructCh2 := make(chan models_wp.Result[*models.Email], constant.BUFFER_CAPACITY)
+	emailStructCh1 := make(chan models_wp.Result[*models.EmailData], constant.BUFFER_CAPACITY)
+	emailStructCh2 := make(chan models_wp.Result[*models.EmailData], constant.BUFFER_CAPACITY)
 
 	var wgProcessDir, wgProcessEmailFiles, wgProcessAndSendEmails, wgStructurePersons, wgBuildAndSendPersonBulk sync.WaitGroup
 
