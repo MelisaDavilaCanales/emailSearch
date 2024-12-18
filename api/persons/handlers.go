@@ -11,7 +11,7 @@ import (
 	"backend/utils"
 )
 
-func GetPersonsHandler(w http.ResponseWriter, r *http.Request) {
+func GetPersons(w http.ResponseWriter, r *http.Request) {
 	pageStr := r.URL.Query().Get("page")
 	pageSizeStr := r.URL.Query().Get("page_size")
 	term := r.URL.Query().Get("term")

@@ -1,6 +1,9 @@
 package utils
 
-import "strconv"
+import (
+	"math"
+	"strconv"
+)
 
 func ProcessPaginatedParams(pageParam, sizeParam string) (int, int, int, int) {
 	if pageParam == "" {
@@ -29,4 +32,8 @@ func ProcessPaginatedParams(pageParam, sizeParam string) (int, int, int, int) {
 	max := pageSize
 
 	return page, pageSize, from, max
+}
+
+func GetTotalPages(totalRecords, max int) int {
+	return int(math.Ceil(float64(totalRecords) / float64(max)))
 }
