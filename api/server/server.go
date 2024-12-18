@@ -34,18 +34,27 @@ func NewServer() Server {
 		MaxAge:           300,
 	}))
 
+	AddRoutes(router)
+
 	server := Server{
 		Router: router,
 	}
 
+	return server
+}
+
+func AddRoutes(router chi.Router) {
 	router.Get("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("Welcome to the API")) //nolint:errcheck
 	})
 
+	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		http.ServeFile(w, r, "../../frontend/index.html")
+	})
+
 	emails.AddEmailRoutes(router)
 	persons.AddPersonRoutes(router)
-
-	return server
 }
 
 func (s *Server) Run() error {

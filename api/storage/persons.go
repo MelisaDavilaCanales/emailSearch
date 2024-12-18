@@ -12,23 +12,24 @@ import (
 
 // sort=name& =asc
 func GetPersons(term, field string, from, max int) (*models.PersonHitsData, error) {
-	var ResponseData models.PersonSearchResponse
+	var (
+		ResponseData models.PersonSearchResponse
+		query        string
+		url          string
+	)
 
-	var query string
-
-	if term == "" || field == "" {
+	if term == "" {
 		query = buildAllPersonsQuery(from, max)
 	} else {
 		query = buildFilteredPersonsQuery(term, field, from, max)
 	}
 
-	url := config.GET_PERSONS_API_URL
-	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
+	url = config.GET_PERSONS_API_URL
 
+	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
 		return nil, fmt.Errorf("error making request: %s", err)
 	}
-
 	defer res.Body.Close() //nolint:errcheck
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
@@ -53,6 +54,10 @@ func buildAllPersonsQuery(from, max int) string {
 }
 
 func buildFilteredPersonsQuery(term, field string, from, max int) string {
+	if field == "" {
+		field = "_all"
+	}
+
 	return fmt.Sprintf(`
 		{
 		"search_type": "match",

@@ -11,9 +11,12 @@ import (
 )
 
 func GetMail(id string) (*models.Email, *models.ResponseError) {
-	var ResponseData *models.EmailDocResponse
+	var (
+		ResponseData *models.EmailDocResponse
+		url          string
+	)
 
-	url := config.GET_EMAIL_API_URL + id
+	url = config.GET_EMAIL_API_URL + id
 
 	res, err := DoRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -37,23 +40,24 @@ func GetMail(id string) (*models.Email, *models.ResponseError) {
 }
 
 func GetEmails(term, field string, from, max int) (*models.EmailHitsData, error) {
-	var ResponseData models.EmailSearchResponse
+	var (
+		ResponseData models.EmailSearchResponse
+		query        string
+		url          string
+	)
 
-	var query string
-
-	if term == "" || field == "" {
+	if term == "" {
 		query = buildAllEmailsQuery(from, max)
 	} else {
 		query = buildFilteredEmailsQuery(term, field, from, max)
 	}
 
-	url := config.GET_EMAILS_API_URL
+	url = config.GET_EMAILS_API_URL
 
 	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
 		return nil, err
 	}
-
 	defer res.Body.Close() //nolint:errcheck
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
@@ -78,6 +82,10 @@ func buildAllEmailsQuery(from, max int) string {
 }
 
 func buildFilteredEmailsQuery(term, field string, from, max int) string {
+	if field == "" {
+		field = "_all"
+	}
+
 	return fmt.Sprintf(`
 		{
 		"search_type": "match",

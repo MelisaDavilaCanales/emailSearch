@@ -10,6 +10,12 @@ import (
 )
 
 var (
+	// API_PORT is the port where the API will run.
+	API_PORT string
+
+	// API_PORT_DEFAULT is the default port where the API will run.
+	API_PORT_DEFAULT = "8080"
+
 	// DB_USER is the username to connect to the database.
 	DB_USER string
 
@@ -24,9 +30,6 @@ var (
 
 	// GET_PERSONS_API_URL represents the URL to get persons.
 	GET_PERSONS_API_URL string
-
-	// API_PORT is the port where the API will run.
-	API_PORT string
 )
 
 func setGlobalEnvVars() {
@@ -38,7 +41,11 @@ func setGlobalEnvVars() {
 
 	GET_PERSONS_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + constant.PERSON_INDEX_NAME + "/_search"
 
-	API_PORT = os.Getenv("API_PORT")
+	if os.Getenv("API_PORT") == "" {
+		API_PORT = API_PORT_DEFAULT
+	} else {
+		API_PORT = os.Getenv("API_PORT")
+	}
 }
 
 func LoadEnvVars() error {
@@ -57,10 +64,6 @@ func LoadEnvVars() error {
 
 	if os.Getenv("ZINC_SEARCH_API_URL") == "" {
 		return fmt.Errorf("ZINC_SEARCH_API_URL environment variable not set")
-	}
-
-	if os.Getenv("API_PORT") == "" {
-		return fmt.Errorf("API_PORT environment variable not set")
 	}
 
 	setGlobalEnvVars()

@@ -1,6 +1,5 @@
 ###
-GET http://localhost:8080/emails?page_size=500
-
+GET http://localhost:8080/emails
 
 ### Email not found
 GET http://localhost:8080/emails/2dYkolN9QoX
