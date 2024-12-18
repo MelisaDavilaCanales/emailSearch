@@ -19,8 +19,7 @@ func ProcessEmailDirectory(emailPathCh chan string) {
 
 	path := dir + config.EMAIL_DIR_SUBPATH
 	if err = scanDirectory(path, emailPathCh); err != nil {
-		// ############ Camibiar el Log.Fatal
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 }
 

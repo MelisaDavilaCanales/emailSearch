@@ -58,7 +58,6 @@ func buildEmailBatch(idBatch int, email *models.Email) (*models.EmailBatch, erro
 		return &models.EmailBatch{}, fmt.Errorf("failed to add email to batch: %w", err)
 	}
 
-	//################## Que retornar nil o &models.EmailBatch{}
 	batch, ok := myBatch.(*models.EmailBatch)
 	if !ok {
 		return nil, fmt.Errorf("failed to cast batch")

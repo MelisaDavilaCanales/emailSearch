@@ -26,7 +26,6 @@ func init() {
 	Persons = make(map[string]string)
 }
 
-// ################ Retornar puntero
 // StructurePersons is a function that takes an email and processes the data to extract the individuals who send and receive the email.
 // It extracts the email addresses from the From, To, and Cc fields and their corresponding names from the X-From, X-To, and X-Cc fields.
 // The data is cleaned and each person, along with their email, is added to the Persons map.
@@ -73,7 +72,6 @@ func cleanNamePerson(names *[]string) {
 	}
 }
 
-// ################ REFACRORIZAR CODIGO SI ES NECESARIO
 // splitAndClean is a function that splits a string containing multiple email addresses and returns a slice of email addresses,
 // each cleaned of surrounding spaces.
 func splitAndClean(input string) []string {
@@ -89,7 +87,6 @@ func splitAndClean(input string) []string {
 	return values
 }
 
-// ################ REFACRORIZAR CODIGO SI ES NECESARIO
 // processAndAppend is a function that takes two slices and adds them to the Persons map, ensuring via the index that each email is matched with the correct name.
 //
 // Parameters:
