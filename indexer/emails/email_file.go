@@ -113,6 +113,7 @@ func MapHeaderLine(key headerKey, value string, email *models.Email) error {
 		if err != nil {
 			return err
 		}
+
 		email.Date = formatedDate
 	case FROM:
 		email.From = value
