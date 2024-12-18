@@ -44,7 +44,7 @@ func setGlobalEnvVars() {
 	EMAIL_DIR_SUBPATH = "/maildir"
 }
 
-func LoadEnvVars() error {
+func SetEnvVars() error {
 	err := godotenv.Load()
 	if err != nil {
 		return err

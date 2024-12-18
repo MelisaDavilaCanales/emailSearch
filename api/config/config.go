@@ -48,7 +48,7 @@ func setGlobalEnvVars() {
 	}
 }
 
-func LoadEnvVars() error {
+func SetEnvVars() error {
 	err := godotenv.Load()
 	if err != nil {
 		return err
