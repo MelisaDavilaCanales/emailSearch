@@ -43,7 +43,7 @@ func NewServer() Server {
 	return server
 }
 
-func AddRoutes(router chi.Router) {
+func AddRoutes(router *chi.Mux) {
 	router.Get("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("Welcome to the API")) //nolint:errcheck
 	})
