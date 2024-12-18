@@ -2,6 +2,7 @@ package config
 
 import (
 	"backend/constant"
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -43,6 +44,22 @@ func LoadEnvVars() error {
 	err := godotenv.Load()
 	if err != nil {
 		return err
+	}
+
+	if os.Getenv("DB_USER") == "" {
+		return fmt.Errorf("DB_USER environment variable not set")
+	}
+
+	if os.Getenv("DB_PASSWORD") == "" {
+		return fmt.Errorf("DB_PASSWORD environment variable not set")
+	}
+
+	if os.Getenv("ZINC_SEARCH_API_URL") == "" {
+		return fmt.Errorf("ZINC_SEARCH_API_URL environment variable not set")
+	}
+
+	if os.Getenv("API_PORT") == "" {
+		return fmt.Errorf("API_PORT environment variable not set")
 	}
 
 	setGlobalEnvVars()

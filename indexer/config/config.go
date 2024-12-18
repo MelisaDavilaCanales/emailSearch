@@ -46,9 +46,16 @@ func LoadEnvVars() error {
 		return err
 	}
 
-	//Verificar que la variabe DB_USER existe en el entorno
 	if os.Getenv("DB_USER") == "" {
 		return fmt.Errorf("DB_USER environment variable not set")
+	}
+
+	if os.Getenv("DB_PASSWORD") == "" {
+		return fmt.Errorf("DB_PASSWORD environment variable not set")
+	}
+
+	if os.Getenv("ZINC_SEARCH_API_URL") == "" {
+		return fmt.Errorf("ZINC_SEARCH_API_URL environment variable not set")
 	}
 
 	setGlobalEnvVars()

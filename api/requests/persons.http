@@ -8,4 +8,7 @@ GET http://localhost:8080/persons?page=10&page_size=10&term=steve&field=email&so
 GET http://localhost:8080/persons?page=10&page_size=10&term=tumedañaste&field=name&sort=asc
 
 ###
+GET http://localhost:8080/persons?page=10&page_size=10&term=charles&field=name&sort=asc
+
+###
 GET http://localhost:8080/persons?page=10&page_size=10&term=steve&field=_all&sort=asc
