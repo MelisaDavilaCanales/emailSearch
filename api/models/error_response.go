@@ -22,7 +22,7 @@ func NewResponseError(statusCode int, message string, err error) *ResponseError 
 func (re *ResponseError) Error() string {
 	return fmt.Sprintf(`
 	{
-		"status":%v,
+		"status_code":%v,
 		"message":"%v",
 		"error":"%v"
 	}`, re.StatusCode, re.Message, strings.ReplaceAll(re.Err.Error(), "\"", "'"))
