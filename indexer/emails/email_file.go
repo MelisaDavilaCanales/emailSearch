@@ -135,7 +135,7 @@ func ParseHeaderLine(line string, email *models.Email, currentKey *string) {
 func MapHeaderLine(key headerKey, value string, email *models.Email) error {
 	switch key {
 	case MESSAGE_ID:
-		email.MessageID = value
+		email.MessageID = cleanMessageId(value)
 	case DATE:
 		formatedDate, err := convertDateFormat(value)
 		if err != nil {
@@ -178,6 +178,10 @@ func MapHeaderLine(key headerKey, value string, email *models.Email) error {
 	}
 
 	return nil
+}
+
+func cleanMessageId(inputString string) string {
+	return strings.Trim(inputString, "<>")
 }
 
 func convertDateFormat(date string) (time.Time, error) {
