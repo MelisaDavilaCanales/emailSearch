@@ -10,17 +10,17 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 )
 
-func GetPersons(term, field string, from, max int) (*models.PersonHitsData, error) {
+func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
 	var (
 		ResponseData models.PersonSearchResponse
 		query        string
 		url          string
 	)
 
-	if term == "" {
-		query = buildAllPersonsQuery(from, max)
+	if params.SearchTerm == "" {
+		query = buildAllPersonsQuery(params.ResultsFrom, params.MaxResults)
 	} else {
-		query = buildFilteredPersonsQuery(term, field, from, max)
+		query = buildFilteredPersonsQuery(params.SearchTerm, params.SearchField, params.ResultsFrom, params.MaxResults)
 	}
 
 	url = config.GET_PERSONS_API_URL

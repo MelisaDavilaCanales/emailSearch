@@ -20,14 +20,19 @@ var (
 )
 
 func GetEmails(w http.ResponseWriter, r *http.Request) {
-	pageNumberStr := r.URL.Query().Get(constant.PAGE_NUMBER_PARAM)
-	pageSizeStr := r.URL.Query().Get(constant.PAGE_SIZE_PARAM)
-	searchTerm := r.URL.Query().Get(constant.SEARCH_TERM_PARAM)
-	searchfield := r.URL.Query().Get(constant.SEARCH_FIELD_PARAM)
+	queryParams := getQueryParams(r)
+	pagination := processPaginatedParams(queryParams.PageNumber, queryParams.PageSize)
 
-	pageNumber, pageSize, resultsFrom, maxResults := ProcessPaginatedParams(pageNumberStr, pageSizeStr)
+	searchParams := models.SearchParams{
+		SearchTerm:  queryParams.SearchTerm,
+		SearchField: queryParams.SearchField,
+		SortField:   queryParams.SortField,
+		SortOrder:   queryParams.SortOrder,
+		ResultsFrom: pagination.ResultsFrom,
+		MaxResults:  pagination.PageSize,
+	}
 
-	emailHitsData, err := storage.GetEmails(searchTerm, searchfield, resultsFrom, maxResults)
+	emailHitsData, err := storage.GetEmails(searchParams)
 	if err != nil {
 		if errors.As(err, &notFound) {
 			data := models.NewEmailsResponseData(0, 0, 0, nil)
@@ -49,9 +54,9 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	totalPages := GetTotalPages(emailHitsData.Total.Value, maxResults)
-	if pageNumber > totalPages {
-		data := models.NewEmailsResponseData(totalPages, pageNumber, pageSize, nil)
+	totalPages := getTotalPages(emailHitsData.Total.Value, pagination.MaxResults)
+	if pagination.PageNumber > totalPages {
+		data := models.NewEmailsResponseData(totalPages, pagination.PageNumber, pagination.PageSize, nil)
 		response := models.NewResponse("Page out of range", data)
 		render.JSON(w, r, response)
 
@@ -69,7 +74,7 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	data := models.NewEmailsResponseData(totalPages, pageNumber, pageSize, emails)
+	data := models.NewEmailsResponseData(totalPages, pagination.PageNumber, pagination.PageSize, emails)
 	response := models.NewResponse(mssSearchSuccess, data)
 	render.JSON(w, r, response)
 }

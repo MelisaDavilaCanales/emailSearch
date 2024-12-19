@@ -32,17 +32,17 @@ func GetMail(id string) (*models.Email, error) {
 	return &ResponseData.Email, nil
 }
 
-func GetEmails(term, field string, from, max int) (*models.EmailHitsData, error) {
+func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
 	var (
 		ResponseData models.EmailSearchResponse
 		query        string
 		url          string
 	)
 
-	if term == "" {
-		query = buildAllEmailsQuery(from, max)
+	if params.SearchTerm == "" {
+		query = buildAllEmailsQuery(params.ResultsFrom, params.MaxResults)
 	} else {
-		query = buildFilteredEmailsQuery(term, field, from, max)
+		query = buildFilteredEmailsQuery(params.SearchTerm, params.SearchField, params.ResultsFrom, params.MaxResults)
 	}
 
 	url = config.GET_EMAILS_API_URL

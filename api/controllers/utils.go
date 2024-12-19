@@ -2,12 +2,34 @@ package controllers
 
 import (
 	"math"
+	"net/http"
 	"strconv"
+
+	"github.com/MelisaDavilaCanales/emailSearch/api/constant"
+	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 )
+
+func getQueryParams(r *http.Request) models.QueryParams {
+	pageNumberStr := r.URL.Query().Get(constant.PAGE_NUMBER_PARAM)
+	pageSizeStr := r.URL.Query().Get(constant.PAGE_SIZE_PARAM)
+	searchTerm := r.URL.Query().Get(constant.SEARCH_TERM_PARAM)
+	searchfield := r.URL.Query().Get(constant.SEARCH_FIELD_PARAM)
+	sortField := r.URL.Query().Get(constant.SORT_FIELD_PARAM)
+	sortOrder := r.URL.Query().Get(constant.SORT_ORDER_PARAM)
+
+	return models.QueryParams{
+		PageNumber:  pageNumberStr,
+		PageSize:    pageSizeStr,
+		SearchTerm:  searchTerm,
+		SearchField: searchfield,
+		SortField:   sortField,
+		SortOrder:   sortOrder,
+	}
+}
 
 // ProcessPaginatedParams processes pagination parameters (page and size),
 // setting limits on values if they are invalid or out of range.
-func ProcessPaginatedParams(pageParam, sizeParam string) (int, int, int, int) {
+func processPaginatedParams(pageParam, sizeParam string) models.PaginationParams {
 	if pageParam == "" {
 		pageParam = "1"
 	}
@@ -33,10 +55,15 @@ func ProcessPaginatedParams(pageParam, sizeParam string) (int, int, int, int) {
 	from := (page - 1) * pageSize
 	max := pageSize
 
-	return page, pageSize, from, max
+	return models.PaginationParams{
+		PageNumber:  page,
+		PageSize:    pageSize,
+		ResultsFrom: from,
+		MaxResults:  max,
+	}
 }
 
 // GetTotalPages calculates the total number of pages based on total records and page size.
-func GetTotalPages(totalRecords, max int) int {
+func getTotalPages(totalRecords, max int) int {
 	return int(math.Ceil(float64(totalRecords) / float64(max)))
 }

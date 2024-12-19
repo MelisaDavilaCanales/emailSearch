@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-chi/render"
 
-	"github.com/MelisaDavilaCanales/emailSearch/api/constant"
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 	"github.com/MelisaDavilaCanales/emailSearch/api/storage"
 )
@@ -18,14 +17,19 @@ var (
 )
 
 func GetPersons(w http.ResponseWriter, r *http.Request) {
-	pageNumberStr := r.URL.Query().Get(constant.PAGE_NUMBER_PARAM)
-	pageSizeStr := r.URL.Query().Get(constant.PAGE_SIZE_PARAM)
-	searchTerm := r.URL.Query().Get(constant.SEARCH_TERM_PARAM)
-	searchfield := r.URL.Query().Get(constant.SEARCH_FIELD_PARAM)
+	queryParams := getQueryParams(r)
+	pagination := processPaginatedParams(queryParams.PageNumber, queryParams.PageSize)
 
-	page, pageSize, resultsFrom, maxResults := ProcessPaginatedParams(pageNumberStr, pageSizeStr)
+	searchParams := models.SearchParams{
+		SearchTerm:  queryParams.SearchTerm,
+		SearchField: queryParams.SearchField,
+		SortField:   queryParams.SortField,
+		SortOrder:   queryParams.SortOrder,
+		ResultsFrom: pagination.ResultsFrom,
+		MaxResults:  pagination.PageSize,
+	}
 
-	personHitsData, err := storage.GetPersons(searchTerm, searchfield, resultsFrom, maxResults)
+	personHitsData, err := storage.GetPersons(searchParams)
 	if err != nil {
 		if errors.As(err, &notFoundErr) {
 			data := models.NewPersonResponseData(0, 0, 0, nil)
@@ -44,9 +48,9 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	totalPages := GetTotalPages(personHitsData.Total.Value, maxResults)
-	if page > totalPages {
-		data := models.NewPersonResponseData(totalPages, page, pageSize, nil)
+	totalPages := getTotalPages(personHitsData.Total.Value, pagination.MaxResults)
+	if pagination.PageNumber > totalPages {
+		data := models.NewPersonResponseData(totalPages, pagination.PageNumber, pagination.PageSize, nil)
 		response := models.NewResponse("Page out of range", data)
 		render.JSON(w, r, response)
 
@@ -62,7 +66,7 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	data := models.NewPersonResponseData(totalPages, page, pageSize, persons)
+	data := models.NewPersonResponseData(totalPages, pagination.PageNumber, pagination.PageSize, persons)
 	response := models.NewResponse(mssgSearchSuccess, data)
 	render.JSON(w, r, response)
 }

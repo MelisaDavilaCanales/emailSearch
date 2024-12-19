@@ -16,4 +16,10 @@ const (
 
 	// SEARCH_FIELD_PARAM is the name of the parameter used to identify the search field in the API.
 	SEARCH_FIELD_PARAM = "field"
+
+	// SORT_FIELD_PARAM is the name of the parameter used to identify the sort field in the API.
+	SORT_FIELD_PARAM = "sort"
+
+	// SORT_ORDER_PARAM is the name of the parameter used to identify the type of sort in the API.
+	SORT_ORDER_PARAM = "order"
 )
