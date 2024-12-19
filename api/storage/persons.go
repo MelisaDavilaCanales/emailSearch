@@ -11,19 +11,12 @@ import (
 )
 
 func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
-	var (
-		ResponseData models.PersonSearchResponse
-		query        string
-		url          string
-	)
+	var ResponseData models.PersonSearchResponse
 
-	if params.SearchTerm == "" {
-		query = buildAllPersonsQuery(params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
-	} else {
-		query = buildFilteredPersonsQuery(params.SearchTerm, params.SearchField, params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
-	}
+	query := buildPersonQuery(params)
+	fmt.Println(query)
 
-	url = config.GET_PERSONS_API_URL
+	url := config.GET_PERSONS_API_URL
 
 	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
@@ -39,44 +32,34 @@ func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
 	return &ResponseData.PersonHitsData, nil
 }
 
-func buildAllPersonsQuery(sortField, sortOrder string, from, max int) string {
+func buildPersonQuery(params models.SearchParams) string {
+	sort := buildSort(params.SortField, params.SortOrder, "name", "")
 
-	sort := buildSort(sortField, sortOrder)
-
-	query := fmt.Sprintf(`
+	if params.SearchTerm == "" {
+		return fmt.Sprintf(`
 		{
 			"search_type": "matchall",
 			"sort_fields": ["%s"],
 			"from": %d,
 			"max_results": %d,
 			"_source": []
-		}`, sort, from, max)
-
-	fmt.Println(query)
-	return query
-
-}
-
-func buildFilteredPersonsQuery(searchTerm, searchField, sortField, sortOrder string, from, max int) string {
-	if searchField == "" {
-		searchField = "_all"
+		}`, sort, params.ResultsFrom, params.MaxResults)
 	}
 
-	sort := buildSort(sortField, sortOrder)
+	if params.SearchField == "" {
+		params.SearchField = "_all"
+	}
 
-	query := fmt.Sprintf(`
+	return fmt.Sprintf(`
 		{
-		"search_type": "match",
-		"query": {
-			"term": "%v",
-			"field":"%v"
-		},
-		"sort_fields": ["%s"],
-		"from": %d,
-		"max_results": %d,
-		"_source": []
-	}`, searchTerm, searchField, sort, from, max)
-
-	fmt.Println(query)
-	return query
+			"search_type": "match",
+			"query": {
+				"term": "%v",
+				"field":"%v"
+			},
+			"sort_fields": ["%s"],
+			"from": %d,
+			"max_results": %d,
+			"_source": []
+		}`, params.SearchTerm, params.SearchField, sort, params.ResultsFrom, params.MaxResults)
 }

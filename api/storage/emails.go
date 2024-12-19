@@ -33,19 +33,12 @@ func GetMail(id string) (*models.Email, error) {
 }
 
 func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
-	var (
-		ResponseData models.EmailSearchResponse
-		query        string
-		url          string
-	)
+	var ResponseData models.EmailSearchResponse
 
-	if params.SearchTerm == "" {
-		query = buildAllEmailsQuery(params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
-	} else {
-		query = buildFilteredEmailsQuery(params.SearchTerm, params.SearchField, params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
-	}
+	url := config.GET_EMAILS_API_URL
 
-	url = config.GET_EMAILS_API_URL
+	query := buildEmailQuery(params)
+	fmt.Println(query)
 
 	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
@@ -61,47 +54,34 @@ func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
 	return &ResponseData.EmailHitsData, nil
 }
 
-func buildAllEmailsQuery(sortField, sortOrder string, from, max int) string {
-	sort := buildSort(sortField, sortOrder)
+func buildEmailQuery(params models.SearchParams) string {
+	sort := buildSort(params.SortField, params.SortOrder, "date", "-")
 
-	query := fmt.Sprintf(`
+	if params.SearchTerm == "" {
+		return fmt.Sprintf(`
 		{
 			"search_type": "matchall",
 			"sort_fields": ["%s"],
 			"from": %d,
 			"max_results": %d,
-			"_source": [
-			"from", "to", "date","subject"
-			]
-		}`, sort, from, max)
-
-	fmt.Println(query)
-
-	return query
-}
-
-func buildFilteredEmailsQuery(searchTerm, searchField, sortField, sortOrder string, from, max int) string {
-	if searchField == "" {
-		searchField = "_all"
+			"_source": [ "to", "from","date", "subject"]
+		}`, sort, params.ResultsFrom, params.MaxResults)
 	}
 
-	sort := buildSort(sortField, sortOrder)
+	if params.SearchField == "" {
+		params.SearchField = "_all"
+	}
 
-	query := fmt.Sprintf(`
-	{
-	"search_type": "match",
-	"query": {
-		"term": "%s",
-		"field":"%s"
-	},
-	"sort_fields": ["%s"],
-	"from": %d,
-	"max_results": %d,
-	"_source": [
-		 "from", "to", "date","subject"
-	]
-}`, searchTerm, searchField, sort, from, max)
-
-	fmt.Println(query)
-	return query
+	return fmt.Sprintf(`
+		{
+			"search_type": "match",
+			"query": {
+				"term": "%s",
+				"field": "%s"
+			},
+			"sort_fields": ["%s"],
+			"from": %d,
+			"max_results": %d,
+			"_source": [ "to", "from","date", "subject"]
+		}`, params.SearchTerm, params.SearchField, sort, params.ResultsFrom, params.MaxResults)
 }
