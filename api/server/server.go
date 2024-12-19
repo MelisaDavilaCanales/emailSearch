@@ -10,8 +10,6 @@ import (
 	"github.com/go-chi/render"
 
 	"github.com/MelisaDavilaCanales/emailSearch/api/config"
-	"github.com/MelisaDavilaCanales/emailSearch/api/emails"
-	"github.com/MelisaDavilaCanales/emailSearch/api/persons"
 )
 
 type Server struct {
@@ -53,8 +51,8 @@ func AddRoutes(router *chi.Mux) {
 		w.Write([]byte("404 Not Found")) //nolint:errcheck
 	})
 
-	emails.AddEmailRoutes(router)
-	persons.AddPersonRoutes(router)
+	AddEmailRoutes(router)
+	AddPersonRoutes(router)
 }
 
 func (s *Server) Run() error {

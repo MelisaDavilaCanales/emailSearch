@@ -36,10 +36,11 @@ func setGlobalEnvVars() {
 	DB_USER = os.Getenv("DB_USER")
 	DB_PASSWORD = os.Getenv("DB_PASSWORD")
 
-	GET_EMAILS_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + constant.EMAIL_INDEX_NAME + "/_search"
-	GET_EMAIL_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + constant.EMAIL_INDEX_NAME + "/_doc/"
+	API_URL := os.Getenv("ZINC_SEARCH_API_URL")
 
-	GET_PERSONS_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + constant.PERSON_INDEX_NAME + "/_search"
+	GET_EMAILS_API_URL = API_URL + constant.EMAIL_INDEX_NAME + "/_search"
+	GET_EMAIL_API_URL = API_URL + constant.EMAIL_INDEX_NAME + "/_doc/"
+	GET_PERSONS_API_URL = API_URL + constant.PERSON_INDEX_NAME + "/_search"
 
 	if os.Getenv("API_PORT") == "" {
 		API_PORT = API_PORT_DEFAULT

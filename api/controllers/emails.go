@@ -1,4 +1,4 @@
-package emails
+package controllers
 
 import (
 	"errors"
@@ -10,7 +10,6 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/constant"
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 	"github.com/MelisaDavilaCanales/emailSearch/api/storage"
-	"github.com/MelisaDavilaCanales/emailSearch/api/utils"
 )
 
 var (
@@ -26,7 +25,7 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 	searchTerm := r.URL.Query().Get(constant.SEARCH_TERM_PARAM)
 	searchfield := r.URL.Query().Get(constant.SEARCH_FIELD_PARAM)
 
-	pageNumber, pageSize, resultsFrom, maxResults := utils.ProcessPaginatedParams(pageNumberStr, pageSizeStr)
+	pageNumber, pageSize, resultsFrom, maxResults := ProcessPaginatedParams(pageNumberStr, pageSizeStr)
 
 	emailHitsData, err := storage.GetEmails(searchTerm, searchfield, resultsFrom, maxResults)
 	if err != nil {
@@ -50,7 +49,7 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	totalPages := utils.GetTotalPages(emailHitsData.Total.Value, maxResults)
+	totalPages := GetTotalPages(emailHitsData.Total.Value, maxResults)
 	if pageNumber > totalPages {
 		data := models.NewEmailsResponseData(totalPages, pageNumber, pageSize, nil)
 		response := models.NewResponse("Page out of range", data)
