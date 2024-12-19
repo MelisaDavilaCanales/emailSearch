@@ -34,7 +34,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 		return resp, fmt.Errorf("reading response body: %s", readErr)
 	}
 
-	// printLogs(resp, bodyContent)
+	// PrintLogs(resp, bodyContent)
 
 	resp.Body = io.NopCloser(&bodyBuffer)
 
@@ -60,7 +60,7 @@ func setHeaders(req *http.Request) {
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36")
 }
 
-func printLogs(resp *http.Response, bodyContent []byte) {
+func PrintLogs(resp *http.Response, bodyContent []byte) {
 	fmt.Println("=========================================")
 	fmt.Println("Response StatusCode:", resp.StatusCode)
 
