@@ -1,3 +1,9 @@
+### 
+GET http://localhost:8080/emails?page=1&page_size=10&sort=from&order=asc
+
+
+
+
 ###
 GET http://localhost:8080/emails
 
@@ -9,11 +15,14 @@ GET http://localhost:8080/emails/2dYkolN9QoX
 GET http://localhost:8080/emails/2e4GGzyUeyc
 
 
-### EMAILS EMPTY
-GET http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from
 
-### EMAILS EMPTY
+
+
+### EMAILS 
+GET http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from&sort=from&order=asc
+
+### EMAILS 
 GET http://localhost:8080/emails?page=45&page_size=100&term=charles&field=from&sort=asc
 
-### EMAILS EMPTY
+### EMAILS 
 GET http://localhost:8080/emails

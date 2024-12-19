@@ -7,7 +7,7 @@ GET http://localhost:8080/persons?page=25&page_size=10&term=steve&field=email&so
 ###
 GET http://localhost:8080/persons?page=5&page_size=10&term=steve&field=email&sort=asc
 
-###
+### Persons not found
 GET http://localhost:8080/persons?page=10&page_size=10&term=tumedañaste&field=name&sort=asc
 
 ###

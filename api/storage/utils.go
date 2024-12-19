@@ -34,7 +34,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 		return resp, fmt.Errorf("reading response body: %s", readErr)
 	}
 
-	printLogs(resp, bodyContent)
+	// printLogs(resp, bodyContent)
 
 	resp.Body = io.NopCloser(&bodyBuffer)
 
@@ -80,13 +80,13 @@ func printLogs(resp *http.Response, bodyContent []byte) {
 func buildSort(sortField, sortOrder string) string {
 
 	if sortField == "" {
-		sortField = "date"
+		sortField = "@timestamp"
 	}
 
 	if sortOrder == "desc" || sortOrder == "" {
 		sortOrder = "-"
 	} else {
-		sortOrder = "-"
+		sortOrder = ""
 	}
 
 	sort := fmt.Sprintf(`%s%s`, sortOrder, sortField)
