@@ -62,7 +62,6 @@ func setHeaders(req *http.Request) {
 
 func printLogs(resp *http.Response, bodyContent []byte) {
 	fmt.Println("=========================================")
-	fmt.Println("Response Status:", resp.Status)
 	fmt.Println("Response StatusCode:", resp.StatusCode)
 
 	var jsonBody interface{}

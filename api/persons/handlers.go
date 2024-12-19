@@ -2,7 +2,6 @@ package persons
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/render"
@@ -62,7 +61,6 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 			Name:  personHit.Person.Name,
 			Email: personHit.Person.Email,
 		}
-		fmt.Println(persons[i].Name)
 	}
 
 	data := models.NewPersonResponseData(totalPages, page, pageSize, persons)
