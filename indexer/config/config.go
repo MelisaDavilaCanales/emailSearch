@@ -27,6 +27,9 @@ var (
 	// CHECK_INDEX_EXISTS_API_URL represents the URL to check if an index exists.
 	CHECK_INDEX_EXISTS_API_URL string
 
+	// TRY_CONNECTION_API_URL represents the URL to try to connect to the database.
+	TRY_CONNECTION_API_URL string
+
 	// EMAIL_DIR_SUBPATH is the subpath to the email directory.
 	EMAIL_DIR_SUBPATH string
 )
@@ -40,6 +43,7 @@ func setGlobalEnvVars() {
 	SEND_BULK_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "_bulkv2"
 	CREATE_INDEX_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index"
 	CHECK_INDEX_EXISTS_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index/"
+	TRY_CONNECTION_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index/"
 
 	EMAIL_DIR_SUBPATH = "/maildir"
 }

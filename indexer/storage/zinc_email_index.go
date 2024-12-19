@@ -10,7 +10,13 @@ import (
 // CreateEmailIndex creates an index for storing emails.
 func CreateEmailIndex() error {
 	indexDataStr := buildEmailIndex()
-	return CreateIndex(constant.EMAIL_INDEX_NAME, indexDataStr)
+
+	err := CreateIndex(constant.EMAIL_INDEX_NAME, indexDataStr)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func buildEmailIndex() string {

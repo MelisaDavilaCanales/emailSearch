@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -8,6 +10,15 @@ import (
 
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
 )
+
+func TryConnectionAPI() error {
+	_, err := DoRequest(http.MethodGet, config.TRY_CONNECTION_API_URL, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // DoRequest sends an HTTP request to the specified URL with the specified method and data.
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {
@@ -24,7 +35,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 	res, err := client.Do(req)
 	if err != nil {
-		return res, err
+		return nil, err
 	}
 
 	return res, nil
@@ -43,7 +54,7 @@ func CreateIndex(indexName, indexDataStr string) error {
 
 	res, err := DoRequest(http.MethodPost, url, indexData)
 	if err != nil {
-		return fmt.Errorf("create index request status %s: %w", res.Status, err)
+		return fmt.Errorf("create index request %w", err)
 	}
 
 	if res.StatusCode != http.StatusCreated {
@@ -59,4 +70,30 @@ func checkIndexExists(indexName string) bool {
 	_, err := DoRequest(http.MethodGet, url, nil)
 
 	return err == nil
+}
+
+// PrintLogs prints the response logs, can be used for debugging.
+func PrintLogs(resp *http.Response) {
+	var bodyBuffer bytes.Buffer
+	tee := io.TeeReader(resp.Body, &bodyBuffer)
+
+	bodyContent, readErr := io.ReadAll(tee)
+	if readErr != nil {
+		fmt.Println("read response body %w", readErr)
+	}
+
+	fmt.Println("=========================================")
+	fmt.Println("Response StatusCode:", resp.StatusCode)
+
+	var jsonBody interface{}
+	if jsonErr := json.Unmarshal(bodyContent, &jsonBody); jsonErr == nil {
+		prettyJSON, err := json.MarshalIndent(jsonBody, "", "  ")
+		if err != nil {
+			fmt.Println("Response Body (as string):", string(bodyContent))
+		}
+
+		fmt.Println("Response Body (as JSON):", string(prettyJSON))
+	}
+
+	fmt.Println("=========================================")
 }

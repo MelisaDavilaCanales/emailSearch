@@ -22,6 +22,10 @@ func main() {
 		log.Fatal("Error loading .env file: ", err)
 	}
 
+	if err := storage.TryConnectionAPI(); err != nil {
+		log.Fatal("Error connecting to database: ", err)
+	}
+
 	if err := storage.CreateEmailIndex(); err != nil {
 		fmt.Println("Error creating email index: ", err)
 	}
