@@ -40,9 +40,9 @@ func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
 	)
 
 	if params.SearchTerm == "" {
-		query = buildAllEmailsQuery(params.ResultsFrom, params.MaxResults)
+		query = buildAllEmailsQuery(params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
 	} else {
-		query = buildFilteredEmailsQuery(params.SearchTerm, params.SearchField, params.ResultsFrom, params.MaxResults)
+		query = buildFilteredEmailsQuery(params.SearchTerm, params.SearchField, params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
 	}
 
 	url = config.GET_EMAILS_API_URL
@@ -61,36 +61,45 @@ func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
 	return &ResponseData.EmailHitsData, nil
 }
 
-func buildAllEmailsQuery(from, max int) string {
-	return fmt.Sprintf(`
+func buildAllEmailsQuery(sortField, sortOrder string, from, max int) string {
+
+	sort := buildSort(sortField, sortOrder)
+
+	query := fmt.Sprintf(`
 		{
 			"search_type": "matchall",
-			"sort_fields": ["-date"],
-			"from": %v,
-			"max_results": %v,
+			"sort_fields": ["%s"],
+			"from": %d,
+			"max_results": %d,
 			"_source": [
-			"to", "from","date", "subject", "message_id"
+			"from", "to", "date","subject" 
 			]
-		}`, from, max)
+		}`, sort, from, max)
+
+	fmt.Println(query)
+
+	return query
 }
 
-func buildFilteredEmailsQuery(term, field string, from, max int) string {
-	if field == "" {
-		field = "_all"
+func buildFilteredEmailsQuery(searchTerm, searchField, sortField, sortOrder string, from, max int) string {
+	if searchField == "" {
+		searchField = "_all"
 	}
+
+	sort := buildSort(sortField, sortOrder)
 
 	return fmt.Sprintf(`
 		{
 		"search_type": "match",
 		"query": {
-			"term": "%v",
-			"field":"%v"
+			"term": "%s",
+			"field":"%s"
 		},
-		"sort_fields": ["-date"],
-		"from": %v,
-		"max_results": %v,
+		"sort_fields": ["%s"],
+		"from": %d,
+		"max_results": %d,
 		"_source": [
 			 "from", "to", "date","subject", "message_id"
 		]
-	}`, term, field, from, max)
+	}`, searchTerm, searchField, sort, from, max)
 }

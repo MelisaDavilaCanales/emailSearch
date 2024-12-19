@@ -10,7 +10,7 @@ GET http://localhost:8080/emails/2e4GGzyUeyc
 
 
 ### EMAILS EMPTY
-GET http://localhost:8080/emails?page=1&page_size=100&term=charles&field=from&sort=asc
+GET http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from
 
 ### EMAILS EMPTY
 GET http://localhost:8080/emails?page=45&page_size=100&term=charles&field=from&sort=asc

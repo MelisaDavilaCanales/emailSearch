@@ -18,9 +18,9 @@ func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
 	)
 
 	if params.SearchTerm == "" {
-		query = buildAllPersonsQuery(params.ResultsFrom, params.MaxResults)
+		query = buildAllPersonsQuery(params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
 	} else {
-		query = buildFilteredPersonsQuery(params.SearchTerm, params.SearchField, params.ResultsFrom, params.MaxResults)
+		query = buildFilteredPersonsQuery(params.SearchTerm, params.SearchField, params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
 	}
 
 	url = config.GET_PERSONS_API_URL
@@ -39,23 +39,35 @@ func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
 	return &ResponseData.PersonHitsData, nil
 }
 
-func buildAllPersonsQuery(from, max int) string {
+func buildAllPersonsQuery(sortField, sortOrder string, from, max int) string {
+	var sort string
+
+	if sortField == "" {
+		sortField = "date"
+	}
+
+	if sortOrder == "desc" || sortOrder == "" {
+		sortOrder = "-"
+	} else {
+		sortOrder = ""
+	}
+
 	return fmt.Sprintf(`
 		{
 			"search_type": "matchall",
-			"sort_fields": ["-date"],
+			"sort_fields": [%s],
 			"from": %v,
 			"max_results": %v,
-			"_source": [
-			"name", "email"
-			]
-		}`, from, max)
+			"_source": []
+		}`, sort, from, max)
 }
 
-func buildFilteredPersonsQuery(term, field string, from, max int) string {
-	if field == "" {
-		field = "_all"
+func buildFilteredPersonsQuery(searchTerm, searchField, sortField, sortOrder string, from, max int) string {
+	if searchField == "" {
+		searchField = "_all"
 	}
+
+	sort := buildSort(sortField, sortOrder)
 
 	return fmt.Sprintf(`
 		{
@@ -64,11 +76,9 @@ func buildFilteredPersonsQuery(term, field string, from, max int) string {
 			"term": "%v",
 			"field":"%v"
 		},
-		"sort_fields": ["-date"],
-		"from": %v,
-		"max_results": %v,
-		"_source": [
-			 "name", "email"
-		]
-	}`, term, field, from, max)
+		"sort_fields": ["%s"],
+		"from": %d,
+		"max_results": %d,
+		"_source": []
+	}`, searchTerm, searchField, sort, from, max)
 }

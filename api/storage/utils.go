@@ -76,3 +76,20 @@ func printLogs(resp *http.Response, bodyContent []byte) {
 
 	fmt.Println("=========================================")
 }
+
+func buildSort(sortField, sortOrder string) string {
+
+	if sortField == "" {
+		sortField = "date"
+	}
+
+	if sortOrder == "desc" || sortOrder == "" {
+		sortOrder = "-"
+	} else {
+		sortOrder = "-"
+	}
+
+	sort := fmt.Sprintf(`%s%s`, sortOrder, sortField)
+
+	return sort
+}
