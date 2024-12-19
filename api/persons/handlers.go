@@ -1,6 +1,7 @@
 package persons
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -10,6 +11,12 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 	"github.com/MelisaDavilaCanales/emailSearch/api/storage"
 	"github.com/MelisaDavilaCanales/emailSearch/api/utils"
+)
+
+var (
+	notFound            *models.NotFoundError
+	mssgPersonsNotFound = "Persons not found"
+	mssSearchSuccess    = "Search successfully"
 )
 
 func GetPersons(w http.ResponseWriter, r *http.Request) {
@@ -22,17 +29,18 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 
 	personHitsData, err := storage.GetPersons(searchTerm, searchfield, resultsFrom, maxResults)
 	if err != nil {
-		responseError := models.NewResponseError(http.StatusInternalServerError, "Error searching persons", err)
-		http.Error(w, responseError.Error(), responseError.StatusCode)
+		if errors.As(err, &notFound) {
+			data := models.NewPersonResponseData(0, 0, 0, nil)
+			response := models.NewResponse(mssgPersonsNotFound, data)
+			render.JSON(w, r, response)
+
+			return
+		}
 	}
 
-	if personHitsData == nil {
-		return
-	}
-
-	if personHitsData.Total.Value == 0 {
-		data := models.NewPersonResponseData(0, 0, 0, []models.Person{})
-		response := models.NewResponse("No persons found", data)
+	if personHitsData == nil || personHitsData.Total.Value == 0 {
+		data := models.NewPersonResponseData(0, 0, 0, nil)
+		response := models.NewResponse(mssgPersonsNotFound, data)
 		render.JSON(w, r, response)
 
 		return
@@ -40,7 +48,7 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 
 	totalPages := utils.GetTotalPages(personHitsData.Total.Value, maxResults)
 	if page > totalPages {
-		data := models.NewEmailsResponseData(totalPages, page, pageSize, []models.EmailSummary{})
+		data := models.NewPersonResponseData(totalPages, page, pageSize, nil)
 		response := models.NewResponse("Page out of range", data)
 		render.JSON(w, r, response)
 
@@ -58,6 +66,6 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := models.NewPersonResponseData(totalPages, page, pageSize, persons)
-	response := models.NewResponse("Persons found successfully", data)
+	response := models.NewResponse(mssSearchSuccess, data)
 	render.JSON(w, r, response)
 }

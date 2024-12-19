@@ -10,7 +10,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 )
 
-func GetMail(id string) (*models.Email, *models.ResponseError) {
+func GetMail(id string) (*models.Email, error) {
 	var (
 		ResponseData *models.EmailDocResponse
 		url          string
@@ -20,20 +20,13 @@ func GetMail(id string) (*models.Email, *models.ResponseError) {
 
 	res, err := DoRequest(http.MethodGet, url, nil)
 	if err != nil {
-		errResponse := models.NewResponseError(http.StatusNotFound, "Error making request", err)
-		return nil, errResponse
-	}
-
-	if res.StatusCode == 400 {
-		errResponse := models.NewResponseError(http.StatusNotFound, "Error getting email", fmt.Errorf("id no found %s", id))
-		return nil, errResponse
+		return nil, err
 	}
 	defer res.Body.Close() //nolint:errcheck
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		errResponse := models.NewResponseError(http.StatusInternalServerError, "Error decoding response body", err)
-		return nil, errResponse
+		return nil, fmt.Errorf("%s: decoding response body", err)
 	}
 
 	return &ResponseData.Email, nil
@@ -62,7 +55,7 @@ func GetEmails(term, field string, from, max int) (*models.EmailHitsData, error)
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, fmt.Errorf("error decoding response body: %s", err)
+		return nil, fmt.Errorf("%s: decoding response body", err)
 	}
 
 	return &ResponseData.EmailHitsData, nil

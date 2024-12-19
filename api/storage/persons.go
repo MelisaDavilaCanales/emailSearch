@@ -27,13 +27,13 @@ func GetPersons(term, field string, from, max int) (*models.PersonHitsData, erro
 
 	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
-		return nil, fmt.Errorf("error making request: %s", err)
+		return nil, err
 	}
 	defer res.Body.Close() //nolint:errcheck
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, fmt.Errorf("error decoding response body: %s", err)
+		return nil, fmt.Errorf("decoding response body: %s", err)
 	}
 
 	return &ResponseData.PersonHitsData, nil

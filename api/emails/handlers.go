@@ -1,6 +1,7 @@
 package emails
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -10,6 +11,13 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 	"github.com/MelisaDavilaCanales/emailSearch/api/storage"
 	"github.com/MelisaDavilaCanales/emailSearch/api/utils"
+)
+
+var (
+	notFound           *models.NotFoundError
+	mssgEmailNotFound  = "Email not found"
+	mssgEmailsNotFound = "Emails not found"
+	mssSearchSuccess   = "Search successfully"
 )
 
 func GetEmails(w http.ResponseWriter, r *http.Request) {
@@ -22,15 +30,21 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 
 	emailHitsData, err := storage.GetEmails(searchTerm, searchfield, resultsFrom, maxResults)
 	if err != nil {
-		responseError := models.NewResponseError(http.StatusInternalServerError, "Error searching emails", err)
-		http.Error(w, responseError.Error(), responseError.StatusCode)
+		if errors.As(err, &notFound) {
+			data := models.NewEmailsResponseData(0, 0, 0, nil)
+			response := models.NewResponse(mssgEmailsNotFound, data)
+			render.JSON(w, r, response)
 
-		return
+			return
+		}
+
+		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting emails", err)
+		http.Error(w, responseError.Error(), responseError.StatusCode)
 	}
 
 	if emailHitsData == nil || emailHitsData.Total.Value == 0 {
-		data := models.NewEmailsResponseData(0, 0, 0, []models.EmailSummary{})
-		response := models.NewResponse("No emails found", data)
+		data := models.NewEmailsResponseData(0, 0, 0, nil)
+		response := models.NewResponse(mssgEmailsNotFound, data)
 		render.JSON(w, r, response)
 
 		return
@@ -38,7 +52,7 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 
 	totalPages := utils.GetTotalPages(emailHitsData.Total.Value, maxResults)
 	if pageNumber > totalPages {
-		data := models.NewEmailsResponseData(totalPages, pageNumber, pageSize, []models.EmailSummary{})
+		data := models.NewEmailsResponseData(totalPages, pageNumber, pageSize, nil)
 		response := models.NewResponse("Page out of range", data)
 		render.JSON(w, r, response)
 
@@ -57,7 +71,7 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := models.NewEmailsResponseData(totalPages, pageNumber, pageSize, emails)
-	response := models.NewResponse("Emails found successfully", data)
+	response := models.NewResponse(mssSearchSuccess, data)
 	render.JSON(w, r, response)
 }
 
@@ -66,8 +80,8 @@ func GetEmail(w http.ResponseWriter, r *http.Request) {
 
 	email, err := storage.GetMail(id)
 	if err != nil {
-		if err.StatusCode == http.StatusNotFound {
-			response := models.NewResponse("Email not found", nil)
+		if errors.As(err, &notFound) {
+			response := models.NewResponse(mssgEmailNotFound, nil)
 			render.JSON(w, r, response)
 
 			return
@@ -79,6 +93,13 @@ func GetEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := models.NewResponse("Email found successfully", email)
+	if email == nil {
+		response := models.NewResponse(mssgEmailNotFound, nil)
+		render.JSON(w, r, response)
+
+		return
+	}
+
+	response := models.NewResponse(mssSearchSuccess, email)
 	render.JSON(w, r, response)
 }
