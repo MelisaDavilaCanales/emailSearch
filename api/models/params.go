@@ -1,6 +1,6 @@
 package models
 
-// QueryParams contains the parameters for a search query
+// QueryParams contains the parameters received from the query string in the URL
 type QueryParams struct {
 	PageNumber  string
 	PageSize    string
@@ -18,6 +18,7 @@ type PaginationParams struct {
 	MaxResults  int
 }
 
+// SearchParams contains the parameters for searching data in the database
 type SearchParams struct {
 	SearchTerm  string
 	SearchField string

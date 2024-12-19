@@ -12,11 +12,16 @@ import (
 )
 
 func TryConnectionAPI() error {
-	_, err := DoRequest(http.MethodGet, config.TRY_CONNECTION_API_URL, nil)
+	res, err := DoRequest(http.MethodGet, config.TRY_CONNECTION_API_URL, nil)
 	if err != nil {
 		return err
 	}
 
+	if res.StatusCode != http.StatusOK {
+		return fmt.Errorf("try connection status: %s", res.Status)
+	}
+
+	fmt.Println("Connection to database successful.")
 	return nil
 }
 
@@ -38,14 +43,16 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 		return nil, err
 	}
 
+	// PrintLogs(res)
+
 	return res, nil
 }
 
 // CreateIndex creates an index with the specified name and data.
-func CreateIndex(indexName, indexDataStr string) error {
+func CreateIndex(indexName, indexDataStr string) (string, error) {
 	isExist := checkIndexExists(indexName)
 	if isExist {
-		return nil
+		return fmt.Sprintf("Index %s already exists", indexName), nil
 	}
 
 	url := config.CREATE_INDEX_API_URL
@@ -54,22 +61,22 @@ func CreateIndex(indexName, indexDataStr string) error {
 
 	res, err := DoRequest(http.MethodPost, url, indexData)
 	if err != nil {
-		return fmt.Errorf("create index request %w", err)
-	}
-
-	if res.StatusCode != http.StatusCreated {
-		return fmt.Errorf("create index status: %s", res.Status)
+		return "", fmt.Errorf("create index request %w", err)
 	}
 	defer res.Body.Close() // nolint: errcheck
 
-	return nil
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("create index response status: %s", res.Status)
+	}
+
+	return "Index created successfully", nil
 }
 
 func checkIndexExists(indexName string) bool {
 	url := config.CHECK_INDEX_EXISTS_API_URL + indexName
-	_, err := DoRequest(http.MethodGet, url, nil)
+	resp, _ := DoRequest(http.MethodGet, url, nil)
 
-	return err == nil
+	return resp.StatusCode == 200
 }
 
 // PrintLogs prints the response logs, can be used for debugging.

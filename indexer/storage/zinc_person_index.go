@@ -10,7 +10,15 @@ import (
 // CreatePersonIndex creates an index for storing persons.
 func CreatePersonIndex() error {
 	indexDataStr := buildPersonIndex()
-	return CreateIndex(constant.PERSON_INDEX_NAME, indexDataStr)
+
+	mssg, err := CreateIndex(constant.PERSON_INDEX_NAME, indexDataStr)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Person index: ", mssg)
+
+	return nil
 }
 
 func buildPersonIndex() string {

@@ -11,11 +11,12 @@ import (
 func CreateEmailIndex() error {
 	indexDataStr := buildEmailIndex()
 
-	err := CreateIndex(constant.EMAIL_INDEX_NAME, indexDataStr)
+	mssg, err := CreateIndex(constant.EMAIL_INDEX_NAME, indexDataStr)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("Email index:", mssg)
 	return nil
 }
 

@@ -40,26 +40,21 @@ func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
 }
 
 func buildAllPersonsQuery(sortField, sortOrder string, from, max int) string {
-	var sort string
 
-	if sortField == "" {
-		sortField = "date"
-	}
+	sort := buildSort(sortField, sortOrder)
 
-	if sortOrder == "desc" || sortOrder == "" {
-		sortOrder = "-"
-	} else {
-		sortOrder = ""
-	}
-
-	return fmt.Sprintf(`
+	query := fmt.Sprintf(`
 		{
 			"search_type": "matchall",
-			"sort_fields": [%s],
-			"from": %v,
-			"max_results": %v,
+			"sort_fields": ["%s"],
+			"from": %d,
+			"max_results": %d,
 			"_source": []
 		}`, sort, from, max)
+
+	fmt.Println(query)
+	return query
+
 }
 
 func buildFilteredPersonsQuery(searchTerm, searchField, sortField, sortOrder string, from, max int) string {
@@ -69,7 +64,7 @@ func buildFilteredPersonsQuery(searchTerm, searchField, sortField, sortOrder str
 
 	sort := buildSort(sortField, sortOrder)
 
-	return fmt.Sprintf(`
+	query := fmt.Sprintf(`
 		{
 		"search_type": "match",
 		"query": {
@@ -81,4 +76,7 @@ func buildFilteredPersonsQuery(searchTerm, searchField, sortField, sortOrder str
 		"max_results": %d,
 		"_source": []
 	}`, searchTerm, searchField, sort, from, max)
+
+	fmt.Println(query)
+	return query
 }

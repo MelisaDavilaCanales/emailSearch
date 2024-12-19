@@ -12,6 +12,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/persons"
+
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
@@ -27,11 +28,11 @@ func main() {
 	}
 
 	if err := storage.CreateEmailIndex(); err != nil {
-		fmt.Println("Error creating email index: ", err)
+		log.Fatal("Error creating email index: ", err)
 	}
 
 	if err := storage.CreatePersonIndex(); err != nil {
-		fmt.Println("Error creating person index: ", err)
+		log.Fatal("Error creating person index: ", err)
 	}
 
 	emailPathCh := make(chan string, constant.BUFFER_CAPACITY)

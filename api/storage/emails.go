@@ -45,27 +45,8 @@ func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
 		query = buildFilteredEmailsQuery(params.SearchTerm, params.SearchField, params.SortField, params.SortOrder, params.ResultsFrom, params.MaxResults)
 	}
 
-	// filter := ""
-	// sort := "from"
-	// if sort == "" {
-	// 	sort = "@timestamp"
-	// }
-	// order := "asc"
-	// if order == "" {
-	// 	order = "desc"
-	// }
-
-	// query := BuildQueryC("", 1, 10, sort, order)
-
-	// queryBytes, err := json.Marshal(query)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// fmt.Println(string(queryBytes))
-
 	url = config.GET_EMAILS_API_URL
 
-	// res, err := DoRequest(http.MethodPost, url, strings.NewReader(string(queryBytes)))
 	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
 		return nil, err
@@ -90,7 +71,7 @@ func buildAllEmailsQuery(sortField, sortOrder string, from, max int) string {
 			"from": %d,
 			"max_results": %d,
 			"_source": [
-			"from", "to", "date","subject" 
+			"from", "to", "date","subject"
 			]
 		}`, sort, from, max)
 
@@ -106,18 +87,21 @@ func buildFilteredEmailsQuery(searchTerm, searchField, sortField, sortOrder stri
 
 	sort := buildSort(sortField, sortOrder)
 
-	return fmt.Sprintf(`
-		{
-		"search_type": "match",
-		"query": {
-			"term": "%s",
-			"field":"%s"
-		},
-		"sort_fields": ["%s"],
-		"from": %d,
-		"max_results": %d,
-		"_source": [
-			 "from", "to", "date","subject"
-		]
-	}`, searchTerm, searchField, sort, from, max)
+	query := fmt.Sprintf(`
+	{
+	"search_type": "match",
+	"query": {
+		"term": "%s",
+		"field":"%s"
+	},
+	"sort_fields": ["%s"],
+	"from": %d,
+	"max_results": %d,
+	"_source": [
+		 "from", "to", "date","subject"
+	]
+}`, searchTerm, searchField, sort, from, max)
+
+	fmt.Println(query)
+	return query
 }

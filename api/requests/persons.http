@@ -2,16 +2,16 @@
 GET http://localhost:8080/persons?page=7&page_size=25
 
 ###
-GET http://localhost:8080/persons?page=25&page_size=10&term=steve&field=email&sort=asc
+GET http://localhost:8080/persons?page=25&page_size=10&term=steve&field=email&sort=name&order=asc
 
 ###
-GET http://localhost:8080/persons?page=5&page_size=10&term=steve&field=email&sort=asc
+GET http://localhost:8080/persons?page=1&page_size=10&term=steve&field=name&sort=name&order=desc
 
 ### Persons not found
-GET http://localhost:8080/persons?page=10&page_size=10&term=tumedañaste&field=name&sort=asc
+GET http://localhost:8080/persons?page=10&page_size=10&term=tumedañaste&field=name&sort=email&order=desc
+
+### Sin Term
+GET http://localhost:8080/persons?page=10&page_size=10&sort=email&order=desc
 
 ###
-GET http://localhost:8080/persons?page=10&page_size=10&term=charles&field=name&sort=asc
-
-###
-GET http://localhost:8080/persons?page=10&page_size=10&term=steve&field=_all&sort=asc
+GET http://localhost:8080/persons?page=10&page_size=10&term=steve&field=_all&sort=name&order=desc
