@@ -29,7 +29,7 @@ onBeforeMount(async () => {
               <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.day }} {{ email.time }}</td>
               <td class="px-2 py-2 align-top">{{ email.from }}</td>
               <td class="px-2 py-2 align-top">
-                <span class="my-2 block max-h-32 overflow-y-auto custom-scrollbar">
+                <span class="my-1 block max-h-32 overflow-y-auto custom-scrollbar">
                   <span v-for="(emailAddress, index) in email.toArray" :key="index">
                     {{ emailAddress }}<br />
                   </span>
