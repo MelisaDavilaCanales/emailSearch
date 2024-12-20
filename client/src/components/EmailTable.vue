@@ -25,7 +25,7 @@ onBeforeMount(async () => {
             </tr>
           </thead>
           <tbody class="text-gray-600">
-            <tr v-for="email in emails" :key="email.id" class="border-t hover:bg-gray-50">
+            <tr v-for="email in emails" :key="email.id" class="border-t hover:bg-gray-50 cursor-pointer">
               <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.day }} {{ email.time }}</td>
               <td class="px-2 py-2 align-top">{{ email.from }}</td>
               <td class="px-2 py-2 align-top">
