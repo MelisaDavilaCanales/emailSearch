@@ -10,6 +10,7 @@ onBeforeMount(async () => {
 });
 
 </script>
+
 <template>
   <main class="h-full overflow-auto table-container rounded-md">
     <div class="table-wrapper h-full flex items-center">
@@ -27,11 +28,13 @@ onBeforeMount(async () => {
             <tr v-for="email in emails" :key="email.id" class="border-t hover:bg-gray-50">
               <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.day }} {{ email.time }}</td>
               <td class="px-2 py-2 align-top">{{ email.from }}</td>
-              <div class="my-2 max-h-32 overflow-y-auto">
-                <span v-for="(emailAddress, index) in email.toArray" :key="index">
-                  {{ emailAddress }}<br />
+              <td class="px-2 py-2 align-top">
+                <span class="my-2 block max-h-32 overflow-y-auto custom-scrollbar">
+                  <span v-for="(emailAddress, index) in email.toArray" :key="index">
+                    {{ emailAddress }}<br />
+                  </span>
                 </span>
-              </div>
+              </td>
               <td class="px-2 py-2 align-top">{{ email.subject }}</td>
             </tr>
           </tbody>
