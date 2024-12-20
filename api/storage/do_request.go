@@ -10,14 +10,16 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 )
 
-// DoRequest sends an HTTP request to the specified URL with the specified method and data.
+// DoRequest make a request to the database, make some validations and return a response.
 func DoRequest(method string, url string, data io.Reader) (*http.Response, error) {
 	req, err := http.NewRequest(method, url, data)
 	if err != nil {
 		return nil, err
 	}
 
-	setHeaders(req)
+	req.SetBasicAuth(config.DB_USER, config.DB_PASSWORD)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36")
 
 	client := &http.Client{}
 
@@ -51,10 +53,4 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 	}
 
 	return resp, nil
-}
-
-func setHeaders(req *http.Request) {
-	req.SetBasicAuth(config.DB_USER, config.DB_PASSWORD)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36")
 }

@@ -18,7 +18,7 @@ func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
 
 	url := config.GET_PERSONS_API_URL
 
-	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
+	res, err := DoRequestFunc(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
 		return nil, err
 	}

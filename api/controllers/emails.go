@@ -13,11 +13,24 @@ import (
 )
 
 var (
-	notFound           *models.NotFoundError
+	GetEmailsFunc = storage.GetEmails
+	GetEmailFunc  = storage.GetMail
+
+	notFoundErr        *models.NotFoundError
 	mssgEmailNotFound  = "Email not found"
 	mssgEmailsNotFound = "Emails not found"
 	mssSearchSuccess   = "Search successfully"
 )
+
+func InitMockGetEmails(emailHistData *models.EmailHitsData, err error) {
+	GetEmailsFunc = func(_ models.SearchParams) (*models.EmailHitsData, error) {
+		return emailHistData, err
+	}
+}
+
+func DisableMockGetEmails() {
+	GetEmailsFunc = storage.GetEmails
+}
 
 func GetEmails(w http.ResponseWriter, r *http.Request) {
 	queryParams := getQueryParams(r)
@@ -32,9 +45,9 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 		MaxResults:  pagination.PageSize,
 	}
 
-	emailHitsData, err := storage.GetEmails(searchParams)
+	emailHitsData, err := GetEmailsFunc(searchParams)
 	if err != nil {
-		if errors.As(err, &notFound) {
+		if errors.As(err, &notFoundErr) {
 			data := models.NewEmailsResponseData(0, 0, 0, nil)
 			response := models.NewResponse(mssgEmailsNotFound, data)
 			render.JSON(w, r, response)
@@ -79,12 +92,22 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, response)
 }
 
+func InitMockGetEmail(email *models.Email, err error) {
+	GetEmailFunc = func(_ string) (*models.Email, error) {
+		return email, err
+	}
+}
+
+func DisableMockGetEmail() {
+	GetEmailFunc = storage.GetMail
+}
+
 func GetEmail(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, constant.ID_PARAM)
 
 	email, err := storage.GetMail(id)
 	if err != nil {
-		if errors.As(err, &notFound) {
+		if errors.As(err, &notFoundErr) {
 			response := models.NewResponse(mssgEmailNotFound, nil)
 			render.JSON(w, r, response)
 

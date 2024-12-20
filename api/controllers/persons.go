@@ -11,12 +11,25 @@ import (
 )
 
 var (
-	notFoundErr         *models.NotFoundError
+	GetPersonsFunc = storage.GetPersons
+
 	mssgPersonsNotFound = "Persons not found"
 	mssgSearchSuccess   = "Search successfully"
 )
 
+func InitMockGetPersons(personHistData *models.PersonHitsData, err error) {
+	GetPersonsFunc = func(_ models.SearchParams) (*models.PersonHitsData, error) {
+		return personHistData, err
+	}
+}
+
+func DisableMockGetPersons() {
+	GetPersonsFunc = storage.GetPersons
+}
+
 func GetPersons(w http.ResponseWriter, r *http.Request) {
+	var notFoundErr *models.NotFoundError
+
 	queryParams := getQueryParams(r)
 	pagination := processPaginatedParams(queryParams.PageNumber, queryParams.PageSize)
 
@@ -29,7 +42,7 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 		MaxResults:  pagination.PageSize,
 	}
 
-	personHitsData, err := storage.GetPersons(searchParams)
+	personHitsData, err := GetPersonsFunc(searchParams)
 	if err != nil {
 		if errors.As(err, &notFoundErr) {
 			data := models.NewPersonResponseData(0, 0, 0, nil)

@@ -3,12 +3,27 @@ package storage
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
 	"github.com/MelisaDavilaCanales/emailSearch/api/config"
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 )
+
+var (
+	DoRequestFunc = DoRequest
+)
+
+func InitMock(httpResponse *http.Response, err error) {
+	DoRequestFunc = func(_ string, _ string, _ io.Reader) (*http.Response, error) {
+		return httpResponse, err
+	}
+}
+
+func DisableMock() {
+	DoRequestFunc = DoRequest
+}
 
 func GetMail(id string) (*models.Email, error) {
 	var (
@@ -18,7 +33,7 @@ func GetMail(id string) (*models.Email, error) {
 
 	url = config.GET_EMAIL_API_URL + id
 
-	res, err := DoRequest(http.MethodGet, url, nil)
+	res, err := DoRequestFunc(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +55,7 @@ func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
 	query := buildEmailQuery(params)
 	fmt.Println(query)
 
-	res, err := DoRequest(http.MethodPost, url, strings.NewReader(query))
+	res, err := DoRequestFunc(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
 		return nil, err
 	}
