@@ -7,7 +7,7 @@ export default {
         white: '#ffffff',
         grayDark: '#737285',
         graySoft: '#d9d9d9',
-        grayExtraSoft: '#f5f5f5',
+        grayExtraSoft: '#f3f4f6',  //#f2f2f2 //f5f5f5
         primary: '#782be4',
         primaryDark: '#5e1fc7',
         primaryMiddle: '#8c52ff',

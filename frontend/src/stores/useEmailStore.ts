@@ -24,39 +24,63 @@ export interface Email {
 }
 
 export interface SumaryEmail {
-  message_id: string
-  date: Date
-  from: string
-  to: string
-  subject: string
+  id: string;
+  date: Date;
+  day: string;
+  time: string;
+  from: string;
+  to: string;
+  toArray: string[];
+  subject: string;
 }
 
 export const useEmailStore = defineStore('emails', () => {
-  const emails = ref<SumaryEmail[]>([])
+  const emails = ref<SumaryEmail[]>([]);
 
-  function fetchEmails() {
-    const { data, isFetching, error } = useFetch<SumaryEmail[]>('http://localhost:8080/searchEmails?page=10&page_size=5&term=charles&field=from&sort=asc')
-    data.value?.forEach((email) => {
-      emails.value.push({
-        message_id: email.message_id,
-        date: email.date,
-        from: email.from,
-        to: email.to,
-        subject: email.subject,
-      })
-    })
-
-    console.log("emails:"+ emails.value)
-    console.log("isFetching:" + isFetching.value)
-    console.log("error:"+ error.value)
-
+  function extractDayAndTime(isoDate: string): { day: string, time: string } {
+    const [datePart, timePart] = isoDate.split('T');
+    const day = datePart; // YYYY-MM-DD
+    const time = timePart.split('-')[0]; // HH:mm:ss
+    return { day, time };
   }
 
-  //2dM3TqgEsjT
+  async function fetchEmails() {
+    const response = await fetch('http://localhost:8080/emails?term=charles&field=&page=1&page_size=50&sort=date&order=asc');
+    const data = await response.json();
+
+    if (response.ok) {
+      data.data.emails.forEach((email: SumaryEmail) => {
+        const { day, time } = extractDayAndTime(email.date.toString());
+
+        // Asegurarse de que 'to' sea un string antes de usar split
+        const toArray = typeof email.to === 'string' ? email.to.split(',').map((email: string) => email.trim()) : email.to;
+
+        emails.value.push({
+          id: email.id,
+          date: new Date(email.date),
+          from: email.from,
+          to: email.to,
+          toArray: toArray,
+          subject: email.subject,
+          day: day,
+          time: time,
+        });
+
+        console.log(`email message_id: ${email.id}, from: ${email.from}`);
+      });
+
+      console.log("statusCode:" + response.status);
+    } else {
+      console.log('Error fetching emails:', response.statusText);
+    }
+  }
+
   function fetchEmail(message_id: string) {
-    const { data } = useFetch<Email>(`http://localhost:8080/emails/${message_id}`)
-    return data.value
+    const { data } = useFetch<Email>(`http://localhost:8080/emails/${message_id}`);
+    return data.value;
   }
-    
-  return { emails, fetchEmails, fetchEmail }
-})
+
+  return { emails, fetchEmails, fetchEmail };
+});
+
+
