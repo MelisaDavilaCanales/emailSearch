@@ -29,13 +29,13 @@ func buildPersonIndex() string {
 		"mappings": {
 			"properties": {
 				"email": {
-					"type": "text",
+					"type": "keyword",
 					"index": true,
 					"sortable": true,
 					"highlightable": true
 				},
 				"name": {
-					"type": "text",
+					"type": "keyword",
 					"index": true,
 					"sortable": true,
 					"highlightable": true

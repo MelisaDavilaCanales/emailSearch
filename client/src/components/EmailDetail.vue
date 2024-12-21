@@ -1,15 +1,24 @@
 <script setup lang="ts">
 
 import { useEmailStore } from '@/stores/useEmailStore'
+import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { storeToRefs } from 'pinia'
 
 const emailStore = useEmailStore()
 
 const { emailDetails } = storeToRefs(emailStore)
 
+const { setSelectedItemType } = useItemSelectedStore()
+const { setEmailSearchTerm, setEmailSearchField, } = useEmailStore()
 
-const handleEmailClick = (emailAddress: string) => {
-  console.log('Email clicked:', emailAddress)
+
+const showPersonDetail = (personEmail: string) => {
+  setEmailSearchTerm(personEmail)
+  setEmailSearchField('from')
+
+  alert('show person detail: ' + personEmail)
+
+  setSelectedItemType('person')
 }
 
 </script>
@@ -42,7 +51,7 @@ const handleEmailClick = (emailAddress: string) => {
             <span
               class="cursor-pointer px-1 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
               v-for="(emailAddress, index) in emailDetails?.toArray" :key="index"
-              @click="handleEmailClick(emailAddress)">
+              @click="showPersonDetail(emailAddress)">
               {{ emailAddress }}
               <span v-if="index < emailDetails?.toArray.length - 1">, </span>
             </span>

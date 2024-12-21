@@ -41,13 +41,13 @@ func buildEmailIndex() string {
 					"highlightable": true
 				},
 				"from": {
-					"type": "text",
+					"type": "keyword",
 					"index": true,
 					"sortable": true,
 					"highlightable": true
 				},
 				"to": {
-					"type": "text",
+					"type": "keyword",
 					"index": true,
 					"sortable": true,
 					"highlightable": true

@@ -9,12 +9,17 @@ export const useItemSelectedStore = defineStore('itemSelected', () => {
 
     function setSelectedItemType(value: itemSelectedTypeI) {
         if(value === 'email') {
+          isItemSelected.value = true
           isEmailSelected.value = true
-          isItemSelected.value = false
+          isPersonSelected.value = false
         } else if( value === 'person') {
-            isPersonSelected.value = false
-            isItemSelected.value = true
+          isItemSelected.value = true
+          isPersonSelected.value = true
+          isEmailSelected.value = false
         }
+
+        // alert('Selected item type: ' + value + ' isPersonSelected.value + '  + isPersonSelected.value + ' isEmailSelected.value + ' + isEmailSelected.value)
+
     }
 
     return {

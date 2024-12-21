@@ -111,7 +111,7 @@ func buildEmailQuery(params models.SearchParams) string {
 
 	return fmt.Sprintf(`
 		{
-			"search_type": "match",
+			"search_type": "match_phrase",
 			"query": {
 				"term": "%s",
 				"field": "%s"
