@@ -38,7 +38,7 @@ const handleEmailClick = (emailAddress: string) => {
         <div class="text-sm flex ">
           <span class="font-bold flex pt-1 mr-1"> To: </span>
           <div class="max-h-36 overflow-x-visible overflow-y-auto custom-scrollbar"
-            v-if="emailDetails?.toArray && emailDetails?.toArray.length > 1">
+            v-if="emailDetails?.toArray && emailDetails?.toArray.length > 0 && emailDetails?.toArray[0] !== ''">
             <span
               class="cursor-pointer px-1 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
               v-for="(emailAddress, index) in emailDetails?.toArray" :key="index"

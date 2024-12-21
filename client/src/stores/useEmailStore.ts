@@ -89,10 +89,9 @@ export const useEmailStore = defineStore('emails', () => {
       const email = data.data
 
       const toArray = email.to
-        .trim()
         .split(',')
         .map((email: string) => email.trim())
-        .filter((email: string) => email.length > 0);
+        .filter((email: string) => email !== '');
 
       emailDetails.value = {
         id: email.id,
