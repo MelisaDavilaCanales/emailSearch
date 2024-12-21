@@ -1,24 +1,19 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Person } from '@/stores/usePersonStore'
-import type { Email } from '@/stores/useEmailStore'
-
-
-
-type validItem = Person | Email
+import type { itemSelectedTypeI } from '@/types/search'
 
 export const useItemSelectedStore = defineStore('itemSelected', () => {
-    const isEmailSelected = ref(true)
+    const isEmailSelected = ref(false)
     const isPersonSelected = ref(false)
-    const isItemSelected = ref(true)
-    
-    function setIteSelected(item: validItem) {
-        if(item.hasOwnProperty('email')) {
-            isEmailSelected.value = true
+    const isItemSelected = ref(false)
+
+    function setSelectedItemType(value: itemSelectedTypeI) {
+        if(value === 'email') {
+          isEmailSelected.value = true
+          isItemSelected.value = false
+        } else if( value === 'person') {
             isPersonSelected.value = false
-        } else if(item.hasOwnProperty('name')) {
-            isEmailSelected.value = false
-            isPersonSelected.value = true
+            isItemSelected.value = true
         }
     }
 
@@ -26,6 +21,6 @@ export const useItemSelectedStore = defineStore('itemSelected', () => {
         isEmailSelected,
         isPersonSelected,
         isItemSelected,
-        setIteSelected
+        setSelectedItemType
     }
 })

@@ -2,6 +2,7 @@ package models
 
 // Email is the struct for an email document with all its fields
 type Email struct {
+	ID                      string `json:"id"`
 	MessageID               string `json:"message_id"`
 	Date                    string `json:"date"`
 	From                    string `json:"from"`

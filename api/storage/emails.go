@@ -44,7 +44,29 @@ func GetMail(id string) (*models.Email, error) {
 		return nil, fmt.Errorf("%s: decoding response body", err)
 	}
 
-	return &ResponseData.Email, nil
+	email := &models.Email{
+		ID:                      ResponseData.ID,
+		MessageID:               ResponseData.Email.MessageID,
+		Date:                    ResponseData.Email.Date,
+		From:                    ResponseData.Email.From,
+		To:                      ResponseData.Email.To,
+		Subject:                 ResponseData.Email.Subject,
+		Cc:                      ResponseData.Email.Cc,
+		MimeVersion:             ResponseData.Email.MimeVersion,
+		ContentType:             ResponseData.Email.ContentType,
+		ContentTransferEncoding: ResponseData.Email.ContentTransferEncoding,
+		Bcc:                     ResponseData.Email.Bcc,
+		XFrom:                   ResponseData.Email.XFrom,
+		XTo:                     ResponseData.Email.XTo,
+		XCc:                     ResponseData.Email.XCc,
+		XBcc:                    ResponseData.Email.XBcc,
+		XFolder:                 ResponseData.Email.XFolder,
+		XOrigin:                 ResponseData.Email.XOrigin,
+		XFileName:               ResponseData.Email.XFileName,
+		Content:                 ResponseData.Email.Content,
+	}
+
+	return email, nil
 }
 
 func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {

@@ -1,9 +1,16 @@
 <script setup lang="ts">
 
 import { useEmailStore } from '@/stores/useEmailStore'
+import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { onBeforeMount } from 'vue'
 
-const { fetchEmails, emails } = useEmailStore()
+const { fetchEmails, fetchEmail, emails } = useEmailStore()
+const { setSelectedItemType } = useItemSelectedStore()
+
+const selectedEmail = (emailId: string) => {
+  fetchEmail(emailId)
+  setSelectedItemType('email')
+}
 
 onBeforeMount(async () => {
   fetchEmails()
@@ -25,7 +32,8 @@ onBeforeMount(async () => {
             </tr>
           </thead>
           <tbody class="text-gray-600">
-            <tr v-for="email in emails" :key="email.id" class="border-t hover:bg-gray-50 cursor-pointer">
+            <tr @click="selectedEmail(email.id)" v-for="email in emails" :key="email.id"
+              class="border-t hover:bg-gray-50 cursor-pointer">
               <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.day }} {{ email.time }}</td>
               <td class="px-2 py-2 align-top">{{ email.from }}</td>
               <td class="px-2 py-2 align-top">

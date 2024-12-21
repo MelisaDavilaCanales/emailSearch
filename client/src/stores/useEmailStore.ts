@@ -1,8 +1,9 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { useFetch } from '@vueuse/core'
+// import { useFetch } from '@vueuse/core'
 
 export interface Email {
+  id: string
   message_id: string
   date: Date
   from: string
@@ -36,6 +37,7 @@ export interface SumaryEmail {
 
 export const useEmailStore = defineStore('emails', () => {
   const emails = ref<SumaryEmail[]>([]);
+  const emailDetail = ref<Email | null>(null);
 
   function extractDayAndTime(isoDate: string): { day: string, time: string } {
     const [datePart, timePart] = isoDate.split('T');
@@ -52,7 +54,6 @@ export const useEmailStore = defineStore('emails', () => {
       data.data.emails.forEach((email: SumaryEmail) => {
         const { day, time } = extractDayAndTime(email.date.toString());
 
-        // Asegurarse de que 'to' sea un string antes de usar split
         const toArray = typeof email.to === 'string' ? email.to.split(',').map((email: string) => email.trim()) : email.to;
 
         emails.value.push({
@@ -65,22 +66,25 @@ export const useEmailStore = defineStore('emails', () => {
           day: day,
           time: time,
         });
-
-        console.log(`email message_id: ${email.id}, from: ${email.from}`);
       });
-
-      console.log("statusCode:" + response.status);
     } else {
       console.log('Error fetching emails:', response.statusText);
     }
   }
 
-  function fetchEmail(message_id: string) {
-    const { data } = useFetch<Email>(`http://localhost:8080/emails/${message_id}`);
-    return data.value;
+  async function fetchEmail(message_id: string) {
+    const response = await fetch(`http://localhost:8080/emails/${message_id}`);
+    const data = await response.json();
+    console.log("data:" + data);
+
+    if (response.ok) {
+      emailDetail.value = data.data;
+    } else {
+      console.log('Error fetching email:', response.statusText);
+    }
   }
 
-  return { emails, fetchEmails, fetchEmail };
+  return { emails,  emailDetail, fetchEmails, fetchEmail };
 });
 
 

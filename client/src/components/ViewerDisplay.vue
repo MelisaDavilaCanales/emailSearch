@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
+import { storeToRefs } from "pinia"
+
 import PersonDetail from '@/components/PersonDetail.vue'
 import EmailDetail from '@/components/EmailDetail.vue'
 
-const { isEmailSelected, isPersonSelected, isItemSelected } = useItemSelectedStore()
+import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
+
+
+const itemSelectedStore = useItemSelectedStore()
+const { isEmailSelected, isPersonSelected, isItemSelected } = storeToRefs(itemSelectedStore)
 
 </script>
 
