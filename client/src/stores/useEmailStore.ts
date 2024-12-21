@@ -128,13 +128,14 @@ export const useEmailStore = defineStore('emails', () => {
     searchField.value = field
   }
 
+  function setEmailSortField(field: string) {
+    sortField.value = field
+  }
+
   function setEmailSortOrder(order: string) {
     sortOrder.value = order
   }
 
-  function setEmailSortField(field: string) {
-    sortField.value = field
-  }
 
   return {
     emailList,

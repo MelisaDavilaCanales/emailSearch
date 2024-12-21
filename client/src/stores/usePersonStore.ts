@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export interface Person {
@@ -10,8 +10,40 @@ export interface Person {
 export const usePersonStore = defineStore('persons', () => {
   const persons = ref<Person[]>([])
 
+  const pageNumber = ref<number>(1)
+  const pageSize = ref<number>(40)
+  const searchTerm = ref<string>('')
+  const searchField = ref<string>('_all')
+  const sortField= ref<string>('name')
+  const sortOrder = ref<string>('asc')
+
+  const baseUrl = import.meta.env.VITE_API_BASE_URL
+
+  const personSearchURL = computed(() => {
+    return baseUrl + '/persons' + query.value
+  })
+
+  const query = computed(() => {
+    return (
+      '?' +
+      'page=' +
+      pageNumber.value +
+      '&page_size=' +
+      pageSize.value +
+      '&term=' +
+      searchTerm.value +
+      '&field=' +
+      searchField.value +
+      '&sort=' +
+      sortField.value +
+      '&order=' +
+      sortOrder.value
+    )
+  })
+
   async function fetchPersons() {
-      const response = await fetch('http://localhost:8080/persons?term=&field=&page=1&page_size=50&sort=name&order=asc');
+      // const response = await fetch('http://localhost:8080/persons?term=&field=&page=1&page_size=50&sort=name&order=asc');
+      const response = await fetch(personSearchURL.value);
       const data = await response.json();
 
       if (response.ok) {
@@ -29,5 +61,42 @@ export const usePersonStore = defineStore('persons', () => {
       }
     }
 
-  return { persons, fetchPersons }
+    function setPersonPageNumber(page: number) {
+      pageNumber.value = page
+    }
+
+    function setPersonPageSize(size: number) {
+      pageSize.value = size
+    }
+
+    function setPersonSearchTerm(term: string) {
+      searchTerm.value = term
+    }
+
+    function setPersonSearchField(field: string) {
+      searchField.value = field
+    }
+
+    function setPersonSortOrder(order: string) {
+      sortOrder.value = order
+    }
+
+    function setPersonSortField(field: string) {
+      sortField.value = field
+    }
+
+    return {
+      persons,
+
+      fetchPersons,
+
+      setPersonPageNumber,
+      setPersonPageSize,
+      setPersonSearchTerm,
+      setPersonSearchField,
+      setPersonSortOrder,
+      setPersonSortField,
+    }
+
+
 })
