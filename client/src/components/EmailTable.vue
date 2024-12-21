@@ -4,7 +4,7 @@ import { useEmailStore } from '@/stores/useEmailStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { onBeforeMount } from 'vue'
 
-const { fetchEmails, fetchEmail, emails } = useEmailStore()
+const { fetchEmails, fetchEmail, emailList } = useEmailStore()
 const { setSelectedItemType } = useItemSelectedStore()
 
 const selectedEmail = (emailId: string) => {
@@ -25,22 +25,22 @@ onBeforeMount(async () => {
         <table ref="dataTable" class="min-w-full table-auto border-collapse bg-white text-sm">
           <thead class="bg-gray-100 sticky top-0 z-10">
             <tr>
-              <th class="pl-3 py-2 text-top cursor-pointer">#</th>
-              <th class="px-2 py-2 text-left cursor-pointer">Date ↕</th>
-              <th class="px-2 py-2 text-left cursor-pointer">From ↕</th>
-              <th class="px-2 py-2 text-left cursor-pointer">To ↕</th>
-              <th class="px-2 py-2 text-left cursor-pointer">Subject ↕</th>
+              <th class="pl-3 py-2 text-top cursor-pointer whitespace-nowrap">#</th>
+              <th class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">Date ↕</th>
+              <th class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">From ↕</th>
+              <th class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">To ↕</th>
+              <th class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">Subject ↕</th>
             </tr>
           </thead>
           <tbody class="text-gray-600">
-            <tr @click="selectedEmail(email.id)" v-for="(email, index) in emails" :key="email.id"
+            <tr @click="selectedEmail(email.id)" v-for="(email, index) in emailList" :key="email.id"
               class="border-t hover:bg-gray-50 cursor-pointer">
               <td class="pl-3 py-2 align-top">{{ index + 1 }}</td>
               <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.day }} {{ email.time }}</td>
               <td class="px-2 py-2 align-top">{{ email.from }}</td>
               <td class="px-2 py-2 align-top">
                 <span v-if="email?.toArray && email?.toArray.length > 1"
-                  class="my-1 block max-h-32 overflow-y-auto custom-scrollbar">
+                  class="my-1 block max-h-32 overflow-x-hidden overflow-y-auto custom-scrollbar">
                   <span v-for="(emailAddress, index) in email.toArray" :key="index">
                     {{ emailAddress }}<br />
                   </span>

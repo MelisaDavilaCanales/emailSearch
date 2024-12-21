@@ -1,62 +1,63 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-// import { useFetch } from '@vueuse/core'
 
-export interface Email {
-  id: string
-  message_id: string
-  date: Date
-  from: string
-  to: string
-  toArray: string[];
-  subject: string
-  cc: string
-  mime_version: string
-  content_type: string
-  content_transfer_encoding: string
-  bcc: string
-  x_from: string
-  x_to: string
-  x_cc: string
-  x_bcc: string
-  x_folder: string
-  x_origin: string
-  x_file_name: string
-  content: string
-}
+import type { SumaryEmail, Email } from '@/types/search'
 
-export interface SumaryEmail {
-  id: string;
-  date: Date;
-  day: string;
-  time: string;
-  from: string;
-  to: string;
-  toArray: string[];
-  subject: string;
+function extractDayAndTime(isoDate: string): { day: string; time: string } {
+  const [datePart, timePart] = isoDate.split('T')
+  const day = datePart // YYYY-MM-DD
+  const time = timePart.split('-')[0] // HH:mm:ss
+  return { day, time }
 }
 
 export const useEmailStore = defineStore('emails', () => {
-  const emails = ref<SumaryEmail[]>([]);
-  const emailDetail = ref<Email | null>(null);
+  const emailList = ref<SumaryEmail[]>([])
+  const emailDetails = ref<Email | null>(null)
 
-  function extractDayAndTime(isoDate: string): { day: string, time: string } {
-    const [datePart, timePart] = isoDate.split('T');
-    const day = datePart; // YYYY-MM-DD
-    const time = timePart.split('-')[0]; // HH:mm:ss
-    return { day, time };
-  }
+  const pageNumber = ref<number>(1)
+  const pageSize = ref<number>(15)
+  const searchTerm = ref<string>('')
+  const searchField = ref<string>('_all')
+  const sortField= ref<string>('date')
+  const sortOrder = ref<string>('desc')
+
+  const baseUrl = import.meta.env.VITE_API_BASE_URL
+
+  const emailSearchURL = computed(() => {
+    return baseUrl + '/emails' + query.value
+  })
+
+  // http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from&sort=to&order=desc
+  const query = computed(() => {
+    return (
+      '?' +
+      'page=' +
+      pageNumber.value +
+      '&page_size=' +
+      pageSize.value +
+      '&term=' +
+      searchTerm.value +
+      '&field=' +
+      searchField.value +
+      '&sort=' +
+      sortField.value +
+      '&order=' +
+      sortOrder.value
+    )
+  })
 
   async function fetchEmails() {
-    const response = await fetch('http://localhost:8080/emails?term=charles&field=&page=1&page_size=50&sort=date&order=asc');
-    const data = await response.json();
+    // const response = await fetch("http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from&sort=to&order=desc")
+    const response = await fetch(emailSearchURL.value)
+    console.log('emailSearchURL:', emailSearchURL.value)
+    const data = await response.json()
 
     if (response.ok) {
-      data.data.emails.forEach((email: SumaryEmail) => {
-        const { day, time } = extractDayAndTime(email.date.toString());
-        const toArray = email.to.split(',').map((email: string) => email.trim());
+      data.data.emails?.forEach((email: SumaryEmail) => {
+        const { day, time } = extractDayAndTime(email.date.toString())
+        const toArray = email.to.split(',').map((email: string) => email.trim())
 
-        emails.value.push({
+        emailList.value.push({
           id: email.id,
           // date: new Date(email.date),
           date: email.date,
@@ -66,22 +67,23 @@ export const useEmailStore = defineStore('emails', () => {
           subject: email.subject,
           day: day,
           time: time,
-        });
-      });
+        })
+      })
+      console.log('data:', data)
     } else {
-      console.log('Error fetching emails:', response.statusText);
+      console.log('Error fetching emails:', response.statusText)
     }
   }
 
   async function fetchEmail(message_id: string) {
-    const response = await fetch(`http://localhost:8080/emails/${message_id}`);
-    const data = await response.json();
+    const response = await fetch(`http://localhost:8080/emails/${message_id}`)
+    const data = await response.json()
 
     if (response.ok) {
-      const email = data.data;
-      const toArray = email.to.split(',').map((email: string) => email.trim());
+      const email = data.data
+      const toArray = email.to.split(',').map((email: string) => email.trim())
 
-      emailDetail.value = {
+      emailDetails.value = {
         id: email.id,
         message_id: email.message_id,
         date: email.date,
@@ -102,14 +104,51 @@ export const useEmailStore = defineStore('emails', () => {
         x_origin: email.x_origin,
         x_file_name: email.x_file_name,
         content: email.content,
-      };
+      }
 
-      console.log('Email Details:', emailDetail.value);
+      console.log('Email Details:', emailDetails.value)
     } else {
-      console.log('Error fetching email:', response.statusText);
+      console.log('Error fetching email:', response.statusText)
     }
   }
 
-  return { emails, emailDetail, fetchEmails, fetchEmail };
-});
+  function setEmailPageNumber(page: number) {
+    pageNumber.value = page
+  }
 
+  function setEmailPageSize(size: number) {
+    pageSize.value = size
+  }
+
+  function setEmailSearchTerm(term: string) {
+    searchTerm.value = term
+  }
+
+  function setEmailSearchField(field: string) {
+    searchField.value = field
+  }
+
+  function setEmailSortOrder(order: string) {
+    sortOrder.value = order
+  }
+
+  function setEmailSortField(field: string) {
+    sortField.value = field
+  }
+
+  return {
+    emailList,
+    emailDetails,
+    emailSearchURL,
+
+    fetchEmails,
+    fetchEmail,
+
+    setEmailPageNumber,
+    setEmailPageSize,
+    setEmailSearchTerm,
+    setEmailSearchField,
+    setEmailSortOrder,
+    setEmailSortField,
+  }
+})
