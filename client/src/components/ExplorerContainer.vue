@@ -4,7 +4,7 @@
 import ExplorerSearcher from '@/components/ExplorerSearcher.vue'
 import ExplorerFieldSelector from '@/components/ExplorerFieldSelector.vue'
 import ExplorerDataTable from '@/components/ExplorerDataTable.vue'
-import ExplorerDataTablePagination from '@/components/ExplorerDataTablePagination.vue'
+// import ExplorerDataTablePagination from '@/components/ExplorerDataTablePagination.vue'
 
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 const { existsSearchData } = useSearchTypeStore()
@@ -17,7 +17,7 @@ const { existsSearchData } = useSearchTypeStore()
     <div :class="{ 'w-full max-w-full': existsSearchData, 'w-full max-w-full flex-1': !existsSearchData }"
       class="max-h-[80%]">
       <ExplorerDataTable></ExplorerDataTable>
-      <ExplorerDataTablePagination v-if="existsSearchData"></ExplorerDataTablePagination>
+      <!-- <ExplorerDataTablePagination v-if="existsSearchData"></ExplorerDataTablePagination> -->
     </div>
   </div>
 </template>

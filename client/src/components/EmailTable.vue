@@ -5,13 +5,16 @@ import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 
+import Pagination from '@/components/ExplorerDataTablePagination.vue'
+
 const emailStore = useEmailStore()
-const { emailList } = storeToRefs(emailStore)
+const { emailList, pageNumber, pageSize, tatalPages, } = storeToRefs(emailStore)
 
 const { fetchEmails, fetchEmail, sortEmailsByField } = useEmailStore()
 const { setSelectedItemType } = useItemSelectedStore()
 
-const selectedEmail = (emailId: string) => {
+
+const showEmailDetail = (emailId: string) => {
   fetchEmail(emailId)
   setSelectedItemType('email')
 }
@@ -19,14 +22,6 @@ const selectedEmail = (emailId: string) => {
 onBeforeMount(async () => {
   fetchEmails()
 });
-
-
-// const sortEmails = (field: string) => {
-//   setEmailSortField(field)
-//   toggleEmailSortOrder()
-// }
-
-
 </script>
 
 <template>
@@ -48,7 +43,7 @@ onBeforeMount(async () => {
             </tr>
           </thead>
           <tbody class="text-gray-600">
-            <tr @click="selectedEmail(email.id)" v-for="(email, index) in emailList" :key="email.id"
+            <tr @click="showEmailDetail(email.id)" v-for="(email, index) in emailList" :key="email.id"
               class="border-t hover:bg-gray-50 cursor-pointer">
               <td class="pl-3 py-2 align-top">{{ index + 1 }}</td>
               <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.day }} {{ email.time }}</td>
@@ -69,6 +64,9 @@ onBeforeMount(async () => {
       </div>
     </div>
   </main>
+
+  <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" />
+
 </template>
 
 <style scoped>

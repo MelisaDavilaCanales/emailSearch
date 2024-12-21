@@ -12,6 +12,7 @@ export const usePersonStore = defineStore('persons', () => {
 
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(40)
+  const tatalPages = ref<number>(0)
   const searchTerm = ref<string>('')
   const searchField = ref<string>('_all')
   const sortField= ref<string>('name')
@@ -55,6 +56,10 @@ export const usePersonStore = defineStore('persons', () => {
             email: person.email,
           });
         });
+
+        pageNumber.value = data.data.page
+        pageSize.value = data.data.page_size
+        tatalPages.value = data.data.total_pages
 
         console.log("statusCode:" + response.status);
       } else {

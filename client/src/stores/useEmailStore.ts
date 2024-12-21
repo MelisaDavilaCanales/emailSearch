@@ -15,7 +15,8 @@ export const useEmailStore = defineStore('emails', () => {
   const emailDetails = ref<Email | null>(null)
 
   const pageNumber = ref<number>(1)
-  const pageSize = ref<number>(15)
+  const pageSize = ref<number>(50)
+  const tatalPages = ref<number>(0)
   const searchTerm = ref<string>('')
   const searchField = ref<string>('_all')
   const sortField= ref<string>('date')
@@ -69,6 +70,11 @@ export const useEmailStore = defineStore('emails', () => {
           time: time,
         })
       })
+
+      pageNumber.value = data.data.page
+      pageSize.value = data.data.page_size
+      tatalPages.value = data.data.total_pages
+
       console.log('data:', data)
     } else {
       console.log('Error fetching emails:', response.statusText)
@@ -149,6 +155,9 @@ export const useEmailStore = defineStore('emails', () => {
     emailList,
     emailDetails,
     emailSearchURL,
+    pageNumber,
+    pageSize,
+    tatalPages,
 
     fetchEmails,
     fetchEmail,
