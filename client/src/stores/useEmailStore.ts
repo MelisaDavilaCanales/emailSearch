@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 import type { SumaryEmail, Email } from '@/types/search'
@@ -47,10 +47,10 @@ export const useEmailStore = defineStore('emails', () => {
   })
 
   async function fetchEmails() {
-    // const response = await fetch("http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from&sort=to&order=desc")
     const response = await fetch(emailSearchURL.value)
-    console.log('emailSearchURL:', emailSearchURL.value)
     const data = await response.json()
+
+    emailList.value = []
 
     if (response.ok) {
       data.data.emails?.forEach((email: SumaryEmail) => {
@@ -132,10 +132,16 @@ export const useEmailStore = defineStore('emails', () => {
     sortField.value = field
   }
 
-  function setEmailSortOrder(order: string) {
-    sortOrder.value = order
+  function toggleEmailSortOrder() {
+    if (sortOrder.value == 'asc') {
+      sortOrder.value = 'desc'
+      return
+    }
+
+    sortOrder.value = 'asc'
   }
 
+  watch(emailSearchURL, fetchEmails)
 
   return {
     emailList,
@@ -149,7 +155,7 @@ export const useEmailStore = defineStore('emails', () => {
     setEmailPageSize,
     setEmailSearchTerm,
     setEmailSearchField,
-    setEmailSortOrder,
+    toggleEmailSortOrder,
     setEmailSortField,
   }
 })

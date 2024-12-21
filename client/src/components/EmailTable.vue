@@ -3,8 +3,12 @@
 import { useEmailStore } from '@/stores/useEmailStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { onBeforeMount } from 'vue'
+import { storeToRefs } from 'pinia'
 
-const { fetchEmails, fetchEmail, emailList } = useEmailStore()
+const emailStore = useEmailStore()
+const { emailList } = storeToRefs(emailStore)
+
+const { fetchEmails, fetchEmail, setEmailSortField, toggleEmailSortOrder } = useEmailStore()
 const { setSelectedItemType } = useItemSelectedStore()
 
 const selectedEmail = (emailId: string) => {
@@ -16,20 +20,31 @@ onBeforeMount(async () => {
   fetchEmails()
 });
 
+
+const sortEmails = (field: string) => {
+  setEmailSortField(field)
+  toggleEmailSortOrder()
+}
+
+
 </script>
 
 <template>
   <main class="h-full overflow-auto table-container rounded-md">
     <div class="table-wrapper h-full flex items-center">
-      <div class="overflow-y-auto max-h-full w-full border rounded-lg custom-scrollbar">
+      <div class="overflow-y-auto overflow-x-hidden max-h-full w-full border rounded-lg custom-scrollbar">
         <table ref="dataTable" class="min-w-full table-auto border-collapse bg-white text-sm">
           <thead class="bg-gray-100 sticky top-0 z-10">
             <tr>
               <th class="pl-3 py-2 text-top cursor-pointer whitespace-nowrap">#</th>
-              <th class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">Date ↕</th>
-              <th class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">From ↕</th>
-              <th class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">To ↕</th>
-              <th class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">Subject ↕</th>
+              <th @click="sortEmails('date')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">Date ↕
+              </th>
+              <th @click="sortEmails('from')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">From ↕
+              </th>
+              <th @click="sortEmails('to')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">To ↕
+              </th>
+              <th @click="sortEmails('subject')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">
+                Subject ↕</th>
             </tr>
           </thead>
           <tbody class="text-gray-600">
