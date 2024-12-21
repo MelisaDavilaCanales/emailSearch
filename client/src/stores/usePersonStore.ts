@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 export interface Person {
@@ -42,9 +42,10 @@ export const usePersonStore = defineStore('persons', () => {
   })
 
   async function fetchPersons() {
-      // const response = await fetch('http://localhost:8080/persons?term=&field=&page=1&page_size=50&sort=name&order=asc');
       const response = await fetch(personSearchURL.value);
       const data = await response.json();
+
+      persons.value = []
 
       if (response.ok) {
         data.data.persons.forEach((person: Person) => {
@@ -85,6 +86,20 @@ export const usePersonStore = defineStore('persons', () => {
       sortField.value = field
     }
 
+    function sortPersonsByField(field: string) {
+      setPersonSortField(field)
+
+      if (sortOrder.value == 'asc') {
+        sortOrder.value = 'desc'
+        return
+      }
+
+      sortOrder.value = 'asc'
+    }
+
+      watch(personSearchURL, fetchPersons)
+
+
     return {
       persons,
 
@@ -96,6 +111,8 @@ export const usePersonStore = defineStore('persons', () => {
       setPersonSearchField,
       setPersonSortOrder,
       setPersonSortField,
+
+      sortPersonsByField,
     }
 
 

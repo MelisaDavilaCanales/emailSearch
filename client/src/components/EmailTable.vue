@@ -8,7 +8,7 @@ import { storeToRefs } from 'pinia'
 const emailStore = useEmailStore()
 const { emailList } = storeToRefs(emailStore)
 
-const { fetchEmails, fetchEmail, setEmailSortField, toggleEmailSortOrder } = useEmailStore()
+const { fetchEmails, fetchEmail, sortEmailsByField } = useEmailStore()
 const { setSelectedItemType } = useItemSelectedStore()
 
 const selectedEmail = (emailId: string) => {
@@ -21,10 +21,10 @@ onBeforeMount(async () => {
 });
 
 
-const sortEmails = (field: string) => {
-  setEmailSortField(field)
-  toggleEmailSortOrder()
-}
+// const sortEmails = (field: string) => {
+//   setEmailSortField(field)
+//   toggleEmailSortOrder()
+// }
 
 
 </script>
@@ -37,13 +37,13 @@ const sortEmails = (field: string) => {
           <thead class="bg-gray-100 sticky top-0 z-10">
             <tr>
               <th class="pl-3 py-2 text-top cursor-pointer whitespace-nowrap">#</th>
-              <th @click="sortEmails('date')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">Date ↕
+              <th @click="sortEmailsByField('date')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">Date ↕
               </th>
-              <th @click="sortEmails('from')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">From ↕
+              <th @click="sortEmailsByField('from')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">From ↕
               </th>
-              <th @click="sortEmails('to')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">To ↕
+              <th @click="sortEmailsByField('to')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">To ↕
               </th>
-              <th @click="sortEmails('subject')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">
+              <th @click="sortEmailsByField('subject')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">
                 Subject ↕</th>
             </tr>
           </thead>

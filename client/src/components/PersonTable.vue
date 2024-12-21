@@ -2,12 +2,17 @@
 
 import { usePersonStore } from '@/stores/usePersonStore'
 import { onBeforeMount } from 'vue'
+import { storeToRefs } from 'pinia'
 
-const { fetchPersons, persons } = usePersonStore()
+const personStore = usePersonStore()
+const { persons } = storeToRefs(personStore)
+
+const { fetchPersons, sortPersonsByField } = usePersonStore()
 
 onBeforeMount(async () => {
   fetchPersons()
 });
+
 </script>
 
 <template>
@@ -19,8 +24,8 @@ onBeforeMount(async () => {
             <tr>
               <th class="px-2 py-2 text-center cursor-pointer">#</th>
               <th class="pl-2 py-2 text-left cursor-pointer"></th>
-              <th class="px-2 py-2 text-left cursor-pointer">Email ↕</th>
-              <th class="px-2 py-2 text-left cursor-pointer">Name ↕</th>
+              <th @click="sortPersonsByField('email')" class="px-2 py-2 text-left cursor-pointer">Email ↕</th>
+              <th @click="sortPersonsByField('name')" class="px-2 py-2 text-left cursor-pointer">Name ↕</th>
             </tr>
           </thead>
           <tbody class="text-gray-600">

@@ -132,7 +132,9 @@ export const useEmailStore = defineStore('emails', () => {
     sortField.value = field
   }
 
-  function toggleEmailSortOrder() {
+  function sortEmailsByField(field: string) {
+    setEmailSortField(field)
+
     if (sortOrder.value == 'asc') {
       sortOrder.value = 'desc'
       return
@@ -155,7 +157,8 @@ export const useEmailStore = defineStore('emails', () => {
     setEmailPageSize,
     setEmailSearchTerm,
     setEmailSearchField,
-    toggleEmailSortOrder,
     setEmailSortField,
+
+    sortEmailsByField,
   }
 })
