@@ -108,6 +108,10 @@ export const usePersonStore = defineStore('persons', () => {
     return {
       persons,
 
+      pageNumber,
+      pageSize,
+      tatalPages,
+
       fetchPersons,
 
       setPersonPageNumber,

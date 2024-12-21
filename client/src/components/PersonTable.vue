@@ -4,8 +4,10 @@ import { usePersonStore } from '@/stores/usePersonStore'
 import { onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 
+import Pagination from '@/components/ExplorerDataTablePagination.vue'
+
 const personStore = usePersonStore()
-const { persons } = storeToRefs(personStore)
+const { persons, pageNumber, pageSize, tatalPages, } = storeToRefs(personStore)
 
 const { fetchPersons, sortPersonsByField } = usePersonStore()
 
@@ -44,4 +46,7 @@ onBeforeMount(async () => {
       </div>
     </div>
   </main>
+
+  <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" />
+
 </template>

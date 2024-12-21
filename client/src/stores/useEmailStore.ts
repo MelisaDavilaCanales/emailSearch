@@ -155,6 +155,7 @@ export const useEmailStore = defineStore('emails', () => {
     emailList,
     emailDetails,
     emailSearchURL,
+
     pageNumber,
     pageSize,
     tatalPages,
