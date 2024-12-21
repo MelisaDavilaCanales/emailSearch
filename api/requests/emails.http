@@ -1,16 +1,19 @@
 ### 
-GET http://localhost:8080/emails?page=1&page_size=2&sort=date&order=asc
+GET http://localhost:8080/emails?page=1&page_size=5&sort=date&order=asc
 
 
 ###
 GET http://localhost:8080/emails
 
 ### Email not found
-GET http://localhost:8080/emails/2dYkolN9QoX
+GET http://localhost:8080/emails/2e7o7WQVlYK
 
 
 ### EMAIL SUCESS
 GET http://localhost:8080/emails/2e7o8GYJZsM
+
+### EMAIL SUCESS
+GET http://localhost:8080/emails/2e7o7XCBXPz
 
 
 

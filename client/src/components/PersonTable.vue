@@ -25,7 +25,7 @@ onBeforeMount(async () => {
           </thead>
           <tbody class="text-gray-600">
             <tr v-for="(person, index) in persons" :key="person.id" class="border-t hover:bg-gray-50 cursor-pointer">
-              <td class="px-2 py-2 align-center">{{ index }}</td>
+              <td class="px-2 py-2 align-center">{{ index + 1 }}</td>
               <td class="pl-2 py-2align-top">
                 <img class="w-12" src="../assets/img/person.png" alt="">
               </td>
