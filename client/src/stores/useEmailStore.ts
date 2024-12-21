@@ -87,7 +87,12 @@ export const useEmailStore = defineStore('emails', () => {
 
     if (response.ok) {
       const email = data.data
-      const toArray = email.to.split(',').map((email: string) => email.trim())
+
+      const toArray = email.to
+        .trim()
+        .split(',')
+        .map((email: string) => email.trim())
+        .filter((email: string) => email.length > 0);
 
       emailDetails.value = {
         id: email.id,
@@ -139,7 +144,8 @@ export const useEmailStore = defineStore('emails', () => {
   }
 
   function sortEmailsByField(field: string) {
-    setEmailSortField(field)
+    sortField.value = field
+    pageNumber.value = 1
 
     if (sortOrder.value == 'asc') {
       sortOrder.value = 'desc'
@@ -147,6 +153,18 @@ export const useEmailStore = defineStore('emails', () => {
     }
 
     sortOrder.value = 'asc'
+  }
+
+  function setNextPage() {
+    if (pageNumber.value < tatalPages.value) {
+      pageNumber.value++
+    }
+  }
+
+  function setPreviousPage() {
+    if (pageNumber.value > 1) {
+      pageNumber.value--
+    }
   }
 
   watch(emailSearchURL, fetchEmails)
@@ -159,6 +177,9 @@ export const useEmailStore = defineStore('emails', () => {
     pageNumber,
     pageSize,
     tatalPages,
+
+    setNextPage,
+    setPreviousPage,
 
     fetchEmails,
     fetchEmail,

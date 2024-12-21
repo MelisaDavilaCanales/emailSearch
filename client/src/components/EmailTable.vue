@@ -6,11 +6,12 @@ import { onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
+// import { set } from '@vueuse/core'
 
 const emailStore = useEmailStore()
 const { emailList, pageNumber, pageSize, tatalPages, } = storeToRefs(emailStore)
 
-const { fetchEmails, fetchEmail, sortEmailsByField } = useEmailStore()
+const { fetchEmails, fetchEmail, sortEmailsByField, setNextPage, setPreviousPage } = useEmailStore()
 const { setSelectedItemType } = useItemSelectedStore()
 
 
@@ -49,7 +50,7 @@ onBeforeMount(async () => {
               <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.day }} {{ email.time }}</td>
               <td class="px-2 py-2 align-top">{{ email.from }}</td>
               <td class="px-2 py-2 align-top">
-                <span v-if="email?.toArray && email?.toArray.length > 1"
+                <span v-if="email?.toArray && email?.toArray.length > 0 && email?.toArray[0] !== ''"
                   class="my-1 block max-h-32 overflow-x-hidden overflow-y-auto custom-scrollbar">
                   <span v-for="(emailAddress, index) in email.toArray" :key="index">
                     {{ emailAddress }}<br />
@@ -65,7 +66,10 @@ onBeforeMount(async () => {
     </div>
   </main>
 
-  <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" />
+  <!-- <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" /> -->
+
+  <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" @prevPage="setPreviousPage"
+    @nextPage="setNextPage" />
 
 </template>
 

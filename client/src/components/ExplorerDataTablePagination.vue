@@ -26,8 +26,9 @@ defineProps<Props>();
       </div>
       <div>
         <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-          <slot name="previous-button">
-            <a href="#" class="relative inline-flex items-center rounded-l-md px-2 py-1">
+          <slot name="previous-button" :onClick="() => $emit('prevPage')">
+            <a href="#" class="relative inline-flex items-center rounded-l-md px-2 py-1"
+              @click.prevent="$emit('prevPage')">
               <span class="sr-only">Previous</span>
               <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd"
@@ -44,8 +45,9 @@ defineProps<Props>();
             </a>
           </slot>
 
-          <slot name="next-button">
-            <a href="#" class="relative inline-flex items-center rounded-r-md px-2 py-1">
+          <slot name="next-button" :onClick="() => $emit('nextPage')">
+            <a href="#" class="relative inline-flex items-center rounded-r-md px-2 py-1"
+              @click.prevent="$emit('nextPage')">
               <span class="sr-only">Next</span>
               <svg class="size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd"
