@@ -5,10 +5,10 @@ import ViewerContainer from '@/components/ViewerContainer.vue'
 
 <template>
   <div class="lg:h-full md:overflow-y-hidden w-full flex flex-col lg:flex-row">
-    <div class="lg:w-3/5">
+    <div class="lg:w-7/12">
       <ExplorerContainer />
     </div>
-    <div class="lg:w-2/5">
+    <div class="lg:w-5/12">
       <ViewerContainer />
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { useEmailStore } from '@/stores/useEmailStore'
+import { useEmailTableStore } from '@/stores/useEmailTableStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -8,10 +8,10 @@ import { storeToRefs } from 'pinia'
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
 // import { set } from '@vueuse/core'
 
-const emailStore = useEmailStore()
+const emailStore = useEmailTableStore()
 const { emailList, pageNumber, pageSize, tatalPages, } = storeToRefs(emailStore)
 
-const { fetchEmails, fetchEmail, sortEmailsByField, setNextPage, setPreviousPage } = useEmailStore()
+const { fetchEmails, fetchEmail, sortEmailsByField, setNextPage, setPreviousPage } = useEmailTableStore()
 const { setSelectedItemType } = useItemSelectedStore()
 
 

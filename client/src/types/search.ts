@@ -10,6 +10,7 @@ export interface Email {
   toArray: string[];
   subject: string
   cc: string
+  ccArray: string[]
   mime_version: string
   content_type: string
   content_transfer_encoding: string
@@ -34,3 +35,14 @@ export interface SumaryEmail {
   toArray: string[];
   subject: string;
 }
+
+export interface CardEmailI {
+  id: string;
+  date: Date;
+  day: string;
+  time: string;
+  from: string;
+  to: string;
+  subject: string;
+}
+

@@ -10,7 +10,7 @@ function extractDayAndTime(isoDate: string): { day: string; time: string } {
   return { day, time }
 }
 
-export const useEmailStore = defineStore('emails', () => {
+export const useEmailTableStore = defineStore('emailTable', () => {
   const emailList = ref<SumaryEmail[]>([])
   const emailDetails = ref<Email | null>(null)
 
@@ -93,6 +93,11 @@ export const useEmailStore = defineStore('emails', () => {
         .map((email: string) => email.trim())
         .filter((email: string) => email !== '');
 
+      const ccArray = email.cc
+        .split(',')
+        .map((email: string) => email.trim())
+        .filter((email: string) => email !== '');
+
       emailDetails.value = {
         id: email.id,
         message_id: email.message_id,
@@ -102,6 +107,7 @@ export const useEmailStore = defineStore('emails', () => {
         toArray: toArray,
         subject: email.subject,
         cc: email.cc,
+        ccArray: ccArray,
         mime_version: email.mime_version,
         content_type: email.content_type,
         content_transfer_encoding: email.content_transfer_encoding,
