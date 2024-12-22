@@ -56,7 +56,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     if (response.ok) {
 
       if (data.data.emails === null) {
-        alert("searchField" + searchField.value)
         if (searchField.value === 'from') {
           searchField.value = 'to'
         }

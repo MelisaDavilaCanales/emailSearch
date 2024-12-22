@@ -15,14 +15,22 @@ const { setSelectedItemType } = useItemSelectedStore()
 const personStore = usePersonStore()
 const { persons, pageNumber, pageSize, tatalPages, } = storeToRefs(personStore)
 
-const { fetchPersons, sortPersonsByField } = usePersonStore()
+const { fetchPersons, sortPersonsByField, setEmailPersonsSelected } = usePersonStore()
 
 const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
 
 
+// const showPersonDetail = () => {
+//   setEmailSearchTerm(":vince.kaminski@enron.com")
+//   setEmailSearchField('from')
+
+//   setSelectedItemType('person')
+// }
 const showPersonDetail = (personEmail: string) => {
   setEmailSearchTerm(personEmail)
   setEmailSearchField('from')
+
+  setEmailPersonsSelected(personEmail)
 
   setSelectedItemType('person')
 }

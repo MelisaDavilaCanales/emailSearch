@@ -3,13 +3,16 @@
 import { storeToRefs } from 'pinia'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
+import { usePersonStore } from '@/stores/usePersonStore'
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
 
 
 const emailViewerStore = useEmailViewerStore()
+const personStore = usePersonStore()
 
 const { fetchEmail, setEmailListType, setNextPage, setPreviousPage } = useEmailViewerStore()
 const { emailList, pageSize, pageNumber, totalPages, emailListType } = storeToRefs(emailViewerStore)
+const { emailPersonsSelected } = storeToRefs(personStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
 
@@ -29,16 +32,18 @@ const showEmailDetail = (emailId: string) => {
         <img src="../assets/img/person.png" alt="" class="">
       </div>
       <div class="flex flex-col justify-center w-full">
-        <p class="text-sm" v-if="emailList.length > 0">{{ emailList[0].from }}</p>
-        <p class="text-sm text-gray-500" v-else>No data available</p>
+        <p class="text-sm">{{ emailPersonsSelected }}</p>
         <hr class="border-t border-grayDark mt-2">
       </div>
     </div>
     <!-- button's section -->
     <div class="flex justify-between space-x-2 my-1 pr-4">
       <div class=" flex items-end pt-6">
-        <p class="text-primaryMiddle text-sm font-semibold" v-if="emailListType == 'from'"> - Correos Enviados - </p>
-        <p class="text-primaryMiddle text-sm font-semibold" v-if="emailListType == 'to'"> - Correos Recibidos - </p>
+        <p class="text-primaryMiddle text-sm font-semibold" v-if="emailListType == 'from' && emailList.length > 0"> -
+          Correos Enviados - </p>
+        <p class="text-primaryMiddle text-sm font-semibold" v-if="emailListType == 'to' && emailList.length > 0"> -
+          Correos Recibidos - </p>
+        <p class="text-sm text-gray-500" v-if="emailList.length <= 0">No data available</p>
       </div>
 
       <div class="space-x-2">

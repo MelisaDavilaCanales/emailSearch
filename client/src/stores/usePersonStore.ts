@@ -9,6 +9,7 @@ export interface Person {
 
 export const usePersonStore = defineStore('persons', () => {
   const persons = ref<Person[]>([])
+  const emailPersonsSelected = ref<string>("")
 
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(40)
@@ -91,6 +92,10 @@ export const usePersonStore = defineStore('persons', () => {
       sortField.value = field
     }
 
+    function setEmailPersonsSelected(email: string) {
+      emailPersonsSelected.value = email
+    }
+
     function sortPersonsByField(field: string) {
       setPersonSortField(field)
 
@@ -107,6 +112,7 @@ export const usePersonStore = defineStore('persons', () => {
 
     return {
       persons,
+      emailPersonsSelected,
 
       pageNumber,
       pageSize,
@@ -122,6 +128,7 @@ export const usePersonStore = defineStore('persons', () => {
       setPersonSortField,
 
       sortPersonsByField,
+      setEmailPersonsSelected,
     }
 
 
