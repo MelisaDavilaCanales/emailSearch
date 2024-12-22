@@ -52,14 +52,15 @@ func buildPersonQuery(params models.SearchParams) string {
 
 	return fmt.Sprintf(`
 		{
-			"search_type": "match",
+			"search_type": "querystring",
 			"query": {
-				"term": "%v",
-				"field":"%v"
+				"query_string": {
+					"query": "%s:%s"
+				}
 			},
 			"sort_fields": ["%s"],
 			"from": %d,
 			"max_results": %d,
-			"_source": []
-		}`, params.SearchTerm, params.SearchField, sort, params.ResultsFrom, params.MaxResults)
+			"_source": [ "to", "from","date", "subject"]
+		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
 }
