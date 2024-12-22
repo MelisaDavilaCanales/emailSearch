@@ -114,7 +114,7 @@ func buildEmailQuery(params models.SearchParams) string {
 			"search_type": "querystring",
 			"query": {
 				"query_string": {
-					"query": "from:jennifer.mcquade@enron.com"
+					"query": "%s:%s"
 				}
 			},
 			"aggs": {
@@ -127,5 +127,5 @@ func buildEmailQuery(params models.SearchParams) string {
 			"from": %d,
 			"max_results": %d,
 			"_source": [ "to", "from","date", "subject"]
-		}`, sort, params.ResultsFrom, params.MaxResults)
+		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
 }

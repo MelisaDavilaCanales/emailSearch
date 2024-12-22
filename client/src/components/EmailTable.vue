@@ -6,7 +6,6 @@ import { onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
-// import { set } from '@vueuse/core'
 
 const emailStore = useEmailTableStore()
 const { emailList, pageNumber, pageSize, tatalPages, } = storeToRefs(emailStore)
