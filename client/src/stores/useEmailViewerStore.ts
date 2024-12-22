@@ -56,17 +56,10 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       data.data.emails?.forEach((email: CardEmailI) => {
         const { day, time } = extractDayAndTime(email.date.toString())
 
-        const toArray = email.to
-        .split(',')
-        .map((email: string) => email.trim())
-        .filter((email: string) => email !== '');
-
-
         emailList.value.push({
           id: email.id,
           from: email.from,
           to: email.to,
-          toArray: toArray,
           subject: email.subject,
           date: email.date,
           day: day,

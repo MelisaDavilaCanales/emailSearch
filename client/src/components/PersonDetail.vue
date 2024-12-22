@@ -52,18 +52,24 @@ const showEmailDetail = (emailId: string) => {
         <!-- Emails -->
         <div class="relative bg-graySoft rounded-md p-2 flex space-x-2 cursor-pointer"
           @click="showEmailDetail(email.id)" v-for="email in emailList" :key="email.id">
-          <div class="w-12">
-            <img src="../assets/img/email.png" alt="">
+          <div class="w-12 px-1">
+            <img src="../assets/img/email-png.png" alt="">
           </div>
           <div class="text-sm pr-2">
-            <p><span class="font-bold">Date:</span> {{ email.day + " " + email.time }}</p>
-            <p class="block max-h-4 ">
-              <span class="font-bold">To:</span>
-              <span class="truncate whitespace-nowrap overflow-hidden">{{ email.to }}</span>
+            <p><span class="font-bold mr-1">Date:</span> {{ email.day + " " + email.time }}</p>
+            <p class="block max-h-5 ">
+              <span class="font-bold mr-1">To:</span>
+              <span v-if="email?.to && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden">{{
+                email.to }}
+              </span>
+              <span v-else class="text-xs">N/A</span>
             </p>
-            <p class="block max-h-4 ">
-              <span class="font-bold">Subject:</span>
-              <span class="truncate whitespace-nowrap overflow-hidden">{{ email.subject }}</span>
+            <p class="block max-h-5 ">
+              <span class="font-bold mr-1">Subject:</span>
+              <span v-if="email?.subject && email?.subject[0] !== ''"
+                class="truncate whitespace-nowrap overflow-hidden">{{
+                  email.subject }}</span>
+              <span v-else class="text-xs">N/A</span>
             </p>
           </div>
           <div class="absolute top-0 right-0 h-full w-4 bg-graySoft border-r-8 border-grayExtraSoft"></div>
