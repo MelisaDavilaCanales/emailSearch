@@ -1,13 +1,12 @@
 <script setup lang="ts">
 
-import { useEmailTableStore } from '@/stores/useEmailTableStore'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { storeToRefs } from 'pinia'
 
-const emailStore = useEmailTableStore()
+const emailStore = useEmailViewerStore()
 
-const { emailDetails } = storeToRefs(emailStore)
+const { emailDetail } = storeToRefs(emailStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
 const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
@@ -16,8 +15,6 @@ const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
 const showPersonDetail = (personEmail: string) => {
   setEmailSearchTerm(personEmail)
   setEmailSearchField('from')
-
-  alert('show person detail: ' + personEmail)
 
   setSelectedItemType('person')
 }
@@ -34,13 +31,13 @@ const showPersonDetail = (personEmail: string) => {
         <div>
           <div class="flex justify-between">
             <div>
-              <p><span class="font-bold">Message ID:</span> {{ emailDetails?.message_id }}</p>
-              <p><span class="font-bold">Date:</span> {{ emailDetails?.date }}</p>
+              <p><span class="font-bold">Message ID:</span> {{ emailDetail?.message_id }}</p>
+              <p><span class="font-bold">Date:</span> {{ emailDetail?.date }}</p>
               <p class="text-sm">
                 <span class="font-bold">From:</span>
                 <span
                   class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
-                  @click="emailDetails?.from && showPersonDetail(emailDetails.from)"> {{ emailDetails?.from }}
+                  @click="emailDetail?.from && showPersonDetail(emailDetail.from)"> {{ emailDetail?.from }}
                 </span>
               </p>
             </div>
@@ -49,8 +46,8 @@ const showPersonDetail = (personEmail: string) => {
             </div>
           </div>
 
-          <p class="text-sm mb-1" v-if="emailDetails?.subject && emailDetails?.subject.trim() !== ''">
-            <span class="font-bold">Subject:</span> {{ emailDetails?.subject }}
+          <p class="text-sm mb-1" v-if="emailDetail?.subject && emailDetail?.subject.trim() !== ''">
+            <span class="font-bold">Subject:</span> {{ emailDetail?.subject }}
           </p>
         </div>
       </div>
@@ -61,13 +58,13 @@ const showPersonDetail = (personEmail: string) => {
         <div class="text-sm flex">
           <span class="font-bold flex mr-1">To:</span>
           <div class="max-h-36 overflow-x-hidden overflow-y-auto custom-scrollbar"
-            v-if="emailDetails?.toArray && emailDetails?.toArray.length > 0 && emailDetails?.toArray[0] !== ''">
+            v-if="emailDetail?.toArray && emailDetail?.toArray.length > 0 && emailDetail?.toArray[0] !== ''">
             <span
               class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
-              v-for="(emailAddress, index) in emailDetails?.toArray" :key="index"
+              v-for="(emailAddress, index) in emailDetail?.toArray" :key="index"
               @click="emailAddress && showPersonDetail(emailAddress)">
               {{ emailAddress }}
-              <span v-if="index < emailDetails?.toArray.length - 1">, </span>
+              <span v-if="index < emailDetail?.toArray.length - 1">, </span>
             </span>
           </div>
           <span v-else class="text-sm flex pt-1 ml-1">N/A</span>
@@ -75,15 +72,15 @@ const showPersonDetail = (personEmail: string) => {
 
         <!-- Datos de copia -->
         <div class="text-sm flex"
-          v-if="emailDetails?.ccArray && emailDetails?.ccArray.length > 0 && emailDetails?.ccArray[0] !== ''">
+          v-if="emailDetail?.ccArray && emailDetail?.ccArray.length > 0 && emailDetail?.ccArray[0] !== ''">
           <span class="font-bold flex mr-1">Cc:</span>
           <div class="max-h-36 overflow-x-hidden overflow-y-auto custom-scrollbar">
             <span
               class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
-              v-for="(emailAddress, index) in emailDetails?.ccArray" :key="index"
+              v-for="(emailAddress, index) in emailDetail?.ccArray" :key="index"
               @click="showPersonDetail(emailAddress)">
               {{ emailAddress }}
-              <span v-if="index < emailDetails?.ccArray.length - 1">, </span>
+              <span v-if="index < emailDetail?.ccArray.length - 1">, </span>
             </span>
           </div>
         </div>
@@ -92,21 +89,21 @@ const showPersonDetail = (personEmail: string) => {
 
         <!-- Metadata -->
         <div class="mt-2">
-          <p class="text-sm" v-if="emailDetails?.x_folder && emailDetails?.x_folder.trim() !== ''">
-            <span class="font-bold">Folder:</span> {{ emailDetails?.x_folder }}
+          <p class="text-sm" v-if="emailDetail?.x_folder && emailDetail?.x_folder.trim() !== ''">
+            <span class="font-bold">Folder:</span> {{ emailDetail?.x_folder }}
           </p>
-          <p class="text-sm" v-if="emailDetails?.x_origin && emailDetails?.x_origin.trim() !== ''">
-            <span class="font-bold">Origin:</span> {{ emailDetails?.x_origin }}
+          <p class="text-sm" v-if="emailDetail?.x_origin && emailDetail?.x_origin.trim() !== ''">
+            <span class="font-bold">Origin:</span> {{ emailDetail?.x_origin }}
           </p>
-          <p class="text-sm" v-if="emailDetails?.x_file_name && emailDetails?.x_file_name.trim() !== ''">
-            <span class="font-bold">File Name:</span> {{ emailDetails?.x_file_name }}
+          <p class="text-sm" v-if="emailDetail?.x_file_name && emailDetail?.x_file_name.trim() !== ''">
+            <span class="font-bold">File Name:</span> {{ emailDetail?.x_file_name }}
           </p>
         </div>
 
         <!-- Contenido -->
         <div>
           <p class="font-bold sticky top-0 bg-grayExtraSoft z-10">Contenido:</p>
-          <p class="text-sm py-1">{{ emailDetails?.content || 'No content available' }}</p>
+          <p class="text-sm py-1">{{ emailDetail?.content || 'No content available' }}</p>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
-import type { SumaryEmail, Email } from '@/types/search'
+import type { SumaryEmail } from '@/types/search'
 
 function extractDayAndTime(isoDate: string): { day: string; time: string } {
   const [datePart, timePart] = isoDate.split('T')
@@ -12,7 +12,6 @@ function extractDayAndTime(isoDate: string): { day: string; time: string } {
 
 export const useEmailTableStore = defineStore('emailTable', () => {
   const emailList = ref<SumaryEmail[]>([])
-  const emailDetails = ref<Email | null>(null)
 
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(50)
@@ -81,46 +80,6 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     }
   }
 
-  async function fetchEmail(message_id: string) {
-    const response = await fetch(`http://localhost:8080/emails/${message_id}`)
-    const data = await response.json()
-
-    if (response.ok) {
-      const email = data.data
-
-      const toArray = email.to
-        .split(',')
-        .map((email: string) => email.trim())
-        .filter((email: string) => email !== '');
-
-      const ccArray = email.cc
-        .split(',')
-        .map((email: string) => email.trim())
-        .filter((email: string) => email !== '');
-
-      emailDetails.value = {
-        id: email.id,
-        message_id: email.message_id,
-        date: email.date,
-        from: email.from,
-        to: email.to,
-        toArray: toArray,
-        subject: email.subject,
-        cc: email.cc,
-        ccArray: ccArray,
-        bcc: email.bcc,
-        x_folder: email.x_folder,
-        x_origin: email.x_origin,
-        x_file_name: email.x_file_name,
-        content: email.content,
-      }
-
-      console.log('Email Details:', emailDetails.value)
-    } else {
-      console.log('Error fetching email:', response.statusText)
-    }
-  }
-
   function setEmailPageNumber(page: number) {
     pageNumber.value = page
   }
@@ -169,7 +128,6 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
   return {
     emailList,
-    emailDetails,
     emailSearchURL,
 
     pageNumber,
@@ -180,7 +138,6 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     setPreviousPage,
 
     fetchEmails,
-    fetchEmail,
 
     setEmailPageNumber,
     setEmailPageSize,

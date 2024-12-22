@@ -1,17 +1,19 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
-import type { CardEmailI } from '@/types/search'
+import type { CardEmailI, Email } from '@/types/search'
 
 function extractDayAndTime(isoDate: string): { day: string; time: string } {
   const [datePart, timePart] = isoDate.split('T')
-  const day = datePart // YYYY-MM-DD
-  const time = timePart.split('-')[0] // HH:mm:ss
+  const day = datePart
+  const time = timePart.split('-')[0]
   return { day, time }
 }
 
 export const useEmailViewerStore = defineStore('emailViewer', () => {
   const emailList = ref<CardEmailI[]>([])
+  const listType = ref<string>("")
+  const emailDetail = ref<Email | null>(null)
 
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(50)
@@ -27,7 +29,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     return baseUrl + '/emails' + query.value
   })
 
-  // http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from&sort=to&order=desc
   const query = computed(() => {
     return (
       '?' +
@@ -53,8 +54,21 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     emailList.value = []
 
     if (response.ok) {
+
+      if (data.data.emails === null) {
+        alert("searchField" + searchField.value)
+        if (searchField.value === 'from') {
+          searchField.value = 'to'
+        }
+
+        listType.value = searchField.value
+
+        console.log('---------------------------- ENTRO AQUI ----------------------------')
+        alert("searchField" + searchField.value)
+      }
+
       data.data.emails?.forEach((email: CardEmailI) => {
-        const { day, time } = extractDayAndTime(email.date.toString())
+      const { day, time } = extractDayAndTime(email.date.toString())
 
         emailList.value.push({
           id: email.id,
@@ -77,6 +91,46 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     }
   }
 
+
+  async function fetchEmail(message_id: string) {
+    const response = await fetch(`http://localhost:8080/emails/${message_id}`)
+    const data = await response.json()
+
+    if (response.ok) {
+      const email = data.data
+
+      const toArray = email.to
+        .split(',')
+        .map((email: string) => email.trim())
+        .filter((email: string) => email !== '');
+
+      const ccArray = email.cc
+        .split(',')
+        .map((email: string) => email.trim())
+        .filter((email: string) => email !== '');
+
+      emailDetail.value = {
+        id: email.id,
+        message_id: email.message_id,
+        date: email.date,
+        from: email.from,
+        to: email.to,
+        toArray: toArray,
+        subject: email.subject,
+        cc: email.cc,
+        ccArray: ccArray,
+        bcc: email.bcc,
+        x_folder: email.x_folder,
+        x_origin: email.x_origin,
+        x_file_name: email.x_file_name,
+        content: email.content,
+      }
+
+      console.log('Email Details:', emailDetail.value)
+    } else {
+      console.log('Error fetching email:', response.statusText)
+    }
+  }
 
   function setEmailPageNumber(page: number) {
     pageNumber.value = page
@@ -116,6 +170,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
   return {
     emailList,
+    emailDetail,
     emailSearchURL,
 
     pageNumber,
@@ -126,6 +181,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     setPreviousPage,
 
     fetchEmails,
+    fetchEmail,
 
     setEmailPageNumber,
     setEmailPageSize,

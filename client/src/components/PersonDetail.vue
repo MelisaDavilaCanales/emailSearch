@@ -2,7 +2,6 @@
 
 import { storeToRefs } from 'pinia'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
-import { useEmailTableStore } from '@/stores/useEmailTableStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
 
@@ -10,7 +9,7 @@ import Pagination from '@/components/ExplorerDataTablePagination.vue'
 const emailViewerStore = useEmailViewerStore()
 
 const { setNextPage, setPreviousPage } = emailViewerStore
-const { fetchEmail } = useEmailTableStore()
+const { fetchEmail } = useEmailViewerStore()
 const { emailList, pageSize, pageNumber, totalPages } = storeToRefs(emailViewerStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
