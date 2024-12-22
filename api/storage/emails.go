@@ -111,14 +111,21 @@ func buildEmailQuery(params models.SearchParams) string {
 
 	return fmt.Sprintf(`
 		{
-			"search_type": "match_phrase",
+			"search_type": "querystring",
 			"query": {
-				"term": "%s",
-				"field": "%s"
+				"query_string": {
+					"query": "from:jennifer.mcquade@enron.com"
+				}
+			},
+			"aggs": {
+				"histogram": {
+					"field": "date",
+					"buckets": 10
+				}
 			},
 			"sort_fields": ["%s"],
 			"from": %d,
 			"max_results": %d,
 			"_source": [ "to", "from","date", "subject"]
-		}`, params.SearchTerm, params.SearchField, sort, params.ResultsFrom, params.MaxResults)
+		}`, sort, params.ResultsFrom, params.MaxResults)
 }
