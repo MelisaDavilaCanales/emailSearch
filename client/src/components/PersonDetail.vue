@@ -12,7 +12,7 @@ const personStore = usePersonStore()
 
 const { fetchEmail, setEmailListType, setNextPage, setPreviousPage } = useEmailViewerStore()
 const { emailList, pageSize, pageNumber, totalPages, emailListType } = storeToRefs(emailViewerStore)
-const { emailPersonsSelected } = storeToRefs(personStore)
+const { selectedPersonEmail } = storeToRefs(personStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
 
@@ -32,7 +32,7 @@ const showEmailDetail = (emailId: string) => {
         <img src="../assets/img/person.png" alt="" class="">
       </div>
       <div class="flex flex-col justify-center w-full">
-        <p class="text-sm">{{ emailPersonsSelected }}</p>
+        <p class="text-sm">{{ selectedPersonEmail }}</p>
         <hr class="border-t border-grayDark mt-2">
       </div>
     </div>

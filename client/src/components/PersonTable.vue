@@ -15,7 +15,7 @@ const { setSelectedItemType } = useItemSelectedStore()
 const personStore = usePersonStore()
 const { persons, pageNumber, pageSize, tatalPages, } = storeToRefs(personStore)
 
-const { fetchPersons, sortPersonsByField, setEmailPersonsSelected } = usePersonStore()
+const { fetchPersons, sortPersonsByField, setSelectedPersonEmail } = usePersonStore()
 
 const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
 
@@ -30,7 +30,7 @@ const showPersonDetail = (personEmail: string) => {
   setEmailSearchTerm(personEmail)
   setEmailSearchField('from')
 
-  setEmailPersonsSelected(personEmail)
+  setSelectedPersonEmail(personEmail)
 
   setSelectedItemType('person')
 }

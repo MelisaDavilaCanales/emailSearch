@@ -4,14 +4,14 @@ import { storeToRefs } from 'pinia'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { usePersonStore } from '@/stores/usePersonStore'
-
+import { useToast } from "vue-toastification";
 
 const emailStore = useEmailViewerStore()
 
 const { emailDetail } = storeToRefs(emailStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
-const { setEmailPersonsSelected } = usePersonStore()
+const { setSelectedPersonEmail } = usePersonStore()
 const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
 
 
@@ -19,7 +19,11 @@ const showPersonDetail = (personEmail: string) => {
   setEmailSearchTerm(personEmail)
   setEmailSearchField('from')
 
-  setEmailPersonsSelected(personEmail)
+  //AGREGAR TOAST
+  const toast = useToast()
+  toast.success("Person selected")
+
+  setSelectedPersonEmail(personEmail)
 
   setSelectedItemType('person')
 }
