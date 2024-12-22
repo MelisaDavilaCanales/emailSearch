@@ -9,7 +9,7 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div id="pagination" class="pt-2 flex items-center justify-between border-t border-gray-200 bg-white px-4 sm:px-6">
+  <div id="pagination" class="pt-2 flex items-center justify-between border-t border-gray-200  px-4 sm:px-6">
     <div class="flex justify-between w-screen sm:flex sm:flex-1 sm:items-center sm:justify-between">
       <div>
         <p class="text-sm text-gray-700 sm:flex space-x-1">
