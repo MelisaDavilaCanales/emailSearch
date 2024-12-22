@@ -8,9 +8,8 @@ import Pagination from '@/components/ExplorerDataTablePagination.vue'
 
 const emailViewerStore = useEmailViewerStore()
 
-const { setNextPage, setPreviousPage } = emailViewerStore
-const { fetchEmail } = useEmailViewerStore()
-const { emailList, pageSize, pageNumber, totalPages } = storeToRefs(emailViewerStore)
+const { fetchEmail, setEmailListType, setNextPage, setPreviousPage } = useEmailViewerStore()
+const { emailList, pageSize, pageNumber, totalPages, emailListType } = storeToRefs(emailViewerStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
 
@@ -23,7 +22,7 @@ const showEmailDetail = (emailId: string) => {
 </script>
 
 <template>
-  <div class="h-full w-full bg-grayExtraSoft rounded-md space-y-4 px-4 pt-4">
+  <div class="h-full w-full bg-grayExtraSoft rounded-md px-4 pt-4">
     <!-- person's data -->
     <div class="flex space-x-2">
       <div class="w-14  flex items-center">
@@ -36,26 +35,47 @@ const showEmailDetail = (emailId: string) => {
       </div>
     </div>
     <!-- button's section -->
-    <div class="flex justify-end space-x-2 pr-4">
-      <button class="btn-secondary">
-        Enviados
-      </button>
-      <button class="btn-secondary">
-        Recibidos
-      </button>
+    <div class="flex justify-between space-x-2 my-1 pr-4">
+      <div class=" flex items-end pt-6">
+        <p class="text-primaryMiddle text-sm font-semibold" v-if="emailListType == 'from'"> - Correos Enviados - </p>
+        <p class="text-primaryMiddle text-sm font-semibold" v-if="emailListType == 'to'"> - Correos Recibidos - </p>
+      </div>
+
+      <div class="space-x-2">
+        <button class="text-white text-xs py-1 px-3 rounded"
+          :class="emailListType === 'from' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primaryDark'"
+          :disabled="emailListType === 'from'" @click="setEmailListType('from')">
+          Enviados
+        </button>
+        <button class="text-white text-xs py-1 px-3 rounded"
+          :class="emailListType === 'to' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primaryDark'"
+          :disabled="emailListType === 'to'" @click="setEmailListType('to')">
+          Recibidos
+        </button>
+      </div>
     </div>
+
     <!-- emails's person -->
-    <div class="relative h-[65%] py-2 space-y-2 flex flex-col">
+    <div class="relative h-[75%] w-full py-1 space-y-2 flex flex-col">
       <!-- Contenedor de correos con scroll -->
-      <div class="overflow-y-auto overflow-x-hidden flex-grow space-y-2 custom-scrollbar">
+      <div class="w-full overflow-y-auto overflow-x-hidden flex-grow space-y-2 custom-scrollbar">
         <!-- Emails -->
-        <div class="relative bg-graySoft rounded-md p-2 flex space-x-2 cursor-pointer"
+        <div class="w-full relative bg-graySoft rounded-md py-2 px-2 flex space-x-2 cursor-pointer"
           @click="showEmailDetail(email.id)" v-for="email in emailList" :key="email.id">
-          <div class="w-12 px-1">
+          <div class="w-12 px-1 ">
             <img src="../assets/img/email-png.png" alt="">
           </div>
-          <div class="text-sm pr-2">
-            <p><span class="font-bold mr-1">Date:</span> {{ email.day + " " + email.time }}</p>
+          <div class="w-full text-sm pr-2">
+            <div class="flex justify-between w-full">
+              <p class="block max-h-5 ">
+                <span class="font-bold mr-1">From:</span>
+                <span v-if="email?.from && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden">{{
+                  email.from }}
+                </span>
+                <span v-else class="text-xs">N/A</span>
+              </p>
+              <span class="">{{ email.day }} {{ email.time }}</span>
+            </div>
             <p class="block max-h-5 ">
               <span class="font-bold mr-1">To:</span>
               <span v-if="email?.to && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden">{{

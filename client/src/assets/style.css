@@ -7,6 +7,6 @@
     @apply bg-primary text-white  py-2 px-5 rounded hover:bg-primaryDark;
   }
   .btn-secondary {
-    @apply bg-primarySoft text-white text-xs py-1 px-3 rounded hover:bg-primaryMiddle;
+    @apply bg-primaryMiddle text-white text-xs py-1 px-3 rounded hover:bg-primaryDark;
   }
 }

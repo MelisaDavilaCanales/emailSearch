@@ -6,14 +6,14 @@ import type { CardEmailI, Email } from '@/types/search'
 function extractDayAndTime(isoDate: string): { day: string; time: string } {
   const [datePart, timePart] = isoDate.split('T')
   const day = datePart
-  const time = timePart.split('-')[0]
+  const time = timePart.split(':').slice(0, 2).join(':') // Extrae solo hh:mm
   return { day, time }
 }
 
 export const useEmailViewerStore = defineStore('emailViewer', () => {
   const emailList = ref<CardEmailI[]>([])
-  const listType = ref<string>("")
   const emailDetail = ref<Email | null>(null)
+  const emailListType = ref<string>("from")
 
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(50)
@@ -61,10 +61,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
           searchField.value = 'to'
         }
 
-        listType.value = searchField.value
-
-        console.log('---------------------------- ENTRO AQUI ----------------------------')
-        alert("searchField" + searchField.value)
+        emailListType.value = searchField.value
       }
 
       data.data.emails?.forEach((email: CardEmailI) => {
@@ -152,6 +149,11 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     sortField.value = field
   }
 
+  function setEmailListType(field: string) {
+    emailListType.value = field
+    searchField.value = field
+  }
+
 
 
   function setNextPage() {
@@ -167,11 +169,13 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   }
 
   watch(emailSearchURL, fetchEmails)
+  watch(emailListType, fetchEmails)
 
   return {
     emailList,
     emailDetail,
     emailSearchURL,
+    emailListType,
 
     pageNumber,
     pageSize,
@@ -188,6 +192,8 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     setEmailSearchTerm,
     setEmailSearchField,
     setEmailSortField,
+
+    setEmailListType,
 
   }
 })
