@@ -117,12 +117,6 @@ func buildEmailQuery(params models.SearchParams) string {
 					"query": "%s:%s"
 				}
 			},
-			"aggs": {
-				"histogram": {
-					"field": "date",
-					"buckets": 10
-				}
-			},
 			"sort_fields": ["%s"],
 			"from": %d,
 			"max_results": %d,
