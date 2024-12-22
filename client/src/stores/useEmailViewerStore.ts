@@ -15,7 +15,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(50)
-  const tatalPages = ref<number>(0)
+  const totalPages = ref<number>(0)
   const searchTerm = ref<string>('')
   const searchField = ref<string>('_all')
   const sortField= ref<string>('date')
@@ -56,10 +56,17 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       data.data.emails?.forEach((email: CardEmailI) => {
         const { day, time } = extractDayAndTime(email.date.toString())
 
+        const toArray = email.to
+        .split(',')
+        .map((email: string) => email.trim())
+        .filter((email: string) => email !== '');
+
+
         emailList.value.push({
           id: email.id,
           from: email.from,
           to: email.to,
+          toArray: toArray,
           subject: email.subject,
           date: email.date,
           day: day,
@@ -69,7 +76,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
       pageNumber.value = data.data.page
       pageSize.value = data.data.page_size
-      tatalPages.value = data.data.total_pages
+      totalPages.value = data.data.total_pages
 
       console.log('data:', data)
     } else {
@@ -101,7 +108,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
 
   function setNextPage() {
-    if (pageNumber.value < tatalPages.value) {
+    if (pageNumber.value < totalPages.value) {
       pageNumber.value++
     }
   }
@@ -120,7 +127,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
     pageNumber,
     pageSize,
-    tatalPages,
+    totalPages,
 
     setNextPage,
     setPreviousPage,

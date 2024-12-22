@@ -51,8 +51,11 @@ onBeforeMount(async () => {
               <td class="px-2 py-2 align-top">
                 <span v-if="email?.toArray && email?.toArray.length > 0 && email?.toArray[0] !== ''"
                   class="my-1 block max-h-32 overflow-x-hidden overflow-y-auto custom-scrollbar">
-                  <span v-for="(emailAddress, index) in email.toArray" :key="index">
-                    {{ emailAddress }}<br />
+                  <span>
+                    <span v-for="(emailAddress, index) in email.toArray.slice(0, 2)" :key="index">
+                      {{ emailAddress }}<br />
+                    </span>
+                    <span v-if="email.toArray.length > 2" class="text-gray-500">...</span>
                   </span>
                 </span>
                 <span v-else class="text-xs flex pt-1 ml-1">N/A</span>
@@ -64,8 +67,6 @@ onBeforeMount(async () => {
       </div>
     </div>
   </main>
-
-  <!-- <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" /> -->
 
   <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" @prevPage="setPreviousPage"
     @nextPage="setNextPage" />

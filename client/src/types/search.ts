@@ -43,6 +43,7 @@ export interface CardEmailI {
   time: string;
   from: string;
   to: string;
+  toArray: string[];
   subject: string;
 }
 

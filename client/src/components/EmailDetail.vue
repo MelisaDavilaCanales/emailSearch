@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { useEmailTableStore } from '@/stores/useEmailTableStore'
+import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { storeToRefs } from 'pinia'
 
@@ -9,7 +10,7 @@ const emailStore = useEmailTableStore()
 const { emailDetails } = storeToRefs(emailStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
-const { setEmailSearchTerm, setEmailSearchField, } = useEmailTableStore()
+const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
 
 
 const showPersonDetail = (personEmail: string) => {
