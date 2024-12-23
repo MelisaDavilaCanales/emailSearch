@@ -12,4 +12,4 @@ COPY . .
 
 RUN go build -o api .
 
-CMD ["./app/api"]
+CMD ["./api"]
