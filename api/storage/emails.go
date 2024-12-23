@@ -111,10 +111,13 @@ func buildEmailQuery(params models.SearchParams) string {
 
 	return fmt.Sprintf(`
 		{
-			"search_type": "querystring",
+			"search_type": "query",
 			"query": {
-				"query_string": {
-					"query": "%s:%s"
+				"match": {
+					"%s": {
+						"query": "\"%s\"",
+						"operator": "AND"
+					}
 				}
 			},
 			"sort_fields": ["%s"],
@@ -123,3 +126,39 @@ func buildEmailQuery(params models.SearchParams) string {
 			"_source": [ "to", "from","date", "subject"]
 		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
 }
+
+// EL MEJOR HASTA AHORA ES ESTE DE ABAJO => flexible -parcial por tokens - completos -no errores (datos incorrectos)
+// {
+// 	"search_type": "querystring",
+// 	"query": {
+// 	  "match": {
+// 		"from": {
+// 		  "query": "charles@capstoneenergy.com",
+// 		  "operator": "AND"
+// 		}
+// 	  }
+// 	}
+
+// "analyze_wildcard": true,
+// "default_operator": "AND"
+
+// "query": {
+//     "match": {
+//       "from": "charles@capstoneenergy.com"
+//     }
+//   },
+
+// SOLUCION PARA NO TRARE DATOS CON COINDIDENCIA EXACTA PERO NO PARCIALES
+// nO SON NECESARIOS LOS OTROS 2
+// "query": "%s:\"%s\"",
+
+// Match flexible - erroneos
+
+// PRIMERA OPCION FUNCIONAL - SOLO BUSQUEDAD COMPLETAS
+// "search_type": "querystring",
+// 			"query": {
+// 				"query_string": {
+// 					"query": "%s:%s"
+// 				}
+// 			},
+// 			"sort_fields": ["%s"],

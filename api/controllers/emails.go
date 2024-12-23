@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -76,8 +75,6 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	fmt.Println("REPSUESTA AL FRONT:", emailHitsData)
 
 	emails := make([]models.EmailSummary, len(emailHitsData.Hits))
 	for i, hit := range emailHitsData.Hits {
