@@ -1,0 +1,43 @@
+services:
+  indexer:
+    build:
+      context: ./indexer
+    environment:
+      - ZINC_SEARCH_API_URL="http://localhost:4080/api/"
+      - DB_USER="admin"
+      - DB_PASSWORD="Complexpass#123"
+    networks:
+      - my_network
+    restart: on-failure
+  api:
+    build:
+      context: ./api
+    ports:
+      - 8080:8080
+    environment:
+      - ZINC_SEARCH_API_URL="http://localhost:4080/api/"
+      - ZINC_SEARCH_AGGREGATION_API_URL="http://localhost:4080/es/"
+      - DB_USER="admin"
+      - DB_PASSWORD="Complexpass#123"
+      - API_PORT=8080
+    networks:
+      - my_network
+    restart: on-failure
+    depends_on:
+      - indexer
+  client:
+    build:
+      context: ./client
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080
+    ports:
+      - 80:8080
+    networks:
+      - my_network
+    restart: on-failure
+    depends_on:
+      - api
+  
+networks:
+  my_network:
+    driver: bridge
