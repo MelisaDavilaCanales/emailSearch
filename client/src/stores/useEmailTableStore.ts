@@ -47,6 +47,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   })
 
   async function fetchEmails() {
+    console.log('FETCHING emailSearchURL:', emailSearchURL.value)
     const response = await fetch(emailSearchURL.value)
     const data = await response.json()
 
@@ -90,10 +91,12 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
   function setEmailSearchTerm(term: string) {
     searchTerm.value = term
+    console.log('searchTerm:', searchTerm.value)
   }
 
   function setEmailSearchField(field: string) {
     searchField.value = field
+    console.log('searchField:', searchField.value)
   }
 
   function setEmailSortField(field: string) {

@@ -2,15 +2,32 @@
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
+import { useEmailTableStore } from '@/stores/useEmailTableStore'
+import { usePersonStore } from '@/stores/usePersonStore'
 
 const { toggleSearchType } = useSearchTypeStore()
+const { setEmailSearchField, setEmailSearchTerm } = useEmailTableStore()
+const { setPersonSortField, setPersonSearchTerm } = usePersonStore()
 
 const storeUserType = useSearchTypeStore()
-const { searchType } = storeToRefs(storeUserType)
+const { searchType, searchFieldActive } = storeToRefs(storeUserType)
 
-const selectedOption = ref(searchType)
+const selectedSearchTypeOption = ref(searchType)
 
-watch(selectedOption, (newValue) => {
+const searchContent = ref('')
+
+const searchHandler = () => {
+  console.log('searchHandler')
+  if (searchType.value === 'emails') { //searchContent.value
+    setEmailSearchField(searchFieldActive.value)
+    setEmailSearchTerm(searchContent.value)
+  } else if (searchType.value === 'persons') {
+    setPersonSortField(searchFieldActive.value)
+    setPersonSearchTerm(searchContent.value)
+  }
+}
+
+watch(selectedSearchTypeOption, (newValue) => {
   toggleSearchType(newValue)
 })
 </script>
@@ -24,11 +41,13 @@ watch(selectedOption, (newValue) => {
         <img class="w-6" src="../assets/img/search.png" alt="">
       </div>
 
-      <input type="text" placeholder="Buscar notas"
-        class="flex-1 text-sm bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none" />
+      <input type="text" placeholder="Buscar notas" :v-bind="searchContent"
+        :value="searchFieldActive + ':' + searchContent"
+        class="flex-1 pb-1 text-sm bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none"
+        @keyup.enter="searchHandler" />
 
-      <button
-        class="ml-3 bg-primaryMiddle text-white text-xs py-1 px-3 rounded hover:bg-primaryDark focus:outline-none">
+      <button class="ml-3 bg-primaryMiddle text-white text-xs py-1 px-3 rounded hover:bg-primaryDark focus:outline-none"
+        @click="searchHandler">
         Buscar
       </button>
     </div>
@@ -39,14 +58,14 @@ watch(selectedOption, (newValue) => {
       <span class="font-normal text-sm text-gray-800 leading-none ">Search by:</span>
 
       <div class="flex items-center space-x-2">
-        <input type="radio" id="emails" value="emails" v-model="selectedOption" />
+        <input type="radio" id="emails" value="emails" v-model="selectedSearchTypeOption" />
         <label for="emails" class="font-normal text-sm text-gray-800cursor-pointer leading-none">
           Emails
         </label>
       </div>
 
       <div class="flex items-center space-x-2">
-        <input type="radio" id="persons" value="persons" v-model="selectedOption" />
+        <input type="radio" id="persons" value="persons" v-model="selectedSearchTypeOption" />
         <label for="persons" class="font-normal text-sm text-gray-800 cursor-pointer leading-none">
           Persons
         </label>

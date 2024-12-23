@@ -7,10 +7,10 @@ import { storeToRefs } from 'pinia';
 import { ref, computed } from 'vue';
 
 const searchTypeStore = useSearchTypeStore();
+const { setSearchFieldActive } = useSearchTypeStore();
 const { setEmailSearchField } = useEmailTableStore();
 const { setPersonSortField } = usePersonStore();
 
-// Obtener el tipo de búsqueda desde el store
 const { searchType } = storeToRefs(searchTypeStore);
 
 const searchEmailOptions = [
@@ -32,7 +32,7 @@ const searchPersonaOptions = [
   { value: 'email', label: 'Email' },
 ];
 
-// Calcular las opciones dependiendo del tipo de búsqueda
+
 const options = computed(() => {
   if (searchType.value === 'emails') {
     return searchEmailOptions;
@@ -49,8 +49,10 @@ function handleSelectChange(event: Event) {
   const value = target.value;
   selectedOption.value = value;
   if (searchType.value === 'emails') {
+    setSearchFieldActive(value);
     setEmailSearchField(value);
   } else if (searchType.value === 'persons') {
+    setSearchFieldActive(value);
     setPersonSortField(value);
   }
 }
