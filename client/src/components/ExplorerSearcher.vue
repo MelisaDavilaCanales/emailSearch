@@ -18,6 +18,11 @@ const searchContent = ref<string>('');
 
 const searchHandler = () => {
   console.log('searchHandler')
+
+  if (searchContent.value == "") {
+    return
+  }
+
   if (searchType.value === 'emails') {
     setEmailSearchField(searchFieldActive.value)
     setEmailSearchTerm(searchContent.value)
