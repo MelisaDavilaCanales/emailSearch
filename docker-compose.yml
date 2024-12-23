@@ -2,10 +2,14 @@ services:
   indexer:
     build:
       context: ./indexer
+      args:
+        - DATA_DIR=/app/data/enron_mail_20110402
     environment:
       - ZINC_SEARCH_API_URL="http://localhost:4080/api/"
       - DB_USER="admin"
       - DB_PASSWORD="Complexpass#123"
+    volumes:
+      - ./data/enron_mail_20110402:/app/data/enron_mail_20110402
     networks:
       - my_network
     restart: on-failure
