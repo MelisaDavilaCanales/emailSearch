@@ -13,19 +13,13 @@ import Pagination from '@/components/ExplorerDataTablePagination.vue'
 const { setSelectedItemType } = useItemSelectedStore()
 
 const personStore = usePersonStore()
-const { persons, pageNumber, pageSize, tatalPages, } = storeToRefs(personStore)
+const { persons, pageNumber, pageSize, totalPage, } = storeToRefs(personStore)
 
 const { fetchPersons, sortPersonsByField, setSelectedPersonEmail } = usePersonStore()
 
 const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
 
 
-// const showPersonDetail = () => {
-//   setEmailSearchTerm(":vince.kaminski@enron.com")
-//   setEmailSearchField('from')
-
-//   setSelectedItemType('person')
-// }
 const showPersonDetail = (personEmail: string) => {
   setEmailSearchTerm(personEmail)
   setEmailSearchField('from')
@@ -72,6 +66,6 @@ onBeforeMount(async () => {
     </div>
   </main>
 
-  <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" />
+  <Pagination :currentPage="pageNumber" :totalPages="totalPage" :pageSize="pageSize" />
 
 </template>

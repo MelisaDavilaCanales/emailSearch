@@ -11,6 +11,7 @@ export const usePersonStore = defineStore('persons', () => {
   const persons = ref<Person[]>([]);
   const selectedPersonEmail = ref<string>(localStorage.getItem('selectedPersonEmail') || '');
 
+  const totalPage = ref<number>(0);
   const pageNumber = ref<number>(parseInt(localStorage.getItem('pageNumber') || '1', 10));
   const pageSize = ref<number>(parseInt(localStorage.getItem('pageSize') || '40', 10));
   const searchTerm = ref<string>(localStorage.getItem('searchTerm') || '');
@@ -57,6 +58,7 @@ export const usePersonStore = defineStore('persons', () => {
         });
       });
 
+      totalPage.value = data.data.total_pages;
       pageNumber.value = data.data.page;
       pageSize.value = data.data.page_size;
       localStorage.setItem('pageNumber', String(pageNumber.value));
@@ -126,6 +128,7 @@ export const usePersonStore = defineStore('persons', () => {
 
     pageNumber,
     pageSize,
+    totalPage,
 
     fetchPersons,
 
