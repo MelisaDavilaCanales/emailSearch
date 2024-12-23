@@ -22,7 +22,7 @@ services:
     networks:
       - my_network
     restart: on-failure
-    command: ["/bin/sh", "-c", "go run . $1"] # $1 is the argument passed to the command
+    # command: ["/bin/sh", "-c", "go run . $1"] # $1 is the argument passed to the command
   api:
     build:
       context: ./api
