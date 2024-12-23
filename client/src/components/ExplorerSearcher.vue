@@ -5,7 +5,7 @@ import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 import { useEmailTableStore } from '@/stores/useEmailTableStore'
 import { usePersonStore } from '@/stores/usePersonStore'
 
-const { toggleSearchType } = useSearchTypeStore()
+const { toggleSearchType, setSearchFieldActive } = useSearchTypeStore()
 const { setEmailSearchField, setEmailSearchTerm } = useEmailTableStore()
 const { setPersonSortField, setPersonSearchTerm } = usePersonStore()
 
@@ -18,7 +18,7 @@ const searchContent = ref<string>('');
 
 const searchHandler = () => {
   console.log('searchHandler')
-  if (searchType.value === 'emails') { //searchContent.value
+  if (searchType.value === 'emails') {
     setEmailSearchField(searchFieldActive.value)
     setEmailSearchTerm(searchContent.value)
 
@@ -31,6 +31,10 @@ const searchHandler = () => {
     console.log('selectedSearchTypeOption', selectedSearchTypeOption.value)
     console.log('searchContent', searchContent.value)
   }
+}
+
+const handlerClearSearchField = () => {
+  setSearchFieldActive('')
 }
 
 watch(searchContent, (newValue) => {
@@ -53,7 +57,9 @@ watch(selectedSearchTypeOption, (newValue) => {
       </div>
 
       <div v-if="searchFieldActive != ''" class="bg-primarySoft text-white text-xs ml-1 mr-3 py-1 px-2 rounded"> {{
-        searchFieldActive }} </div>
+        searchFieldActive }} <span @click="handlerClearSearchField"
+          class="cursor-pointer text-xs opacity-50 hover:opacity-100 hover:font-bold ml-1"> x
+        </span> </div>
 
       <input type="text" v-model="searchContent"
         placeholder="field:term <e.g. from:john.zufferli@enron.com or name:john>"
