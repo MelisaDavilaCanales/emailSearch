@@ -3,14 +3,13 @@ package main
 import (
 	"log"
 
-	"github.com/MelisaDavilaCanales/emailSearch/api/config"
 	"github.com/MelisaDavilaCanales/emailSearch/api/server"
 )
 
 func main() {
-	if err := config.SetEnvVars(); err != nil {
-		log.Fatal("Error loading .env file: ", err)
-	}
+	// if err := config.SetEnvVars(); err != nil {
+	// 	log.Fatal("Error loading .env file: ", err)
+	// }
 
 	server := server.NewServer()
 

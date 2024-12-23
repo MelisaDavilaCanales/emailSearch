@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/constant"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/emails"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
@@ -19,9 +18,9 @@ import (
 func main() {
 	timeInit := time.Now()
 
-	if err := config.SetEnvVars(); err != nil {
-		log.Fatal("Error loading .env file: ", err)
-	}
+	// if err := config.SetEnvVars(); err != nil {
+	// 	log.Fatal("Error loading .env file: ", err)
+	// }
 
 	if err := storage.TryConnectionAPI(); err != nil {
 		log.Fatal("Error connecting to database: ", err)
