@@ -14,6 +14,7 @@ const { setPersonSortField } = usePersonStore();
 const { searchType } = storeToRefs(searchTypeStore);
 
 const searchEmailOptions = [
+  { value: '_all', label: '[all fields]' },
   { value: 'message_id', label: 'Message ID' },
   { value: 'date', label: 'Date' },
   { value: 'from', label: 'From' },
@@ -28,6 +29,7 @@ const searchEmailOptions = [
 ];
 
 const searchPersonaOptions = [
+  { value: '_all', label: '[all fields]' },
   { value: 'name', label: 'Name' },
   { value: 'email', label: 'Email' },
 ];

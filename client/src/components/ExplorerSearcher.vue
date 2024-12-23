@@ -13,19 +13,30 @@ const storeUserType = useSearchTypeStore()
 const { searchType, searchFieldActive } = storeToRefs(storeUserType)
 
 const selectedSearchTypeOption = ref(searchType)
-
-const searchContent = ref('')
+const termToSearch = ref("")
+const searchContent = ref<string>('');
 
 const searchHandler = () => {
   console.log('searchHandler')
   if (searchType.value === 'emails') { //searchContent.value
     setEmailSearchField(searchFieldActive.value)
     setEmailSearchTerm(searchContent.value)
+
+    console.log('selectedSearchTypeOption', selectedSearchTypeOption.value)
+    console.log('searchContent', searchContent.value)
   } else if (searchType.value === 'persons') {
     setPersonSortField(searchFieldActive.value)
     setPersonSearchTerm(searchContent.value)
+
+    console.log('selectedSearchTypeOption', selectedSearchTypeOption.value)
+    console.log('searchContent', searchContent.value)
   }
 }
+
+watch(searchContent, (newValue) => {
+  termToSearch.value = newValue
+  console.log('termToSearch', newValue)
+})
 
 watch(selectedSearchTypeOption, (newValue) => {
   toggleSearchType(newValue)
@@ -41,10 +52,14 @@ watch(selectedSearchTypeOption, (newValue) => {
         <img class="w-6" src="../assets/img/search.png" alt="">
       </div>
 
-      <input type="text" placeholder="Buscar notas" :v-bind="searchContent"
-        :value="searchFieldActive + ':' + searchContent"
-        class="flex-1 pb-1 text-sm bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none"
+      <div v-if="searchFieldActive != ''" class="bg-primarySoft text-white text-xs ml-1 mr-3 py-1 px-2 rounded"> {{
+        searchFieldActive }} </div>
+
+      <input type="text" v-model="searchContent"
+        placeholder="field:term <e.g. from:john.zufferli@enron.com or name:john>"
+        class="flex-1 text-sm bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none"
         @keyup.enter="searchHandler" />
+
 
       <button class="ml-3 bg-primaryMiddle text-white text-xs py-1 px-3 rounded hover:bg-primaryDark focus:outline-none"
         @click="searchHandler">
