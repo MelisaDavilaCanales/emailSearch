@@ -1,18 +1,28 @@
 services:
+  zinc_search:
+    image: public.ecr.aws/zinclabs/zinc:latest
+    environment:
+      - ZINC_SEARCH_ADMIN_USER=admin
+      - ZINC_SEARCH_ADMIN_PASSWORD=Complexpass#123
+    ports:
+      - '4080:4080'
+    networks:
+      - my_network
+    volumes:
+      - ./zinc_search:/var/lib/zinc_search
   indexer:
     build:
       context: ./indexer
       args:
-        - DATA_DIR=/app/data/enron_mail_20110402
+        DATA_PATH: ${DATA_PATH}
     environment:
       - ZINC_SEARCH_API_URL="http://localhost:4080/api/"
       - DB_USER="admin"
       - DB_PASSWORD="Complexpass#123"
-    volumes:
-      - ./data/enron_mail_20110402:/app/data/enron_mail_20110402
     networks:
       - my_network
     restart: on-failure
+    command: ["/bin/sh", "-c", "go run . $1"] # $1 is the argument passed to the command
   api:
     build:
       context: ./api
@@ -27,8 +37,6 @@ services:
     networks:
       - my_network
     restart: on-failure
-    depends_on:
-      - indexer
   client:
     build:
       context: ./client
