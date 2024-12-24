@@ -19,6 +19,11 @@ import (
 func main() {
 	timeInit := time.Now()
 
+	_, err := emails.GetDirectory()
+	if err != nil {
+		log.Fatal("Error getting directory: ", err)
+	}
+
 	if err := config.SetEnvVars(); err != nil {
 		log.Fatal("Error loading .env file: ", err)
 	}

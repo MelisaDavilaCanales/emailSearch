@@ -11,7 +11,7 @@ import (
 // ProcessEmailDirectory retrieves the directory path from the command-line arguments, processes the specified directory,
 // and scans it for email files, and sends their paths to the provided channel.
 func ProcessEmailDirectory(emailPathCh chan string) error {
-	dir, err := getDirectory()
+	dir, err := GetDirectory()
 	if err != nil {
 		return err
 	}
@@ -25,7 +25,7 @@ func ProcessEmailDirectory(emailPathCh chan string) error {
 }
 
 // getDirectory retrieves the directory path from the command-line arguments and verifies it's existence.
-func getDirectory() (string, error) {
+func GetDirectory() (string, error) {
 	if len(os.Args) < 2 {
 		return "", fmt.Errorf("no directory provided ")
 	}
