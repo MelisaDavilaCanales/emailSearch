@@ -12,11 +12,16 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/persons"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/profiling"
 
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
 func main() {
+
+	cpuProf := profiling.StartCPUProfile()
+	memoryProf := profiling.StartMemoryProfile()
+
 	timeInit := time.Now()
 
 	_, err := emails.GetDirectory()
@@ -85,4 +90,7 @@ func main() {
 	fmt.Printf("TotalEmails: %v\n", emails.TotalEmails)
 	fmt.Printf("TotalEmailsValid: %v\n", emails.TotalEmailsValid)
 	fmt.Printf("TotalEmailsInvalid: %v\n", emails.TotalEmailsInvalid)
+
+	profiling.StopCPUProfile(cpuProf)
+	profiling.StopMemoryProfile(memoryProf)
 }
