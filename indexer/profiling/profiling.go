@@ -1,33 +1,51 @@
 package profiling
 
 import (
+	"log"
+	"net/http"
 	"os"
+	"runtime"
 	"runtime/pprof"
 )
 
-func StartCPUProfile() *os.File {
-	cpuProf, err := os.Create("cpu.prof")
+func StartProfiling() (cpuFile *os.File, memFile *os.File) {
+	// Create CPU profiling file
+	cpuFile, err := os.Create("cpu.prof")
 	if err != nil {
-		panic(err)
+		log.Fatal("Error creating CPU profile file:", err)
 	}
-	pprof.StartCPUProfile(cpuProf)
-	return cpuProf
+	// Start CPU profiling
+	if err := pprof.StartCPUProfile(cpuFile); err != nil {
+		log.Fatal("Error starting CPU profiling:", err)
+	}
+
+	// Create Memory profiling file
+	memFile, err = os.Create("mem.prof")
+	if err != nil {
+		log.Fatal("Error creating memory profile file:", err)
+	}
+
+	return cpuFile, memFile
 }
 
-func StopCPUProfile(cpuProfile *os.File) {
+func StopProfiling(cpuFile *os.File, memFile *os.File) {
+	// Stop CPU profiling
 	pprof.StopCPUProfile()
-	cpuProfile.Close()
-}
+	cpuFile.Close()
 
-func StartMemoryProfile() *os.File {
-	memoryProfile, err := os.Create("mem.prof")
-	if err != nil {
-		panic(err)
+	// Run memory profiling
+	runtime.GC() // Force garbage collection before memory profiling
+	if err := pprof.WriteHeapProfile(memFile); err != nil {
+		log.Fatal("Error writing memory profile:", err)
 	}
-	return memoryProfile
+	memFile.Close()
 }
 
-func StopMemoryProfile(memoryProfile *os.File) {
-	pprof.WriteHeapProfile(memoryProfile)
-	memoryProfile.Close()
+func StartHTTPProfiler() {
+	go func() {
+		log.Println("Starting pprof HTTP server on :6060")
+		if err := http.ListenAndServe(":6060", nil); err != nil {
+			log.Println("Error starting pprof HTTP server:", err)
+		}
+	}()
 }
