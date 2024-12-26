@@ -50,6 +50,7 @@ func buildPersonQuery(params models.SearchParams) string {
 		params.SearchField = "_all"
 	}
 
+	// Its success to get personns with the PersonTable
 	return fmt.Sprintf(`
 		{
 			"search_type": "querystring",
