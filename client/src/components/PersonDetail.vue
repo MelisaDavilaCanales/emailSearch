@@ -1,9 +1,12 @@
 <script setup lang="ts">
 
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { usePersonStore } from '@/stores/usePersonStore'
+import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
+
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
 
 
@@ -16,11 +19,32 @@ const { selectedPersonEmail } = storeToRefs(personStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
 
+const searchTypeStore = useSearchTypeStore()
+const { searchTerm } = storeToRefs(searchTypeStore)
 
 const showEmailDetail = (emailId: string) => {
   fetchEmail(emailId)
   setSelectedItemType('email')
 }
+
+const highlightText = (text: string, term: string): string => {
+  if (!term) return text;
+  const regex = new RegExp(`(${term})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
+};
+
+const highlightedEmails = computed(() => {
+  const term = searchTerm.value || '';
+  return emailList.value.map(email => {
+    return {
+      ...email,
+      date: highlightText(email.date, term),
+      from: highlightText(email.from, term),
+      to: highlightText(email.to, term),
+      subject: highlightText(email.subject, term),
+    };
+  });
+});
 
 </script>
 
@@ -66,7 +90,7 @@ const showEmailDetail = (emailId: string) => {
       <div class="w-full overflow-y-auto overflow-x-hidden flex-grow space-y-2 custom-scrollbar">
         <!-- Emails -->
         <div class="w-full relative bg-graySoft rounded-md py-2 px-2 flex space-x-2 cursor-pointer"
-          @click="showEmailDetail(email.id)" v-for="email in emailList" :key="email.id">
+          @click="showEmailDetail(email.id)" v-for="email in highlightedEmails" :key="email.id">
           <div class="w-12 px-1 ">
             <img src="../assets/img/email-png.png" alt="">
           </div>
@@ -74,25 +98,22 @@ const showEmailDetail = (emailId: string) => {
             <div class="flex justify-between w-full">
               <p class="block max-h-5 ">
                 <span class="font-bold mr-1">From:</span>
-                <span v-if="email?.from && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden">{{
-                  email.from }}
-                </span>
+                <span v-if="email?.from && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
+                  v-html="email.from"></span>
                 <span v-else class="text-xs">N/A</span>
               </p>
-              <span class="">{{ email.day }} {{ email.time }}</span>
+              <span v-html="email.date"></span>
             </div>
             <p class="block max-h-5 ">
               <span class="font-bold mr-1">To:</span>
-              <span v-if="email?.to && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden">{{
-                email.to }}
-              </span>
+              <span v-if="email?.to && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
+                v-html="email.to"></span>
               <span v-else class="text-xs">N/A</span>
             </p>
-            <p class="block max-h-5 ">
+            <p class="block max-h-5">
               <span class="font-bold mr-1">Subject:</span>
-              <span v-if="email?.subject && email?.subject[0] !== ''"
-                class="truncate whitespace-nowrap overflow-hidden">{{
-                  email.subject }}</span>
+              <span v-if="email?.subject && email?.subject[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
+                v-html="email.subject"></span>
               <span v-else class="text-xs">N/A</span>
             </p>
           </div>

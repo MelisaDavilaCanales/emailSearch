@@ -4,7 +4,6 @@ export type itemSelectedTypeI = 'email' | 'person'
 export interface Email {
   id: string
   message_id: string
-  // date: Date
   date: string
   from: string
   subject: string
@@ -30,9 +29,7 @@ export interface SumaryEmail {
 
 export interface CardEmailI {
   id: string;
-  date: Date;
-  day: string;
-  time: string;
+  date: string;
   from: string;
   to: string;
   subject: string;

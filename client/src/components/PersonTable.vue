@@ -1,11 +1,12 @@
 <script setup lang="ts">
 
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { usePersonStore } from '@/stores/usePersonStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
+import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -24,11 +25,12 @@ const { fetchPersons, sortPersonsByField, setSelectedPersonEmail } = usePersonSt
 
 const { setEmailSearchParams } = useEmailViewerStore()
 
+const searchTypeStore = useSearchTypeStore()
+const { searchTerm } = storeToRefs(searchTypeStore)
+
 
 const showPersonDetail = (personEmail: string) => {
   setEmailSearchParams('from', personEmail)
-  // setEmailSearchTerm(personEmail)
-  // setEmailSearchField('from')
 
   setSelectedPersonEmail(personEmail)
 
@@ -43,6 +45,23 @@ const tableHeaders = [
   { field: 'email', label: 'Email' },
   { field: 'name', label: 'Name' },
 ]
+
+const highlightText = (text: string, term: string): string => {
+  if (!term) return text;
+  const regex = new RegExp(`(${term})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
+};
+
+const highlightedPersons = computed(() => {
+  const term = searchTerm.value || '';
+  return persons.value.map(person => {
+    return {
+      ...person,
+      email: highlightText(person.email, term),
+      name: highlightText(person.name, term),
+    };
+  });
+});
 
 </script>
 
@@ -64,11 +83,14 @@ const tableHeaders = [
             </tr>
           </thead>
           <tbody class="text-gray-600">
-            <tr v-for="(person, index) in persons" :key="person.id" class="border-t hover:bg-gray-50 cursor-pointer"
-              @click="showPersonDetail(person.email)">
+            <tr v-for="(person, index) in highlightedPersons" :key="person.id"
+              class="border-t hover:bg-gray-50 cursor-pointer" @click="showPersonDetail(person.email)">
               <td class=" px-2 py-2 align-center">{{ index + 1 }}</td>
-              <td class="px-2 py-2 align-top text-nowrap"> <font-awesome-icon icon="user" /> {{ person.email }}</td>
-              <td class="px-2 py-2 align-top ">{{ person.name }} </td>
+              <td class="px-2 py-2 align-top text-nowrap">
+                <font-awesome-icon icon="user" />
+                <span v-html="person.email"></span>
+              </td>
+              <td class="px-2 py-2 align-top " v-html="person.name"></td>
             </tr>
           </tbody>
         </table>
