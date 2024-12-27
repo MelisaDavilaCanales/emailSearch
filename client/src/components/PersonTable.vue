@@ -7,13 +7,18 @@ import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { usePersonStore } from '@/stores/usePersonStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
+
+library.add(fas)
 
 const { setSelectedItemType } = useItemSelectedStore()
 
 const personStore = usePersonStore()
-const { persons, pageNumber, pageSize, totalPage, } = storeToRefs(personStore)
+const { persons, pageNumber, pageSize, totalPage, sortOrder, sortField } = storeToRefs(personStore)
 
 const { fetchPersons, sortPersonsByField, setSelectedPersonEmail } = usePersonStore()
 
@@ -33,6 +38,11 @@ onBeforeMount(async () => {
   fetchPersons()
 });
 
+const tableHeaders = [
+  { field: 'email', label: 'Email' },
+  { field: 'name', label: 'Name' },
+]
+
 </script>
 
 <template>
@@ -43,21 +53,20 @@ onBeforeMount(async () => {
           <thead class="bg-gray-100 sticky top-0 z-10">
             <tr>
               <th class="px-2 py-2 text-center cursor-pointer">#</th>
-              <th class="pl-2 py-2 text-left cursor-pointer"></th>
-              <th @click="sortPersonsByField('email')" class="px-2 py-2 text-left cursor-pointer">Email ↕</th>
-              <th @click="sortPersonsByField('name')" class="px-2 py-2 text-left cursor-pointer">Name ↕</th>
+              <th @click="sortPersonsByField(header.field)" v-for="header in tableHeaders" :key="header.field"
+                class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">
+                {{ header.label }}
+                <font-awesome-icon icon="arrow-up" v-if="sortField == header.field && sortOrder == 'asc'" />
+                <font-awesome-icon icon="arrow-down" v-if="sortField == header.field && sortOrder == 'desc'" />
+                <span v-if="sortField != header.field"> ↕ </span>
+              </th>
             </tr>
           </thead>
           <tbody class="text-gray-600">
             <tr v-for="(person, index) in persons" :key="person.id" class="border-t hover:bg-gray-50 cursor-pointer"
               @click="showPersonDetail(person.email)">
               <td class=" px-2 py-2 align-center">{{ index + 1 }}</td>
-              <td class="pl-2 py-2align-top">
-                <span class="block max-w-6">
-                  <img class="" src="../assets/img/person.png" alt="">
-                </span>
-              </td>
-              <td class="px-2 py-2 align-top">{{ person.email }}</td>
+              <td class="px-2 py-2 align-top text-nowrap"> <font-awesome-icon icon="user" /> {{ person.email }}</td>
               <td class="px-2 py-2 align-top ">{{ person.name }} </td>
             </tr>
           </tbody>

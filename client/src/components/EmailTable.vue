@@ -1,20 +1,23 @@
 <script setup lang="ts">
-
 import { useEmailTableStore } from '@/stores/useEmailTableStore'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
 
+library.add(fas)
+
 const emailStore = useEmailTableStore()
-const { emailList, pageNumber, pageSize, tatalPages, } = storeToRefs(emailStore)
+const { emailList, pageNumber, pageSize, tatalPages, sortOrder, sortField } = storeToRefs(emailStore)
 
 const { fetchEmails, sortEmailsByField, setNextPage, setPreviousPage } = useEmailTableStore()
 const { fetchEmail } = useEmailViewerStore()
 const { setSelectedItemType } = useItemSelectedStore()
-
 
 const showEmailDetail = (emailId: string) => {
   fetchEmail(emailId)
@@ -24,6 +27,14 @@ const showEmailDetail = (emailId: string) => {
 onBeforeMount(async () => {
   fetchEmails()
 });
+
+const tableHeaders = [
+  { field: 'date', label: 'Date' },
+  { field: 'from', label: 'From' },
+  { field: 'to', label: 'To' },
+  { field: 'subject', label: 'Subject' },
+]
+
 </script>
 
 <template>
@@ -34,21 +45,20 @@ onBeforeMount(async () => {
           <thead class="bg-gray-100 sticky top-0 z-10">
             <tr>
               <th class="pl-3 py-2 text-top cursor-pointer whitespace-nowrap">#</th>
-              <th @click="sortEmailsByField('date')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">Date ↕
+              <th @click="sortEmailsByField(header.field)" v-for="header in tableHeaders" :key="header.field"
+                class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">
+                {{ header.label }}
+                <font-awesome-icon icon="arrow-up" v-if="sortField == header.field && sortOrder == 'asc'" />
+                <font-awesome-icon icon="arrow-down" v-if="sortField == header.field && sortOrder == 'desc'" />
+                <span v-if="sortField != header.field"> ↕ </span>
               </th>
-              <th @click="sortEmailsByField('from')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">From ↕
-              </th>
-              <th @click="sortEmailsByField('to')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">To ↕
-              </th>
-              <th @click="sortEmailsByField('subject')" class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">
-                Subject ↕</th>
             </tr>
           </thead>
           <tbody class="text-gray-600">
             <tr @click="showEmailDetail(email.id)" v-for="(email, index) in emailList" :key="email.id"
               class="border-t hover:bg-gray-50 cursor-pointer">
               <td class="pl-3 py-2 align-top">{{ index + 1 }}</td>
-              <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.day }} {{ email.time }}</td>
+              <td class="px-2 py-2 align-top whitespace-nowrap">{{ email.date }}</td>
               <td class="px-2 py-2 align-top">{{ email.from }}</td>
               <td class="px-2 py-2 align-top">
                 <span v-if="email?.toArray && email?.toArray.length > 0 && email?.toArray[0] !== ''"
@@ -72,7 +82,6 @@ onBeforeMount(async () => {
 
   <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" @prevPage="setPreviousPage"
     @nextPage="setNextPage" />
-
 </template>
 
 <style scoped>

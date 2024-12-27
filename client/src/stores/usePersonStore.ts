@@ -9,15 +9,25 @@ export interface Person {
 
 export const usePersonStore = defineStore('persons', () => {
   const persons = ref<Person[]>([]);
-  const selectedPersonEmail = ref<string>(localStorage.getItem('selectedPersonEmail') || '');
+  // const selectedPersonEmail = ref<string>(localStorage.getItem('selectedPersonEmail') || '');
+
+  // const totalPage = ref<number>(0);
+  // const pageNumber = ref<number>(parseInt(localStorage.getItem('pageNumber') || '1', 10));
+  // const pageSize = ref<number>(parseInt(localStorage.getItem('pageSize') || '40', 10));
+  // const searchTerm = ref<string>(localStorage.getItem('searchTerm') || '');
+  // const searchField = ref<string>(localStorage.getItem('searchField') || '_all');
+  // const sortField = ref<string>(localStorage.getItem('sortField') || 'name');
+  // const sortOrder = ref<string>(localStorage.getItem('sortOrder') || 'asc');
+
+  const selectedPersonEmail = ref<string>('');
 
   const totalPage = ref<number>(0);
-  const pageNumber = ref<number>(parseInt(localStorage.getItem('pageNumber') || '1', 10));
-  const pageSize = ref<number>(parseInt(localStorage.getItem('pageSize') || '40', 10));
-  const searchTerm = ref<string>(localStorage.getItem('searchTerm') || '');
-  const searchField = ref<string>(localStorage.getItem('searchField') || '_all');
-  const sortField = ref<string>(localStorage.getItem('sortField') || 'name');
-  const sortOrder = ref<string>(localStorage.getItem('sortOrder') || 'asc');
+  const pageNumber = ref<number>(10);
+  const pageSize = ref<number>(40);
+  const searchTerm = ref<string>('');
+  const searchField = ref<string>('_all');
+  const sortField = ref<string>('name');
+  const sortOrder = ref<string>( 'asc');
 
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -61,8 +71,8 @@ export const usePersonStore = defineStore('persons', () => {
       totalPage.value = data.data.total_pages;
       pageNumber.value = data.data.page;
       pageSize.value = data.data.page_size;
-      localStorage.setItem('pageNumber', String(pageNumber.value));
-      localStorage.setItem('pageSize', String(pageSize.value));
+      // localStorage.setItem('pageNumber', String(pageNumber.value));
+      // localStorage.setItem('pageSize', String(pageSize.value));
 
       console.log('statusCode:' + response.status);
     } else {
@@ -111,6 +121,10 @@ export const usePersonStore = defineStore('persons', () => {
 
     sortOrder.value = 'asc';
     localStorage.setItem('sortOrder', 'asc');
+
+
+    console.log('sortField:', sortField.value)
+    console.log('sortOrder:', sortOrder.value)
   }
 
   watch([pageNumber, pageSize, searchTerm, searchField, sortField, sortOrder], () => {
@@ -125,6 +139,9 @@ export const usePersonStore = defineStore('persons', () => {
   return {
     persons,
     selectedPersonEmail,
+
+    sortOrder,
+    sortField,
 
     pageNumber,
     pageSize,

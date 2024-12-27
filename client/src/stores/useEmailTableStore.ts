@@ -56,12 +56,14 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     if (response.ok) {
       data.data.emails?.forEach((email: SumaryEmail) => {
         const { day, time } = extractDayAndTime(email.date.toString())
+        const dateFormatted = day + ' ' + time
+
         const toArray = email.to.split(',').map((email: string) => email.trim())
 
         emailList.value.push({
           id: email.id,
           // date: new Date(email.date),
-          date: email.date,
+          date: dateFormatted,
           from: email.from,
           to: email.to,
           toArray: toArray,
@@ -109,10 +111,17 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
     if (sortOrder.value == 'asc') {
       sortOrder.value = 'desc'
+
+      console.log('sortField:', sortField.value)
+      console.log('sortOrder:', sortOrder.value)
+
       return
     }
 
     sortOrder.value = 'asc'
+
+    console.log('sortField:', sortField.value)
+    console.log('sortOrder:', sortOrder.value)
   }
 
   function setNextPage() {
@@ -132,6 +141,9 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   return {
     emailList,
     emailSearchURL,
+
+    sortOrder,
+    sortField,
 
     pageNumber,
     pageSize,
