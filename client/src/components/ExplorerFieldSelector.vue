@@ -8,7 +8,7 @@ import { ref, computed } from 'vue';
 
 const searchTypeStore = useSearchTypeStore();
 const { setSearchFieldActive } = useSearchTypeStore();
-const { setEmailSearchParams } = useEmailTableStore();
+const { setEmailSearchField } = useEmailTableStore();
 const { setPersonSortField } = usePersonStore();
 
 const { searchType } = storeToRefs(searchTypeStore);
@@ -52,8 +52,8 @@ function handleSelectChange(event: Event) {
   selectedOption.value = value;
   if (searchType.value === 'emails') {
     setSearchFieldActive(value);
-    setEmailSearchParams(value, '');
-    // setEmailSearchField(value);
+    // setEmailSearchParams(value, '');
+    setEmailSearchField(value);
   } else if (searchType.value === 'persons') {
     setSearchFieldActive(value);
     setPersonSortField(value);

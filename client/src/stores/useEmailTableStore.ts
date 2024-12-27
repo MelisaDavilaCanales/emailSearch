@@ -91,9 +91,9 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   //   console.log('searchTerm:', searchTerm.value)
   // }
 
-  // function setEmailSearchField(field: string) {
-  //   searchField.value = field
-  // }
+  function setEmailSearchField(field: string) {
+    searchField.value = field
+  }
 
   function setEmailSearchParams(field: string, term: string) {
     if (field === '' && term !== '') {
@@ -165,7 +165,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     setEmailPageSize,
     setEmailSearchParams,
     // setEmailSearchTerm,
-    // setEmailSearchField,
+    setEmailSearchField,
     setEmailSortField,
 
     sortEmailsByField,
