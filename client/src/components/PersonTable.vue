@@ -15,6 +15,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { useHighlight } from '@/composables/useHighlight'
 const { highlightText } = useHighlight()
 
+import { useCleanTerm } from '@/composables/useCleanTerm'
+const { cleanEmail } = useCleanTerm()
+
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
 
 library.add(fas)
@@ -34,8 +37,10 @@ const { searchTerm } = storeToRefs(searchTypeStore)
 
 const showPersonDetail = (personEmail: string) => {
 
-  setEmailSearchParams('from', personEmail)
-  setSelectedPersonEmail(personEmail)
+  const cleanedEmail: string = cleanEmail(personEmail)
+
+  setEmailSearchParams('from', cleanedEmail)
+  setSelectedPersonEmail(cleanedEmail)
   setSelectedItemType('person')
 }
 

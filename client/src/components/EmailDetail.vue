@@ -22,16 +22,19 @@ const { searchTerm } = storeToRefs(searchTypeStore)
 
 const { highlightText } = useHighlight()
 
+import { useCleanTerm } from '@/composables/useCleanTerm'
+const { cleanEmail } = useCleanTerm()
+
 
 // const toast = useToast()
 // toast.success("Person selected")
 
 const showPersonDetail = (personEmail: string) => {
 
+  const cleanedEmail: string = cleanEmail(personEmail)
 
-
-  setEmailSearchParams('from', personEmail)
-  setSelectedPersonEmail(personEmail)
+  setEmailSearchParams('from', cleanedEmail)
+  setSelectedPersonEmail(cleanedEmail)
   setSelectedItemType('person')
 }
 
