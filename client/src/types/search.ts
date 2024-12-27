@@ -21,8 +21,6 @@ export interface Email {
 export interface SumaryEmail {
   id: string;
   date: string;
-  day: string;
-  time: string;
   from: string;
   to: string;
   toArray: string[];

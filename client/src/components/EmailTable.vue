@@ -67,7 +67,7 @@ const tableHeaders = [
                     <span v-for="(emailAddress, index) in email.toArray.slice(0, 2)" :key="index">
                       {{ emailAddress }}<br />
                     </span>
-                    <span v-if="email.toArray.length > 2" class="text-gray-500">...</span>
+                    <span v-if="email.toArray.length > 2" class="opacity-60">... Ver mas</span>
                   </span>
                 </span>
                 <span v-else class="text-xs flex pt-1 ml-1">N/A</span>

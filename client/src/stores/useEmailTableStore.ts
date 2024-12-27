@@ -62,14 +62,11 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
         emailList.value.push({
           id: email.id,
-          // date: new Date(email.date),
           date: dateFormatted,
           from: email.from,
           to: email.to,
           toArray: toArray,
           subject: email.subject,
-          day: day,
-          time: time,
         })
       })
 
