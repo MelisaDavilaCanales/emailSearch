@@ -6,7 +6,8 @@ import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { usePersonStore } from '@/stores/usePersonStore'
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
-import { useToast } from "vue-toastification";
+import { useHighlight } from '@/composables/useHighlight'
+// import { useToast } from "vue-toastification";
 
 const emailStore = useEmailViewerStore()
 const { emailDetail } = storeToRefs(emailStore)
@@ -19,22 +20,21 @@ const { setSelectedPersonEmail } = usePersonStore()
 const searchTypeStore = useSearchTypeStore()
 const { searchTerm } = storeToRefs(searchTypeStore)
 
+const { highlightText } = useHighlight()
+
+
+// const toast = useToast()
+// toast.success("Person selected")
 
 const showPersonDetail = (personEmail: string) => {
+
+
+
   setEmailSearchParams('from', personEmail)
-
-  const toast = useToast()
-  toast.success("Person selected")
-
   setSelectedPersonEmail(personEmail)
   setSelectedItemType('person')
 }
 
-const highlightText = (text: string, term: string): string => {
-  if (!term) return text;
-  const regex = new RegExp(`(${term})`, 'gi');
-  return text.replace(regex, '<span class="highlight">$1</span>');
-};
 
 const highlightedEmailDetail = computed(() => {
   const term = searchTerm.value || '';

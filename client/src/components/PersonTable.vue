@@ -12,6 +12,9 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import { useHighlight } from '@/composables/useHighlight'
+const { highlightText } = useHighlight()
+
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
 
 library.add(fas)
@@ -30,10 +33,9 @@ const { searchTerm } = storeToRefs(searchTypeStore)
 
 
 const showPersonDetail = (personEmail: string) => {
+
   setEmailSearchParams('from', personEmail)
-
   setSelectedPersonEmail(personEmail)
-
   setSelectedItemType('person')
 }
 
@@ -46,11 +48,6 @@ const tableHeaders = [
   { field: 'name', label: 'Name' },
 ]
 
-const highlightText = (text: string, term: string): string => {
-  if (!term) return text;
-  const regex = new RegExp(`(${term})`, 'gi');
-  return text.replace(regex, '<span class="highlight">$1</span>');
-};
 
 const highlightedPersons = computed(() => {
   const term = searchTerm.value || '';

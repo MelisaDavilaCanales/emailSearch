@@ -9,6 +9,8 @@ import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 
 import Pagination from '@/components/ExplorerDataTablePagination.vue'
 
+import { useHighlight } from '@/composables/useHighlight'
+const { highlightText } = useHighlight()
 
 const emailViewerStore = useEmailViewerStore()
 const personStore = usePersonStore()
@@ -26,12 +28,6 @@ const showEmailDetail = (emailId: string) => {
   fetchEmail(emailId)
   setSelectedItemType('email')
 }
-
-const highlightText = (text: string, term: string): string => {
-  if (!term) return text;
-  const regex = new RegExp(`(${term})`, 'gi');
-  return text.replace(regex, '<span class="highlight">$1</span>');
-};
 
 const highlightedEmails = computed(() => {
   const term = searchTerm.value || '';
