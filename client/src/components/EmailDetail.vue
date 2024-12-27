@@ -12,12 +12,13 @@ const { emailDetail } = storeToRefs(emailStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
 const { setSelectedPersonEmail } = usePersonStore()
-const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
+const { setEmailSearchParams } = useEmailViewerStore()
 
 
 const showPersonDetail = (personEmail: string) => {
-  setEmailSearchTerm(personEmail)
-  setEmailSearchField('from')
+  setEmailSearchParams('from', personEmail)
+  // setEmailSearchTerm(personEmail)
+  // setEmailSearchField('from')
 
   //AGREGAR TOAST
   const toast = useToast()

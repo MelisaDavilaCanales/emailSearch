@@ -22,12 +22,13 @@ const { persons, pageNumber, pageSize, totalPage, sortOrder, sortField } = store
 
 const { fetchPersons, sortPersonsByField, setSelectedPersonEmail } = usePersonStore()
 
-const { setEmailSearchTerm, setEmailSearchField, } = useEmailViewerStore()
+const { setEmailSearchParams } = useEmailViewerStore()
 
 
 const showPersonDetail = (personEmail: string) => {
-  setEmailSearchTerm(personEmail)
-  setEmailSearchField('from')
+  setEmailSearchParams('from', personEmail)
+  // setEmailSearchTerm(personEmail)
+  // setEmailSearchField('from')
 
   setSelectedPersonEmail(personEmail)
 

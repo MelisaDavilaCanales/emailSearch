@@ -18,6 +18,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   const tatalPages = ref<number>(0)
   const searchTerm = ref<string>('')
   const searchField = ref<string>('_all')
+  const searchParam = ref<string>('')
   const sortField= ref<string>('date')
   const sortOrder = ref<string>('desc')
 
@@ -35,10 +36,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
       pageNumber.value +
       '&page_size=' +
       pageSize.value +
-      '&term=' +
-      searchTerm.value +
-      '&field=' +
-      searchField.value +
+      searchParam.value +
       '&sort=' +
       sortField.value +
       '&order=' +
@@ -88,14 +86,29 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     pageSize.value = size
   }
 
-  function setEmailSearchTerm(term: string) {
-    searchTerm.value = term
-    console.log('searchTerm:', searchTerm.value)
-  }
+  // function setEmailSearchTerm(term: string) {
+  //   searchTerm.value = term
+  //   console.log('searchTerm:', searchTerm.value)
+  // }
 
-  function setEmailSearchField(field: string) {
+  // function setEmailSearchField(field: string) {
+  //   searchField.value = field
+  // }
+
+  function setEmailSearchParams(field: string, term: string) {
+    if (field === '' && term !== '') {
+      searchTerm.value = term
+      searchParam.value = '&field=' + searchField.value + '&term=' + term
+      return
+    } else if (term === '' && field !== '') {
+      searchField.value = field
+      searchParam.value = '&field=' + field + '&term=' + searchTerm.value
+      return
+    }
+
     searchField.value = field
-    console.log('searchField:', searchField.value)
+    searchTerm.value = term
+    searchParam.value =  '&field=' + field + '&term=' + term
   }
 
   function setEmailSortField(field: string) {
@@ -109,16 +122,10 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     if (sortOrder.value == 'asc') {
       sortOrder.value = 'desc'
 
-      console.log('sortField:', sortField.value)
-      console.log('sortOrder:', sortOrder.value)
-
       return
     }
 
     sortOrder.value = 'asc'
-
-    console.log('sortField:', sortField.value)
-    console.log('sortOrder:', sortOrder.value)
   }
 
   function setNextPage() {
@@ -146,6 +153,9 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     pageSize,
     tatalPages,
 
+    searchTerm,
+    searchField,
+
     setNextPage,
     setPreviousPage,
 
@@ -153,10 +163,12 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
     setEmailPageNumber,
     setEmailPageSize,
-    setEmailSearchTerm,
-    setEmailSearchField,
+    setEmailSearchParams,
+    // setEmailSearchTerm,
+    // setEmailSearchField,
     setEmailSortField,
 
     sortEmailsByField,
   }
 })
+

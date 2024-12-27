@@ -23,6 +23,8 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   const sortField= ref<string>('date')
   const sortOrder = ref<string>('desc')
 
+  const searchParam = ref<string>('')
+
   const baseUrl = import.meta.env.VITE_API_BASE_URL
 
   const emailSearchURL = computed(() => {
@@ -36,10 +38,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       pageNumber.value +
       '&page_size=' +
       pageSize.value +
-      '&term=' +
-      searchTerm.value +
-      '&field=' +
-      searchField.value +
+      searchParam.value +
       '&sort=' +
       sortField.value +
       '&order=' +
@@ -58,6 +57,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       if (data.data.emails === null) {
         if (searchField.value === 'from') {
           searchField.value = 'to'
+          searchParam.value = '&field=to&term=' + searchTerm.value
         }
 
         emailListType.value = searchField.value
@@ -136,23 +136,16 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     pageSize.value = size
   }
 
-  function setEmailSearchTerm(term: string) {
-    searchTerm.value = term
-  }
-
-  function setEmailSearchField(field: string) {
-    searchField.value = field
-  }
-
   function setEmailSortField(field: string) {
     sortField.value = field
   }
 
   function setEmailListType(field: string) {
     emailListType.value = field
+
+    searchParam.value = '&field=' + field + '&term=' + searchTerm.value
     searchField.value = field
   }
-
 
 
   function setNextPage() {
@@ -165,6 +158,22 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     if (pageNumber.value > 1) {
       pageNumber.value--
     }
+  }
+
+  function setEmailSearchParams(field: string, term: string) {
+    if (field === '' && term !== '') {
+      searchTerm.value = term
+      searchParam.value = '&field=' + searchField.value + '&term=' + term
+      return
+    } else if (term === '' && field !== '') {
+      searchField.value = field
+      searchParam.value = '&field=' + field + '&term=' + searchTerm.value
+      return
+    }
+
+    searchField.value = field
+    searchTerm.value = term
+    searchParam.value =  '&field=' + field + '&term=' + term
   }
 
   watch(emailSearchURL, fetchEmails)
@@ -180,16 +189,19 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     pageSize,
     totalPages,
 
+    searchTerm,
+
     setNextPage,
     setPreviousPage,
 
     fetchEmails,
     fetchEmail,
 
+    setEmailSearchParams,
     setEmailPageNumber,
     setEmailPageSize,
-    setEmailSearchTerm,
-    setEmailSearchField,
+    // setEmailSearchTerm,
+    // setEmailSearchField,
     setEmailSortField,
 
     setEmailListType,

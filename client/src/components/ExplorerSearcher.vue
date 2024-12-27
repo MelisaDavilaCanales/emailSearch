@@ -6,7 +6,7 @@ import { useEmailTableStore } from '@/stores/useEmailTableStore'
 import { usePersonStore } from '@/stores/usePersonStore'
 
 const { toggleSearchType, setSearchFieldActive } = useSearchTypeStore()
-const { setEmailSearchField, setEmailSearchTerm } = useEmailTableStore()
+const { setEmailSearchParams } = useEmailTableStore()
 const { setPersonSortField, setPersonSearchTerm } = usePersonStore()
 
 const storeUserType = useSearchTypeStore()
@@ -24,12 +24,14 @@ const searchHandler = () => {
   }
 
   if (searchType.value === 'emails') {
-    setEmailSearchField(searchFieldActive.value)
-    setEmailSearchTerm(searchContent.value)
+    setEmailSearchParams(searchFieldActive.value, searchContent.value)
+    // setEmailSearchField(searchFieldActive.value)
+    // setEmailSearchTerm(searchContent.value)
 
     console.log('selectedSearchTypeOption', selectedSearchTypeOption.value)
     console.log('searchContent', searchContent.value)
   } else if (searchType.value === 'persons') {
+
     setPersonSortField(searchFieldActive.value)
     setPersonSearchTerm(searchContent.value)
 
