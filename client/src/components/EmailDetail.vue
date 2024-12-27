@@ -1,33 +1,58 @@
 <script setup lang="ts">
 
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { usePersonStore } from '@/stores/usePersonStore'
+import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 import { useToast } from "vue-toastification";
 
 const emailStore = useEmailViewerStore()
-
 const { emailDetail } = storeToRefs(emailStore)
+const { setEmailSearchParams } = useEmailViewerStore()
 
 const { setSelectedItemType } = useItemSelectedStore()
+
 const { setSelectedPersonEmail } = usePersonStore()
-const { setEmailSearchParams } = useEmailViewerStore()
+
+const searchTypeStore = useSearchTypeStore()
+const { searchTerm } = storeToRefs(searchTypeStore)
 
 
 const showPersonDetail = (personEmail: string) => {
   setEmailSearchParams('from', personEmail)
-  // setEmailSearchTerm(personEmail)
-  // setEmailSearchField('from')
 
-  //AGREGAR TOAST
   const toast = useToast()
   toast.success("Person selected")
 
   setSelectedPersonEmail(personEmail)
-
   setSelectedItemType('person')
 }
+
+const highlightText = (text: string, term: string): string => {
+  if (!term) return text;
+  const regex = new RegExp(`(${term})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
+};
+
+const highlightedEmailDetail = computed(() => {
+  const term = searchTerm.value || '';
+
+  return {
+    id: highlightText(emailDetail.value?.message_id || '', term),
+    message_id: highlightText(emailDetail.value?.message_id || '', term),
+    date: highlightText(emailDetail.value?.date || '', term),
+    from: highlightText(emailDetail.value?.from || '', term),
+    subject: highlightText(emailDetail.value?.subject || '', term),
+    toArray: emailDetail.value?.toArray?.map(to => highlightText(to, term)) || [],
+    ccArray: emailDetail.value?.ccArray?.map(cc => highlightText(cc, term)) || [],
+    x_folder: highlightText(emailDetail.value?.x_folder || '', term),
+    x_origin: highlightText(emailDetail.value?.x_origin || '', term),
+    x_file_name: highlightText(emailDetail.value?.x_file_name || '', term),
+    content: highlightText(emailDetail.value?.content || '', term),
+  };
+});
 
 </script>
 
@@ -41,13 +66,20 @@ const showPersonDetail = (personEmail: string) => {
         <div>
           <div class="flex justify-between">
             <div>
-              <p><span class="font-bold">Message ID:</span> {{ emailDetail?.message_id }}</p>
-              <p><span class="font-bold">Date:</span> {{ emailDetail?.date }}</p>
+              <p>
+                <span class="font-bold">Message ID:</span>
+                <span v-html="highlightedEmailDetail?.message_id"></span>
+              </p>
+              <p>
+                <span class="font-bold">Date:</span>
+                <span v-html="highlightedEmailDetail?.date"></span>
+              </p>
               <p class="text-sm">
                 <span class="font-bold">From:</span>
                 <span
                   class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
-                  @click="emailDetail?.from && showPersonDetail(emailDetail.from)"> {{ emailDetail?.from }}
+                  @click="highlightedEmailDetail?.from && showPersonDetail(highlightedEmailDetail.from)"
+                  v-html="highlightedEmailDetail?.from">
                 </span>
               </p>
             </div>
@@ -56,8 +88,8 @@ const showPersonDetail = (personEmail: string) => {
             </div>
           </div>
 
-          <p class="text-sm mb-1" v-if="emailDetail?.subject && emailDetail?.subject.trim() !== ''">
-            <span class="font-bold">Subject:</span> {{ emailDetail?.subject }}
+          <p class="text-sm mb-1" v-if="emailDetail?.subject && highlightedEmailDetail?.subject.trim() !== ''">
+            <span class="font-bold">Subject:</span> {{ highlightedEmailDetail?.subject }}
           </p>
         </div>
       </div>
@@ -68,13 +100,13 @@ const showPersonDetail = (personEmail: string) => {
         <div class="text-sm flex">
           <span class="font-bold flex mr-1">To:</span>
           <div class="max-h-36 overflow-x-hidden overflow-y-auto custom-scrollbar"
-            v-if="emailDetail?.toArray && emailDetail?.toArray.length > 0 && emailDetail?.toArray[0] !== ''">
+            v-if="emailDetail?.toArray && highlightedEmailDetail?.toArray.length > 0 && highlightedEmailDetail?.toArray[0] !== ''">
             <span
               class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
-              v-for="(emailAddress, index) in emailDetail?.toArray" :key="index"
+              v-for="(emailAddress, index) in highlightedEmailDetail?.toArray" :key="index"
               @click="emailAddress && showPersonDetail(emailAddress)">
-              {{ emailAddress }}
-              <span v-if="index < emailDetail?.toArray.length - 1">, </span>
+              <span v-html="emailAddress"></span>
+              <span v-if="index < highlightedEmailDetail?.toArray.length - 1">,</span>
             </span>
           </div>
           <span v-else class="text-sm flex pt-1 ml-1">N/A</span>
@@ -82,15 +114,15 @@ const showPersonDetail = (personEmail: string) => {
 
         <!-- Datos de copia -->
         <div class="text-sm flex"
-          v-if="emailDetail?.ccArray && emailDetail?.ccArray.length > 0 && emailDetail?.ccArray[0] !== ''">
+          v-if="emailDetail?.ccArray && highlightedEmailDetail?.ccArray.length > 0 && highlightedEmailDetail?.ccArray[0] !== ''">
           <span class="font-bold flex mr-1">Cc:</span>
           <div class="max-h-36 overflow-x-hidden overflow-y-auto custom-scrollbar">
             <span
               class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
-              v-for="(emailAddress, index) in emailDetail?.ccArray" :key="index"
+              v-for="(emailAddress, index) in highlightedEmailDetail?.ccArray" :key="index"
               @click="showPersonDetail(emailAddress)">
-              {{ emailAddress }}
-              <span v-if="index < emailDetail?.ccArray.length - 1">, </span>
+              <span v-html="emailAddress"></span>
+              <span v-if="index < highlightedEmailDetail?.ccArray.length - 1">,</span>
             </span>
           </div>
         </div>
@@ -99,21 +131,24 @@ const showPersonDetail = (personEmail: string) => {
 
         <!-- Metadata -->
         <div class="mt-2">
-          <p class="text-sm" v-if="emailDetail?.x_folder && emailDetail?.x_folder.trim() !== ''">
-            <span class="font-bold">Folder:</span> {{ emailDetail?.x_folder }}
+          <p class="text-sm" v-if="emailDetail?.x_folder && highlightedEmailDetail?.x_folder.trim() !== ''">
+            <span class="font-bold">Folder:</span>
+            <span v-html="highlightedEmailDetail?.x_folder"> </span>
           </p>
-          <p class="text-sm" v-if="emailDetail?.x_origin && emailDetail?.x_origin.trim() !== ''">
-            <span class="font-bold">Origin:</span> {{ emailDetail?.x_origin }}
+          <p class="text-sm" v-if="emailDetail?.x_origin && highlightedEmailDetail?.x_origin.trim() !== ''">
+            <span class="font-bold">Origin:</span>
+            <span v-html="highlightedEmailDetail?.x_origin"> </span>
           </p>
-          <p class="text-sm" v-if="emailDetail?.x_file_name && emailDetail?.x_file_name.trim() !== ''">
-            <span class="font-bold">File Name:</span> {{ emailDetail?.x_file_name }}
+          <p class="text-sm" v-if="emailDetail?.x_file_name && highlightedEmailDetail?.x_file_name.trim() !== ''">
+            <span class="font-bold">File Name:</span>
+            <span v-html="highlightedEmailDetail?.x_file_name"> </span>
           </p>
         </div>
 
         <!-- Contenido -->
         <div>
           <p class="font-bold sticky top-0 bg-grayExtraSoft z-10">Contenido:</p>
-          <p class="text-sm py-1">{{ emailDetail?.content || 'No content available' }}</p>
+          <p class="text-sm py-1" v-html="highlightedEmailDetail?.content || 'No content available'"></p>
         </div>
       </div>
     </div>
@@ -123,6 +158,11 @@ const showPersonDetail = (personEmail: string) => {
 
 
 <style scoped>
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }

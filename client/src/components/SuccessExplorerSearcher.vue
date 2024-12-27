@@ -5,14 +5,18 @@ import { useSearchTypeStore } from '@/stores/useSearchTypeStore';
 import { useEmailTableStore } from '@/stores/useEmailTableStore';
 import { usePersonStore } from '@/stores/usePersonStore';
 
-const { toggleSearchType, setSearchFieldActive } = useSearchTypeStore();
-const { setEmailSearchParams } = useEmailTableStore();
-const { setPersonSortField, setPersonSearchTerm } = usePersonStore();
-
 const searchTypeStore = useSearchTypeStore();
 const { searchType, searchFieldActive } = storeToRefs(searchTypeStore);
+const { toggleSearchType, setSearchFieldActive } = useSearchTypeStore();
+
+
 const emailTableStore = useEmailTableStore();
 const { searchTerm } = storeToRefs(emailTableStore);
+const { setEmailSearchParams } = useEmailTableStore();
+
+
+const { setPersonSortField, setPersonSearchTerm } = usePersonStore();
+
 
 const selectedSearchTypeOption = ref(searchType);
 const searchContent = ref<string>('');

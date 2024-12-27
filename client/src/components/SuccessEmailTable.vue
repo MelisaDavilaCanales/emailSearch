@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import { useEmailTableStore } from '@/stores/useEmailTableStore';
-// import { useEmailViewerStore } from '@/stores/useEmailViewerStore';
-// import { useItemSelectedStore } from '@/stores/useItemSelectedStore';
+import { useSearchTypeStore } from '@/stores/useSearchTypeStore';
 import { onBeforeMount, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 const emailStore = useEmailTableStore();
-const { emailList, searchTerm } = storeToRefs(emailStore);
+const { emailList } = storeToRefs(emailStore);
 const { fetchEmails } = useEmailTableStore();
-// const { fetchEmail } = useEmailViewerStore();
-// const { setSelectedItemType } = useItemSelectedStore();
 
-// const showEmailDetail = () => {
-//   fetchEmail('1');
-//   setSelectedItemType('email');
-// };
+const searchTypeStore = useSearchTypeStore();
+const { searchTerm } = storeToRefs(searchTypeStore);
 
 onBeforeMount(() => {
   fetchEmails();

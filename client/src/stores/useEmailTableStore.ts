@@ -86,11 +86,6 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     pageSize.value = size
   }
 
-  // function setEmailSearchTerm(term: string) {
-  //   searchTerm.value = term
-  //   console.log('searchTerm:', searchTerm.value)
-  // }
-
   function setEmailSearchField(field: string) {
     searchField.value = field
   }
@@ -153,7 +148,6 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     pageSize,
     tatalPages,
 
-    searchTerm,
     searchField,
 
     setNextPage,
@@ -164,7 +158,6 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     setEmailPageNumber,
     setEmailPageSize,
     setEmailSearchParams,
-    // setEmailSearchTerm,
     setEmailSearchField,
     setEmailSortField,
 

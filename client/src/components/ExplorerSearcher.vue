@@ -5,15 +5,15 @@ import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 import { useEmailTableStore } from '@/stores/useEmailTableStore'
 import { usePersonStore } from '@/stores/usePersonStore'
 
+const storeUserType = useSearchTypeStore()
+const { searchType, searchFieldActive, searchTerm } = storeToRefs(storeUserType)
 const { toggleSearchType, setSearchFieldActive } = useSearchTypeStore()
+
 const { setEmailSearchParams } = useEmailTableStore()
+
 const { setPersonSortField, setPersonSearchTerm } = usePersonStore()
 
-const storeUserType = useSearchTypeStore()
-const { searchType, searchFieldActive } = storeToRefs(storeUserType)
-
 const selectedSearchTypeOption = ref(searchType)
-const termToSearch = ref("")
 const searchContent = ref<string>('');
 
 const searchHandler = () => {
@@ -25,28 +25,20 @@ const searchHandler = () => {
 
   if (searchType.value === 'emails') {
     setEmailSearchParams(searchFieldActive.value, searchContent.value)
-    // setEmailSearchField(searchFieldActive.value)
-    // setEmailSearchTerm(searchContent.value)
-
-    console.log('selectedSearchTypeOption', selectedSearchTypeOption.value)
-    console.log('searchContent', searchContent.value)
   } else if (searchType.value === 'persons') {
-
     setPersonSortField(searchFieldActive.value)
     setPersonSearchTerm(searchContent.value)
-
-    console.log('selectedSearchTypeOption', selectedSearchTypeOption.value)
-    console.log('searchContent', searchContent.value)
   }
 }
 
 const handlerClearSearchField = () => {
-  setSearchFieldActive('')
+  setSearchFieldActive('');
+  searchContent.value = '';
+  searchTerm.value = '';
 }
 
 watch(searchContent, (newValue) => {
-  termToSearch.value = newValue
-  console.log('termToSearch', newValue)
+  searchTerm.value = newValue;
 })
 
 watch(selectedSearchTypeOption, (newValue) => {
@@ -63,10 +55,12 @@ watch(selectedSearchTypeOption, (newValue) => {
         <img class="w-6" src="../assets/img/search.png" alt="">
       </div>
 
-      <div v-if="searchFieldActive != ''" class="bg-primarySoft text-white text-xs ml-1 mr-3 py-1 px-2 rounded"> {{
-        searchFieldActive }} <span @click="handlerClearSearchField"
+      <div v-if="searchFieldActive != ''" class="bg-primarySoft text-white text-xs ml-1 mr-3 py-1 px-2 rounded">
+        {{ searchFieldActive }}
+        <span @click="handlerClearSearchField"
           class="cursor-pointer text-xs opacity-50 hover:opacity-100 hover:font-bold ml-1"> x
-        </span> </div>
+        </span>
+      </div>
 
       <input type="text" v-model="searchContent"
         placeholder="field:term <e.g. from:john.zufferli@enron.com or name:john>"
@@ -102,3 +96,10 @@ watch(selectedSearchTypeOption, (newValue) => {
 
   </div>
 </template>
+
+<style>
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+}
+</style>

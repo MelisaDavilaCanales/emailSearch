@@ -5,6 +5,7 @@ import type { searchTypeI } from '@/types/search'
 export const useSearchTypeStore = defineStore('searchType', () => {
   const searchType = ref<searchTypeI>('emails')
   const searchFieldActive = ref('')
+  const searchTerm = ref<string>('')
 
   const isEmailSearchActive = ref(true)
   const isPersonSearchActive = ref(false)
@@ -26,6 +27,11 @@ export const useSearchTypeStore = defineStore('searchType', () => {
     }
   }
 
+    function setEmailSearchTerm(term: string) {
+    searchTerm.value = term
+    console.log('searchTerm:', searchTerm.value)
+  }
+
   return {
     searchType,
     isEmailSearchActive,
@@ -35,6 +41,9 @@ export const useSearchTypeStore = defineStore('searchType', () => {
     searchFieldActive,
     setSearchFieldActive,
 
-    toggleSearchType
+    toggleSearchType,
+
+    searchTerm,
+    setEmailSearchTerm
   }
 })
