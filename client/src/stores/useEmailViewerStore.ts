@@ -16,7 +16,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   const emailListType = ref<string>("from")
 
   const pageNumber = ref<number>(1)
-  const pageSize = ref<number>(50)
+  const pageSize = ref<number>(0)
   const totalPages = ref<number>(0)
   const searchTerm = ref<string>('')
   const searchField = ref<string>('_all')
@@ -160,7 +160,8 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     }
   }
 
-  function setEmailSearchParams(field: string, term: string) {
+  function setEmailSearchParams(field: string, term: string) { // ### Refactor
+    pageNumber.value = 1
     if (field === '' && term !== '') {
       searchTerm.value = term
       searchParam.value = '&field=' + searchField.value + '&term=' + term

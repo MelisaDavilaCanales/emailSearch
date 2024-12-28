@@ -14,10 +14,10 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   const emailList = ref<SumaryEmail[]>([])
 
   const pageNumber = ref<number>(1)
-  const pageSize = ref<number>(50)
+  const pageSize = ref<number>(0)
   const tatalPages = ref<number>(0)
   const searchTerm = ref<string>('')
-  const searchField = ref<string>('_all')
+  const searchField = ref<string>('_all') // ### refactor
   const searchParam = ref<string>('')
   const sortField= ref<string>('date')
   const sortOrder = ref<string>('desc')
@@ -28,7 +28,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     return baseUrl + '/emails' + query.value
   })
 
-  // http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from&sort=to&order=desc
+  // http://localhost:8080/emails?page=1&page_size=5&term=charles&field=from&sort=to&order=desc
   const query = computed(() => {
     return (
       '?' +
@@ -91,6 +91,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   }
 
   function setEmailSearchParams(field: string, term: string) {
+    pageNumber.value = 1
     if (field === '-') {
       searchTerm.value = term
       searchParam.value = '&field=' + searchField.value + '&term=' + term
