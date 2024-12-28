@@ -1,14 +1,12 @@
 <script setup lang="ts">
 
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore';
-import { useEmailTableStore } from '@/stores/useEmailTableStore';
 import { usePersonStore } from '@/stores/usePersonStore';
 import { storeToRefs } from 'pinia';
 import { ref, computed } from 'vue';
 
 const searchTypeStore = useSearchTypeStore();
 const { setSearchFieldActive } = useSearchTypeStore();
-const { setEmailSearchField } = useEmailTableStore();
 const { setPersonSortField } = usePersonStore();
 
 const { searchType } = storeToRefs(searchTypeStore);
@@ -52,11 +50,9 @@ function handleSelectChange(event: Event) {
   selectedOption.value = value;
   if (searchType.value === 'emails') {
     setSearchFieldActive(value);
-    // setEmailSearchParams(value, '');
-    setEmailSearchField(value);
   } else if (searchType.value === 'persons') {
     setSearchFieldActive(value);
-    setPersonSortField(value);
+    setPersonSortField(value); //### Refactor
   }
 }
 </script>

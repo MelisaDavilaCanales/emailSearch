@@ -91,11 +91,11 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   }
 
   function setEmailSearchParams(field: string, term: string) {
-    if (field === '' && term !== '') {
+    if (field === '-') {
       searchTerm.value = term
       searchParam.value = '&field=' + searchField.value + '&term=' + term
       return
-    } else if (term === '' && field !== '') {
+    } else if (term === '-') {
       searchField.value = field
       searchParam.value = '&field=' + field + '&term=' + searchTerm.value
       return

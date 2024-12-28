@@ -13,15 +13,22 @@ const { setEmailSearchParams } = useEmailTableStore()
 
 const { setPersonSortField, setPersonSearchTerm } = usePersonStore()
 
-const selectedSearchTypeOption = ref(searchType)
-const searchContent = ref<string>('');
+const selectedSearchTypeOption = ref(searchType) // To Keep the state in the refresh of the page
+const searchContent = ref<string>(''); // ### Refactor name of this variable
+const previousSearchContent = ref<string>('');
+
+const previousSearchFieldActive = ref<string>('');
 
 const searchHandler = () => {
 
-  console.log('searchType.value', searchType.value)
+  if (searchContent.value === previousSearchContent.value && searchFieldActive.value === previousSearchFieldActive.value) {
+    return
+  }
 
   if (searchType.value === 'emails') {
     setEmailSearchParams(searchFieldActive.value, searchContent.value)
+    previousSearchContent.value = searchContent.value
+    previousSearchFieldActive.value = searchFieldActive.value
   } else if (searchType.value === 'persons') {
     setPersonSortField(searchFieldActive.value)
     setPersonSearchTerm(searchContent.value)
@@ -30,10 +37,9 @@ const searchHandler = () => {
 
 const handlerClearSearchField = () => {
   setSearchFieldActive('');
-  searchContent.value = '';
-  searchTerm.value = '';
 }
 
+// It is necessary to others components higthlight the current search term
 watch(searchContent, (newValue) => {
   searchTerm.value = newValue;
 })
