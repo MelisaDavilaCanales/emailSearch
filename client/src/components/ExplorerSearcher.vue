@@ -11,7 +11,7 @@ const { toggleSearchType, setSearchFieldActive } = useSearchTypeStore()
 
 const { setEmailSearchParams } = useEmailTableStore()
 
-const { setPersonSortField, setPersonSearchTerm } = usePersonStore()
+const { setPersonSearchParams } = usePersonStore()
 
 const selectedSearchTypeOption = ref(searchType) // To Keep the state in the refresh of the page
 const searchContent = ref<string>(''); // ### Refactor name of this variable
@@ -26,12 +26,13 @@ const searchHandler = () => {
   }
 
   if (searchType.value === 'emails') {
+    console.log('ENTRO A EMAILS', searchType.value)
     setEmailSearchParams(searchFieldActive.value, searchContent.value)
     previousSearchContent.value = searchContent.value
     previousSearchFieldActive.value = searchFieldActive.value
   } else if (searchType.value === 'persons') {
-    setPersonSortField(searchFieldActive.value)
-    setPersonSearchTerm(searchContent.value)
+    console.log('ENTRO A PERSONS', searchType.value)
+    setPersonSearchParams(searchFieldActive.value, searchContent.value)
   }
 }
 

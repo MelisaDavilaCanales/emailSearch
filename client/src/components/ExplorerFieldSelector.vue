@@ -1,13 +1,11 @@
 <script setup lang="ts">
 
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore';
-import { usePersonStore } from '@/stores/usePersonStore';
 import { storeToRefs } from 'pinia';
 import { ref, computed } from 'vue';
 
 const searchTypeStore = useSearchTypeStore();
 const { setSearchFieldActive } = useSearchTypeStore();
-const { setPersonSortField } = usePersonStore();
 
 const { searchType } = storeToRefs(searchTypeStore);
 
@@ -52,7 +50,6 @@ function handleSelectChange(event: Event) {
     setSearchFieldActive(value);
   } else if (searchType.value === 'persons') {
     setSearchFieldActive(value);
-    setPersonSortField(value); //### Refactor
   }
 }
 </script>

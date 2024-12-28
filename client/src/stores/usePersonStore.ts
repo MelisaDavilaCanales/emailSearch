@@ -22,12 +22,12 @@ export const usePersonStore = defineStore('persons', () => {
   const selectedPersonEmail = ref<string>('');
 
   const totalPage = ref<number>(0);
-  const pageNumber = ref<number>(10);
-  const pageSize = ref<number>(40);
-  const searchTerm = ref<string>('');
-  const searchField = ref<string>('_all');
+  const pageNumber = ref<number>(0);
+  const pageSize = ref<number>(0);
   const sortField = ref<string>('name');
   const sortOrder = ref<string>( 'asc');
+
+  const searchParam = ref<string>('')
 
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -38,10 +38,7 @@ export const usePersonStore = defineStore('persons', () => {
       pageNumber.value +
       '&page_size=' +
       pageSize.value +
-      '&term=' +
-      searchTerm.value +
-      '&field=' +
-      searchField.value +
+      searchParam.value +
       '&sort=' +
       sortField.value +
       '&order=' +
@@ -54,6 +51,7 @@ export const usePersonStore = defineStore('persons', () => {
   });
 
   async function fetchPersons() {
+    console.log('fetching persons:', personSearchURL.value);
     const response = await fetch(personSearchURL.value);
     const data = await response.json();
 
@@ -75,6 +73,7 @@ export const usePersonStore = defineStore('persons', () => {
       // localStorage.setItem('pageSize', String(pageSize.value));
 
       console.log('statusCode:' + response.status);
+      console.log('data:', data);
     } else {
       console.log('Error fetching emails:', response.statusText);
     }
@@ -86,14 +85,6 @@ export const usePersonStore = defineStore('persons', () => {
 
   function setPersonPageSize(size: number) {
     pageSize.value = size;
-  }
-
-  function setPersonSearchTerm(term: string) {
-    searchTerm.value = term;
-  }
-
-  function setPersonSearchField(field: string) {
-    searchField.value = field;
   }
 
   function setPersonSortOrder(order: string) {
@@ -123,13 +114,17 @@ export const usePersonStore = defineStore('persons', () => {
     localStorage.setItem('sortOrder', 'asc');
   }
 
+  function setPersonSearchParams(field: string, term: string) {
+    pageNumber.value = 1
+    searchParam.value =  '&field=' + field + '&term=' + term
+  }
+
   watch(query, fetchPersons);
 
-  watch([pageNumber, pageSize, searchTerm, searchField, sortField, sortOrder], () => {
+  watch([pageNumber, pageSize, searchParam, sortField, sortOrder], () => {
     localStorage.setItem('pageNumber', String(pageNumber.value));
     localStorage.setItem('pageSize', String(pageSize.value));
-    localStorage.setItem('searchTerm', searchTerm.value);
-    localStorage.setItem('searchField', searchField.value);
+    localStorage.setItem('searchParam', searchParam.value);
     localStorage.setItem('sortField', sortField.value);
     localStorage.setItem('sortOrder', sortOrder.value);
   });
@@ -149,12 +144,13 @@ export const usePersonStore = defineStore('persons', () => {
 
     setPersonPageNumber,
     setPersonPageSize,
-    setPersonSearchTerm,
-    setPersonSearchField,
     setPersonSortOrder,
     setPersonSortField,
 
     sortPersonsByField,
     setSelectedPersonEmail,
+
+    searchParam,
+    setPersonSearchParams,
   };
 });
