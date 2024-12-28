@@ -50,13 +50,15 @@ func buildPersonQuery(params models.SearchParams) string {
 		params.SearchField = "_all"
 	}
 
-	// Its success to get personns with the PersonTable
 	return fmt.Sprintf(`
 		{
-			"search_type": "querystring",
+			"search_type": "query",
 			"query": {
-				"query_string": {
-					"query": "%s:%s"
+				"match": {
+					"%s": {
+						"query": "\"%s\"",
+						"operator": "AND"
+					}
 				}
 			},
 			"sort_fields": ["%s"],
@@ -64,4 +66,20 @@ func buildPersonQuery(params models.SearchParams) string {
 			"max_results": %d,
 			"_source": []
 		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
+
 }
+
+// Its success to get personns with the PersonTable but get incorrect results
+// return fmt.Sprintf(`
+// 	{
+// 		"search_type": "querystring",
+// 		"query": {
+// 			"query_string": {
+// 				"query": "%s:%s"
+// 			}
+// 		},
+// 		"sort_fields": ["%s"],
+// 		"from": %d,
+// 		"max_results": %d,
+// 		"_source": []
+// 	}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
