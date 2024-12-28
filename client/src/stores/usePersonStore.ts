@@ -119,6 +119,19 @@ export const usePersonStore = defineStore('persons', () => {
     searchParam.value =  '&field=' + field + '&term=' + term
   }
 
+  function setNextPage() {
+    if (pageNumber.value < totalPage.value) {
+      pageNumber.value++
+    }
+  }
+
+  function setPreviousPage() {
+    if (pageNumber.value > 1) {
+      pageNumber.value--
+    }
+  }
+
+
   watch(query, fetchPersons);
 
   watch([pageNumber, pageSize, searchParam, sortField, sortOrder], () => {
@@ -139,6 +152,9 @@ export const usePersonStore = defineStore('persons', () => {
     pageNumber,
     pageSize,
     totalPage,
+
+    setNextPage,
+    setPreviousPage,
 
     fetchPersons,
 

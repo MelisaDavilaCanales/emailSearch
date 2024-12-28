@@ -17,7 +17,7 @@ import Pagination from '@/components/ExplorerDataTablePagination.vue'
 library.add(fas)
 
 const emailStore = useEmailTableStore()
-const { emailList, pageNumber, pageSize, tatalPages, sortOrder, sortField } = storeToRefs(emailStore)
+const { emailList, pageNumber, pageSize, totalPage, sortOrder, sortField } = storeToRefs(emailStore)
 const { fetchEmails, sortEmailsByField, setNextPage, setPreviousPage } = useEmailTableStore()
 
 const { fetchEmail } = useEmailViewerStore()
@@ -101,7 +101,7 @@ const highlightedEmails = computed(() => {
     </div>
   </main>
 
-  <Pagination :currentPage="pageNumber" :totalPages="tatalPages" :pageSize="pageSize" @prevPage="setPreviousPage"
+  <Pagination :currentPage="pageNumber" :totalPages="totalPage" :pageSize="pageSize" @prevPage="setPreviousPage"
     @nextPage="setNextPage" />
 </template>
 

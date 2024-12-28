@@ -15,7 +15,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(0)
-  const tatalPages = ref<number>(0)
+  const totalPage = ref<number>(0)
   const searchTerm = ref<string>('')
   const searchField = ref<string>('_all') // ### refactor
   const searchParam = ref<string>('')
@@ -70,7 +70,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
       pageNumber.value = data.data.page
       pageSize.value = data.data.page_size
-      tatalPages.value = data.data.total_pages
+      totalPage.value = data.data.total_pages
 
       console.log('data:', data)
     } else {
@@ -125,7 +125,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   }
 
   function setNextPage() {
-    if (pageNumber.value < tatalPages.value) {
+    if (pageNumber.value < totalPage.value) {
       pageNumber.value++
     }
   }
@@ -147,7 +147,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
     pageNumber,
     pageSize,
-    tatalPages,
+    totalPage,
 
     searchField,
 

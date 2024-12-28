@@ -27,7 +27,7 @@ const { setSelectedItemType } = useItemSelectedStore()
 const personStore = usePersonStore()
 const { persons, pageNumber, pageSize, totalPage, sortOrder, sortField } = storeToRefs(personStore)
 
-const { fetchPersons, sortPersonsByField, setSelectedPersonEmail } = usePersonStore()
+const { fetchPersons, sortPersonsByField, setSelectedPersonEmail, setNextPage, setPreviousPage } = usePersonStore()
 
 const { setEmailSearchParams } = useEmailViewerStore()
 
@@ -100,6 +100,7 @@ const highlightedPersons = computed(() => {
     </div>
   </main>
 
-  <Pagination :currentPage="pageNumber" :totalPages="totalPage" :pageSize="pageSize" />
+  <Pagination :currentPage="pageNumber" :totalPages="totalPage" :pageSize="pageSize" @prevPage="setPreviousPage"
+    @nextPage="setNextPage" />
 
 </template>
