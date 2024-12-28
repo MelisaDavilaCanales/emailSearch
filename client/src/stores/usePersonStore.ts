@@ -111,7 +111,7 @@ export const usePersonStore = defineStore('persons', () => {
 
 
   function sortPersonsByField(field: string) {
-    setPersonSortField(field);
+    sortField.value = field;
 
     if (sortOrder.value == 'asc') {
       sortOrder.value = 'desc';
@@ -121,11 +121,9 @@ export const usePersonStore = defineStore('persons', () => {
 
     sortOrder.value = 'asc';
     localStorage.setItem('sortOrder', 'asc');
-
-
-    console.log('sortField:', sortField.value)
-    console.log('sortOrder:', sortOrder.value)
   }
+
+  watch(query, fetchPersons);
 
   watch([pageNumber, pageSize, searchTerm, searchField, sortField, sortOrder], () => {
     localStorage.setItem('pageNumber', String(pageNumber.value));

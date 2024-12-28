@@ -17,11 +17,8 @@ const selectedSearchTypeOption = ref(searchType)
 const searchContent = ref<string>('');
 
 const searchHandler = () => {
-  console.log('searchHandler')
 
-  if (searchContent.value == "") {
-    return
-  }
+  console.log('searchType.value', searchType.value)
 
   if (searchType.value === 'emails') {
     setEmailSearchParams(searchFieldActive.value, searchContent.value)
@@ -62,8 +59,7 @@ watch(selectedSearchTypeOption, (newValue) => {
         </span>
       </div>
 
-      <input type="text" v-model="searchContent"
-        placeholder="field:term <e.g. from:john.zufferli@enron.com or name:john>"
+      <input type="text" v-model="searchContent" placeholder=""
         class="flex-1 text-sm bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none"
         @keyup.enter="searchHandler" />
 

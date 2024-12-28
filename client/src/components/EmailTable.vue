@@ -85,8 +85,8 @@ const highlightedEmails = computed(() => {
                 <span v-if="email?.toArray && email?.toArray.length > 0 && email?.toArray[0] !== ''"
                   class="my-1 block max-h-32 overflow-x-hidden overflow-y-auto custom-scrollbar">
                   <span>
-                    <span v-for="(emailAddress, index) in email.toArray.slice(0, 2)" :key="index"
-                      v-html="emailAddress + ',<br />'">
+                    <span v-for="(emailAddress, index) in email.toArray.slice(0, 2)" :key="index">
+                      <span v-html="emailAddress + '</br>'"></span>
                     </span>
                     <span v-if="email.toArray.length > 2" class="opacity-60">... Ver mas</span>
                   </span>
