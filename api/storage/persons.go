@@ -62,6 +62,6 @@ func buildPersonQuery(params models.SearchParams) string {
 			"sort_fields": ["%s"],
 			"from": %d,
 			"max_results": %d,
-			"_source": [ "to", "from","date", "subject"]
+			"_source": []
 		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
 }
