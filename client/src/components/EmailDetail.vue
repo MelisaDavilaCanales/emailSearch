@@ -7,11 +7,10 @@ import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { usePersonStore } from '@/stores/usePersonStore'
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 import { useHighlight } from '@/composables/useHighlight'
-// import { useToast } from "vue-toastification";
 
 const emailStore = useEmailViewerStore()
 const { emailDetail } = storeToRefs(emailStore)
-const { setEmailSearchParams } = useEmailViewerStore()
+const { setEmailSearchParams, resetEmailExistence, setFetchEmailsListByDefault } = useEmailViewerStore()
 
 const { setSelectedItemType } = useItemSelectedStore()
 
@@ -26,13 +25,13 @@ import { useCleanTerm } from '@/composables/useCleanTerm'
 const { cleanEmail } = useCleanTerm()
 
 
-// const toast = useToast()
-// toast.success("Person selected")
 
 const showPersonDetail = (personEmail: string) => {
 
   const cleanedEmail: string = cleanEmail(personEmail)
 
+  resetEmailExistence()
+  setFetchEmailsListByDefault(true)
   setEmailSearchParams('from', cleanedEmail)
   setSelectedPersonEmail(cleanedEmail)
   setSelectedItemType('person')

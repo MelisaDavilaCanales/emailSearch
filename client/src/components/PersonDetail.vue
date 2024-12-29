@@ -16,7 +16,7 @@ const emailViewerStore = useEmailViewerStore()
 const personStore = usePersonStore()
 
 const { fetchEmail, setEmailListType, setNextPage, setPreviousPage } = useEmailViewerStore()
-const { emailList, pageSize, pageNumber, totalPages, emailListType } = storeToRefs(emailViewerStore)
+const { emailList, pageSize, pageNumber, totalPages, emailListType, existsCopiedEmails, existsReceivedEmails, existsSentEmails } = storeToRefs(emailViewerStore)
 const { selectedPersonEmail } = storeToRefs(personStore)
 
 const { setSelectedItemType } = useItemSelectedStore()
@@ -58,26 +58,39 @@ const highlightedEmails = computed(() => {
     </div>
     <!-- button's section -->
     <div class="flex justify-between space-x-2 my-1 pr-4">
-      <div class=" flex items-end pt-6">
-        <p class="text-primaryMiddle text-sm font-semibold" v-if="emailListType == 'from' && emailList.length > 0"> -
-          Correos Enviados - </p>
-        <p class="text-primaryMiddle text-sm font-semibold" v-if="emailListType == 'to' && emailList.length > 0"> -
-          Correos Recibidos - </p>
-        <p class="text-sm text-gray-500" v-if="emailList.length <= 0">No data available</p>
+      <div class="flex items-end pt-6">
+        <p class="text-primaryMiddle text-sm font-semibold">
+          <span v-if="emailListType == 'from' && emailList.length > 0">- Sent Emails -</span>
+          <span v-else-if="emailListType == 'to' && emailList.length > 0">- Received Emails -</span>
+          <span v-else-if="emailListType == 'cc' && emailList.length > 0">- Copied Emails -</span>
+          <span v-else-if="emailListType == 'from' && !existsSentEmails" class="text-sm text-gray-500">No sent
+            emails exist</span>
+          <span v-else-if="emailListType == 'to' && !existsReceivedEmails" class="text-sm text-gray-500">No received
+            emails
+            exist</span>
+          <span v-else-if="emailListType == 'cc' && !existsCopiedEmails" class="text-sm text-gray-500">No copied emails
+            exist</span>
+        </p>
       </div>
 
       <div class="space-x-2">
         <button class="text-white text-xs py-1 px-3 rounded"
-          :class="emailListType === 'from' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primaryDark'"
+          :class="emailListType === 'from' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary'"
           :disabled="emailListType === 'from'" @click="setEmailListType('from')">
-          Enviados
+          Sent
         </button>
         <button class="text-white text-xs py-1 px-3 rounded"
-          :class="emailListType === 'to' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primaryDark'"
+          :class="emailListType === 'to' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary'"
           :disabled="emailListType === 'to'" @click="setEmailListType('to')">
-          Recibidos
+          Received
+        </button>
+        <button class="text-white text-xs py-1 px-3 rounded"
+          :class="emailListType === 'cc' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary'"
+          :disabled="emailListType === 'cc'" @click="setEmailListType('cc')">
+          Copied
         </button>
       </div>
+
     </div>
 
     <!-- emails's person -->

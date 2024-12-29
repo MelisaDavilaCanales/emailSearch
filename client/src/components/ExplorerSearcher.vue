@@ -26,12 +26,10 @@ const searchHandler = () => {
   }
 
   if (searchType.value === 'emails') {
-    console.log('ENTRO A EMAILS', searchType.value)
     setEmailSearchParams(searchFieldActive.value, searchContent.value)
     previousSearchContent.value = searchContent.value
     previousSearchFieldActive.value = searchFieldActive.value
   } else if (searchType.value === 'persons') {
-    console.log('ENTRO A PERSONS', searchType.value)
     setPersonSearchParams(searchFieldActive.value, searchContent.value)
   }
 }
@@ -73,7 +71,7 @@ watch(selectedSearchTypeOption, (newValue) => {
 
       <button class="ml-3 bg-primaryMiddle text-white text-xs py-1 px-3 rounded hover:bg-primaryDark focus:outline-none"
         @click="searchHandler">
-        Buscar
+        Search
       </button>
     </div>
 

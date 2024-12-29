@@ -29,7 +29,7 @@ const { persons, pageNumber, pageSize, totalPage, sortOrder, sortField } = store
 
 const { fetchPersons, sortPersonsByField, setSelectedPersonEmail, setNextPage, setPreviousPage } = usePersonStore()
 
-const { setEmailSearchParams } = useEmailViewerStore()
+const { setEmailSearchParams, resetEmailExistence, setFetchEmailsListByDefault } = useEmailViewerStore()
 
 const searchTypeStore = useSearchTypeStore()
 const { searchTerm } = storeToRefs(searchTypeStore)
@@ -39,6 +39,8 @@ const showPersonDetail = (personEmail: string) => {
 
   const cleanedEmail: string = cleanEmail(personEmail)
 
+  resetEmailExistence()
+  setFetchEmailsListByDefault(true)
   setEmailSearchParams('from', cleanedEmail)
   setSelectedPersonEmail(cleanedEmail)
   setSelectedItemType('person')

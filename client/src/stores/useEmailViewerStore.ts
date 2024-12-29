@@ -13,7 +13,12 @@ function extractDayAndTime(isoDate: string): { day: string; time: string } {
 export const useEmailViewerStore = defineStore('emailViewer', () => {
   const emailList = ref<CardEmailI[]>([])
   const emailDetail = ref<Email | null>(null)
-  const emailListType = ref<string>("from")
+  const emailListType = ref<string>("")
+
+  const existsSentEmails = ref<boolean>(true)
+  const existsReceivedEmails = ref<boolean>(true)
+  const existsCopiedEmails = ref<boolean>(true)
+  const fetchEmailsListByDefault = ref<boolean>(false)
 
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(0)
@@ -45,7 +50,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       sortOrder.value
     )
   })
-
   async function fetchEmails() {
     const response = await fetch(emailSearchURL.value)
     const data = await response.json()
@@ -54,14 +58,54 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
     if (response.ok) {
 
-      if (data.data.emails === null) {
+
+      if (data.data.emails === null && fetchEmailsListByDefault.value) {
         if (searchField.value === 'from') {
+          existsSentEmails.value = false
           searchField.value = 'to'
           searchParam.value = '&field=to&term=' + searchTerm.value
+
+          return
         }
 
-        emailListType.value = searchField.value
+        if (searchField.value === 'to') {
+          existsReceivedEmails.value = false
+          searchField.value = 'cc'
+          searchParam.value = '&field=cc&term=' + searchTerm.value
+
+          return
+        }
+
+        if (searchField.value === 'cc') {
+          existsCopiedEmails.value = false
+
+          return
+        }
       }
+
+      if (fetchEmailsListByDefault.value && data.data.emails !== null) {
+        fetchEmailsListByDefault.value = false
+      }
+
+
+      if (!fetchEmailsListByDefault.value && data.data.emails === null) {
+        if (searchField.value === 'from') {
+          existsSentEmails.value = false
+          return
+        }
+
+        if (searchField.value === 'to') {
+          existsReceivedEmails.value = false
+          return
+        }
+
+        if (searchField.value === 'cc') {
+          existsCopiedEmails.value = false
+          return
+        }
+      }
+
+      emailListType.value = searchField.value
 
       data.data.emails?.forEach((email: CardEmailI) => {
       const { day, time } = extractDayAndTime(email.date.toString())
@@ -86,7 +130,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       console.log('Error fetching emails:', response.statusText)
     }
   }
-
 
   async function fetchEmail(message_id: string) {
     const response = await fetch(`http://localhost:8080/emails/${message_id}`)
@@ -177,6 +220,16 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     searchParam.value =  '&field=' + field + '&term=' + term
   }
 
+  function resetEmailExistence () {
+    existsSentEmails.value = true
+    existsReceivedEmails.value = true
+    existsCopiedEmails.value = true
+  }
+
+  function setFetchEmailsListByDefault(value: boolean) {
+    fetchEmailsListByDefault.value = value
+  }
+
   watch(emailSearchURL, fetchEmails)
   watch(emailListType, fetchEmails)
 
@@ -192,6 +245,15 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
     searchTerm,
 
+    existsSentEmails,
+    existsReceivedEmails,
+    existsCopiedEmails,
+
+    fetchEmailsListByDefault,
+    setFetchEmailsListByDefault,
+
+    resetEmailExistence,
+
     setNextPage,
     setPreviousPage,
 
@@ -201,8 +263,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     setEmailSearchParams,
     setEmailPageNumber,
     setEmailPageSize,
-    // setEmailSearchTerm,
-    // setEmailSearchField,
     setEmailSortField,
 
     setEmailListType,
