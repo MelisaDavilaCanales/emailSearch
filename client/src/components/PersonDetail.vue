@@ -45,7 +45,7 @@ const highlightedEmails = computed(() => {
 </script>
 
 <template>
-  <div class="h-full w-full bg-grayExtraSoft rounded-md px-4 pt-4">
+  <div class="h-full w-full bg-grayExtraSoft rounded-md px-4 pt-4 pb-2">
     <!-- person's data -->
     <div class="flex space-x-2">
       <div class="w-14  flex items-center">
@@ -100,20 +100,23 @@ const highlightedEmails = computed(() => {
         <!-- Emails -->
         <div class="w-full relative bg-graySoft rounded-md py-2 px-2 flex space-x-2 cursor-pointer"
           @click="showEmailDetail(email.id)" v-for="email in highlightedEmails" :key="email.id">
-          <div class="w-12 px-1 ">
-            <img src="../assets/img/email-png.png" alt="">
+          <!-- Icono -->
+          <div class="w-10 pt-1 px-1 flex-shrink-0 lg:hidden xl:block">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path
+                d="M64 112c-8.8 0-16 7.2-16 16l0 22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1l0-22.1c0-8.8-7.2-16-16-16L64 112zM48 212.2L48 384c0 8.8 7.2 16 16 16l384 0c8.8 0 16-7.2 16-16l0-171.8L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64l384 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64L64 448c-35.3 0-64-28.7-64-64L0 128z" />
+            </svg>
           </div>
+
+          <!-- Contenido -->
           <div class="w-full text-sm pr-2">
-            <div class="flex justify-between w-full">
-              <p class="block max-h-5 ">
-                <span class="font-bold mr-1">From:</span>
-                <span v-if="email?.from && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
-                  v-html="email.from"></span>
-                <span v-else class="text-xs">N/A</span>
-              </p>
-              <span v-html="email.date"></span>
-            </div>
-            <p class="block max-h-5 ">
+            <p class="block max-h-5">
+              <span class="font-bold mr-1">From:</span>
+              <span v-if="email?.from && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
+                v-html="email.from"></span>
+              <span v-else class="text-xs">N/A</span>
+            </p>
+            <p class="block max-h-5">
               <span class="font-bold mr-1">To:</span>
               <span v-if="email?.to && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
                 v-html="email.to"></span>
@@ -126,12 +129,16 @@ const highlightedEmails = computed(() => {
               <span v-else class="text-xs">N/A</span>
             </p>
           </div>
+
+          <!-- Fecha en la esquina superior derecha -->
+          <span v-html="email.date" class="absolute top-2 right-4 text-xs text-gray-600 lg:hidden xl:block"></span>
+
+          <!-- Barra lateral decorativa -->
           <div class="absolute top-0 right-0 h-full w-4 bg-graySoft border-r-8 border-grayExtraSoft"></div>
         </div>
+
       </div>
     </div>
-
-    <!-- Franja gris fija -->
 
     <Pagination :currentPage="pageNumber" :totalPages="totalPages" :pageSize="pageSize" @prevPage="setPreviousPage"
       @nextPage="setNextPage" />

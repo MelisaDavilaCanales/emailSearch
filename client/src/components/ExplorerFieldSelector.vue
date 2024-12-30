@@ -1,13 +1,11 @@
 <script setup lang="ts">
-
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore';
 import { storeToRefs } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const searchTypeStore = useSearchTypeStore();
-const { setSearchFieldActive } = useSearchTypeStore();
-
-const { searchType } = storeToRefs(searchTypeStore);
+const { setSearchFieldActive } = searchTypeStore;
+const { searchType, searchFieldActive } = storeToRefs(searchTypeStore);
 
 const searchEmailOptions = [
   { value: '_all', label: '[all fields]' },
@@ -30,7 +28,6 @@ const searchPersonaOptions = [
   { value: 'email', label: 'Email' },
 ];
 
-
 const options = computed(() => {
   if (searchType.value === 'emails') {
     return searchEmailOptions;
@@ -42,13 +39,17 @@ const options = computed(() => {
 
 const selectedOption = ref<string>('');
 
+onMounted(() => {
+  // Set the initial value of the select to searchFieldActive
+  if (selectedOption.value === '')
+    selectedOption.value = searchFieldActive.value;
+});
+
 function handleSelectChange(event: Event) {
   const target = event.target as HTMLSelectElement;
   const value = target.value;
   selectedOption.value = value;
-  if (searchType.value === 'emails') {
-    setSearchFieldActive(value);
-  } else if (searchType.value === 'persons') {
+  if (searchType.value === 'emails' || searchType.value === 'persons') {
     setSearchFieldActive(value);
   }
 }
@@ -59,9 +60,9 @@ function handleSelectChange(event: Event) {
     <div class="flex space-x-2 items-center">
       <p class="text-sm text-gray-800">Search for matches only in the field:</p>
       <select
-        class="text-sm border  border-primarySoft p-1 rounded focus:outline-none focus:ring-1 focus:ring-primarySoft"
-        @change="handleSelectChange">
-        <option value="" disabled selected>Select field</option>
+        class="text-sm border border-primarySoft p-1 rounded focus:outline-none focus:ring-1 focus:ring-primarySoft"
+        v-model="selectedOption" @change="handleSelectChange">
+        <option value="" disabled>Select field</option>
         <option v-for="option in options" :key="option.value" :value="option.value">
           {{ option.label }}
         </option>

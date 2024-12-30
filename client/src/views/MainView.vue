@@ -4,7 +4,7 @@ import ViewerContainer from '@/components/ViewerContainer.vue'
 </script>
 
 <template>
-  <div class="lg:h-full md:overflow-y-hidden w-full flex flex-col lg:flex-row">
+  <div class="lg:h-full lg:overflow-y-hidden w-full flex flex-col lg:flex-row">
     <div class="lg:w-7/12">
       <ExplorerContainer />
     </div>

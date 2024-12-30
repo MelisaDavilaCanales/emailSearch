@@ -49,10 +49,10 @@ watch(selectedSearchTypeOption, (newValue) => {
 </script>
 
 <template>
-  <div class="w-full flex flex-col justify-center items-center md:flex-row md:justify-around">
+  <div class="w-full flex flex-col justify-center items-center md:flex-row md:justify-around mx-auto">
 
     <div
-      class="w-2/3 flex items-center max-w-3xl mx-auto bg-white border border-primarySoft rounded-lg p-1 focus:ring-1 focus:ring-primarySoft">
+      class="w-full lg:w-2/3 flex items-center max-w-3xl bg-white border border-primarySoft rounded-lg p-1 focus:ring-1 focus:ring-primarySoft">
       <div class="px-1">
         <img class="w-6" src="../assets/img/search.png" alt="">
       </div>
@@ -77,19 +77,19 @@ watch(selectedSearchTypeOption, (newValue) => {
 
 
     <div
-      class="w-1/3 flex items-center justify-center ml-3 space-x-4 bg-primaryExtraSoft px-1 py-2 rounded-lg font-light text-xs">
-      <span class="font-normal text-sm text-gray-800 leading-none ">Search by:</span>
+      class="lg:w-1/3 flex items-center justify-center mt-2 lg:mt-0 ml-3 space-x-2 xl:space-x-4 bg-primaryExtraSoft px-2 py-2 rounded-lg font-light text-xs">
+      <span class="font-normal text-nowrap text-gray-800 leading-none xl:text-sm">Search by:</span>
 
       <div class="flex items-center space-x-2">
         <input type="radio" id="emails" value="emails" v-model="selectedSearchTypeOption" />
-        <label for="emails" class="font-normal text-sm text-gray-800cursor-pointer leading-none">
+        <label for="emails" class="font-normal xl:text-sm text-gray-800cursor-pointer leading-none">
           Emails
         </label>
       </div>
 
       <div class="flex items-center space-x-2">
         <input type="radio" id="persons" value="persons" v-model="selectedSearchTypeOption" />
-        <label for="persons" class="font-normal text-sm text-gray-800 cursor-pointer leading-none">
+        <label for="persons" class="font-normal xl:text-sm text-gray-800 cursor-pointer leading-none">
           Persons
         </label>
       </div>

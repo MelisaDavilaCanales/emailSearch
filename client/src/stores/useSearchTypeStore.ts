@@ -9,7 +9,7 @@ export const useSearchTypeStore = defineStore('searchType', () => {
 
   const isEmailSearchActive = ref(true)
   const isPersonSearchActive = ref(false)
-  const existsSearchData = ref(true)
+  const existsSearchData = ref(false)
 
   function setSearchFieldActive(value: string) {
     searchFieldActive.value = value

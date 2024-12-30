@@ -73,12 +73,12 @@ const highlightedPersons = computed(() => {
   <main class="h-full overflow-auto table-container rounded-md">
     <div class="table-wrapper h-full flex items-center">
       <div class="overflow-y-auto max-h-full w-full border rounded-lg custom-scrollbar">
-        <table ref="dataTable" class="min-w-full table-auto border-collapse bg-white text-sm">
+        <table ref="dataTable" class="min-w-full table-fixed w-full border-collapse bg-white text-sm">
           <thead class="bg-gray-100 sticky top-0 z-10">
             <tr>
-              <th class="px-2 py-2 text-center cursor-pointer">#</th>
+              <th class="w-7 px-2 py-2 text-center cursor-pointer">#</th>
               <th @click="sortPersonsByField(header.field)" v-for="header in tableHeaders" :key="header.field"
-                class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">
+                class="overflow-x-hidden px-2 py-2 text-left cursor-pointer whitespace-nowrap">
                 {{ header.label }}
                 <font-awesome-icon icon="arrow-up" v-if="sortField == header.field && sortOrder == 'asc'" />
                 <font-awesome-icon icon="arrow-down" v-if="sortField == header.field && sortOrder == 'desc'" />
@@ -89,12 +89,13 @@ const highlightedPersons = computed(() => {
           <tbody class="text-gray-600">
             <tr v-for="(person, index) in highlightedPersons" :key="person.id"
               class="border-t hover:bg-gray-50 cursor-pointer" @click="showPersonDetail(person.email)">
-              <td class=" px-2 py-2 align-center">{{ index + 1 }}</td>
-              <td class="px-2 py-2 align-top text-nowrap">
+              <td class="px-2 pl-3 pr-2 align-center align-top">{{ index + 1 }}</td>
+              <td class="overflow-x-hidden break-words px-2 py-2 align-top text-nowrap space-x-1">
                 <font-awesome-icon icon="user" />
                 <span v-html="person.email"></span>
               </td>
-              <td class="px-2 py-2 align-top " v-html="person.name"></td>
+              <td class="overflow-x-hidden break-words  px-2 py-2 align-top " v-html="person.name">
+              </td>
             </tr>
           </tbody>
         </table>
