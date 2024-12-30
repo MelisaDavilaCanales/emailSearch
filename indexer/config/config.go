@@ -49,9 +49,12 @@ func setGlobalEnvVars() {
 }
 
 func SetEnvVars() error {
-	err := godotenv.Load()
-	if err != nil {
-		return err
+
+	if os.Getenv("APP_MODE") != "release" {
+		err := godotenv.Load()
+		if err != nil {
+			return err
+		}
 	}
 
 	if os.Getenv("DB_USER") == "" {

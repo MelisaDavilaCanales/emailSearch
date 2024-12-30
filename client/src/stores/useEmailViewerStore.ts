@@ -33,7 +33,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
   const searchParam = ref<string>('')
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL
+  const baseUrl = import.meta.env.VITE_API_URL
 
   const emailSearchURL = computed(() => {
     return baseUrl + '/emails' + query.value

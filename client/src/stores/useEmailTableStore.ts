@@ -22,7 +22,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   const sortField= ref<string>('date')
   const sortOrder = ref<string>('desc')
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL
+  const baseUrl = import.meta.env.VITE_API_URL
 
   const emailSearchURL = computed(() => {
     return baseUrl + '/emails' + query.value
