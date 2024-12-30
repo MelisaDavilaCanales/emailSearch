@@ -52,8 +52,8 @@ const highlightedEmails = computed(() => {
         <img src="../assets/img/person.png" alt="" class="">
       </div>
       <div class="flex flex-col justify-center w-full">
-        <p class="text-sm">{{ selectedPersonEmail }}</p>
-        <hr class="border-t border-grayDark mt-2">
+        <p class="font-bold">{{ selectedPersonEmail }}</p>
+        <hr class="border-t border-grayDark mt-1">
       </div>
     </div>
     <!-- button's section -->
@@ -75,17 +75,17 @@ const highlightedEmails = computed(() => {
 
       <div class="space-x-2">
         <button class="text-white text-xs py-1 px-3 rounded"
-          :class="emailListType === 'from' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary'"
+          :class="emailListType === 'from' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
           :disabled="emailListType === 'from'" @click="setEmailListType('from')">
           Sent
         </button>
         <button class="text-white text-xs py-1 px-3 rounded"
-          :class="emailListType === 'to' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary'"
+          :class="emailListType === 'to' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
           :disabled="emailListType === 'to'" @click="setEmailListType('to')">
           Received
         </button>
         <button class="text-white text-xs py-1 px-3 rounded"
-          :class="emailListType === 'cc' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary'"
+          :class="emailListType === 'cc' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
           :disabled="emailListType === 'cc'" @click="setEmailListType('cc')">
           Copied
         </button>

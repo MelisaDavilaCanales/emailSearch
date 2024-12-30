@@ -15,13 +15,14 @@ const { setPersonSearchParams } = usePersonStore()
 
 const selectedSearchTypeOption = ref(searchType) // To Keep the state in the refresh of the page
 const searchContent = ref<string>(''); // ### Refactor name of this variable
-const previousSearchContent = ref<string>('');
 
+const previousSearchContent = ref<string>('');
 const previousSearchFieldActive = ref<string>('');
+const previousSearchType = ref<string>('');
 
 const searchHandler = () => {
 
-  if (searchContent.value === previousSearchContent.value && searchFieldActive.value === previousSearchFieldActive.value) {
+  if (searchContent.value === previousSearchContent.value && searchFieldActive.value === previousSearchFieldActive.value && searchType.value === previousSearchType.value) {
     return
   }
 

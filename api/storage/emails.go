@@ -120,11 +120,12 @@ func buildEmailQuery(params models.SearchParams) string {
 					}
 				}
 			},
-			"sort_fields": ["%s"],
+			"sort": ["%s"],
 			"from": %d,
-			"max_results": %d,
+			"size": 20,
 			"_source": [ "to", "from","date", "subject"]
-		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
+		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom)
+	// }`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
 }
 
 // EL MEJOR HASTA AHORA ES ESTE DE ABAJO => flexible -parcial por tokens - completos -no errores (datos incorrectos)

@@ -141,6 +141,10 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     if (response.ok) {
       const email = data.data
 
+      const { day, time } = extractDayAndTime(email.date.toString())
+
+      const dateFormatted = day + ' ' + time
+
       const toArray = email.to
         .split(',')
         .map((email: string) => email.trim())
@@ -154,7 +158,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       emailDetail.value = {
         id: email.id,
         message_id: email.message_id,
-        date: email.date,
+        date: dateFormatted,
         from: email.from,
         to: email.to,
         toArray: toArray,
