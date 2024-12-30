@@ -191,7 +191,8 @@ const highlightedEmailDetail = computed(() => {
         </div>
 
         <!-- Contenido -->
-        <div>
+        <!-- <div class="overflow-x-hidden">  -->
+        <div class="custom-scrollbar">
           <p class="font-bold sticky top-0 bg-grayExtraSoft z-10">Contenido:</p>
           <p class="text-sm py-1 pr-2" v-html="highlightedEmailDetail?.content || 'No content available'"></p>
         </div>
@@ -210,6 +211,7 @@ const highlightedEmailDetail = computed(() => {
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
