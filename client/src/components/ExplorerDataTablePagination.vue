@@ -8,7 +8,8 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div id="pagination" class="pt-2 flex items-center justify-between border-t border-gray-200 px-4 sm:px-6">
+  <div class="w-full py-2  flex items-center justify-between px-4 sm:px-6 border-t border-gray-200">
+    <!-- <div class="w-full my-2  flex items-center justify-between px-4 border-t border-gray-200  sm:px-6"> -->
     <!-- Información de paginación -->
     <div class="flex justify-between w-screen sm:flex sm:flex-1 sm:items-center sm:justify-between">
       <div>

@@ -28,6 +28,9 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   const sortField= ref<string>('date')
   const sortOrder = ref<string>('desc')
 
+  const showAllSentEmails = ref(false)
+  const showAllCopiedEmails = ref(false)
+
   const searchParam = ref<string>('')
 
   const baseUrl = import.meta.env.VITE_API_BASE_URL
@@ -230,6 +233,19 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     fetchEmailsListByDefault.value = value
   }
 
+  const toggleShowAllSentEmails = (value: boolean) => {
+    showAllSentEmails.value = value
+  }
+
+  const toggleShowAllCopiedEmails = (value: boolean) => {
+    showAllCopiedEmails.value = value
+  }
+
+  watch(emailDetail, () => {
+    showAllSentEmails.value = false
+    showAllCopiedEmails.value = false
+  })
+
   watch(emailSearchURL, fetchEmails)
   watch(emailListType, fetchEmails)
 
@@ -266,6 +282,12 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     setEmailSortField,
 
     setEmailListType,
+
+    toggleShowAllSentEmails,
+    toggleShowAllCopiedEmails,
+
+    showAllSentEmails,
+    showAllCopiedEmails,
 
   }
 })

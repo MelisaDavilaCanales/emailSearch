@@ -6,15 +6,13 @@ import PersonTable from './PersonTable.vue'
 
 const store = useSearchTypeStore()
 
-const { isEmailSearchActive, isPersonSearchActive, existsSearchData } = storeToRefs(store)
+const { isEmailSearchActive, isPersonSearchActive } = storeToRefs(store)
 </script>
 
 <template>
-  <div :class="{ 'w-full h-full': existsSearchData, 'w-full h-[90%]': !existsSearchData }">
-    <!-- Si está activo 'isEmailSearchActive', mostramos la tabla de emails -->
+  <div class="w-full h-[97%]">
     <EmailTable v-if="isEmailSearchActive" />
 
-    <!-- Si está activo 'isPersonSearchActive', mostramos la tabla de personas -->
     <PersonTable v-if="isPersonSearchActive" />
 
     <!-- Si no hay resultados de búsqueda, mostramos un mensaje -->

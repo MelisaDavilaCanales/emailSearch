@@ -8,7 +8,7 @@ export interface Person {
 }
 
 export const usePersonStore = defineStore('persons', () => {
-  const persons = ref<Person[]>([]);
+  const personList = ref<Person[]>([]);
   // const selectedPersonEmail = ref<string>(localStorage.getItem('selectedPersonEmail') || '');
 
   // const totalPage = ref<number>(0);
@@ -55,11 +55,11 @@ export const usePersonStore = defineStore('persons', () => {
     const response = await fetch(personSearchURL.value);
     const data = await response.json();
 
-    persons.value = [];
+    personList.value = [];
 
     if (response.ok) {
       data.data.persons.forEach((person: Person) => {
-        persons.value.push({
+        personList.value.push({
           id: person.id,
           name: person.name,
           email: person.email,
@@ -143,7 +143,7 @@ export const usePersonStore = defineStore('persons', () => {
   });
 
   return {
-    persons,
+    personList,
     selectedPersonEmail,
 
     sortOrder,
