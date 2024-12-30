@@ -2,8 +2,8 @@ services:
   zincsearch:
     image: public.ecr.aws/zinclabs/zinc:latest
     environment:
-      - ZINC_SEARCH_ADMIN_USER=admin
-      - ZINC_SEARCH_ADMIN_PASSWORD=Complexpass#123
+      - ZINC_FIRST_ADMIN_USER=admin
+      - ZINC_FIRST_ADMIN_PASSWORD=Complexpass#123
     ports:
       - '4080:4080'
     networks:
@@ -20,6 +20,8 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DATA_PATH=${DATA_PATH}
+    volumes:
+      - ${DATA_PATH}:${DATA_PATH}
     networks:
       - my_network
     restart: on-failure
@@ -29,26 +31,27 @@ services:
     build:
       context: ./api
       args:
-        - API_PORT=${API_PORT}
-        - APP_MODE=${APP_MODE}
-    ports:
-      - 8080:8080
+        API_PORT: ${API_PORT}
+        APP_MODE: ${APP_MODE}
+        DB_USER: ${DB_USER}
+        DB_PASSWORD: ${DB_PASSWORD}
+        ZINC_SEARCH_API_URL: ${ZINC_SEARCH_API_URL}
+        ZINC_SEARCH_AGGREGATION_API_URL: ${ZINC_SEARCH_AGGREGATION_API_URL}
     environment:
       - ZINC_SEARCH_API_URL=${ZINC_SEARCH_API_URL}
       - ZINC_SEARCH_AGGREGATION_API_URL=${ZINC_SEARCH_AGGREGATION_API_URL}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - API_PORT=${API_PORT}
-    networks:
-      - my_network
-    restart: on-failure
     depends_on:
       - indexer
+    networks:
+      - my_network
   client:
     build:
       context: ./client
       args:
-        - VITE_API_URL=${API_URL}
+        VITE_API_URL: ${API_URL}
     environment:
       - VITE_API_URL=${API_URL}
     ports:
@@ -58,7 +61,6 @@ services:
     restart: on-failure
     depends_on:
       - api
-  
 networks:
   my_network:
     driver: bridge

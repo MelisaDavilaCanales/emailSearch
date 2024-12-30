@@ -8,7 +8,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-ARG DATA_PATH 
+ARG DATA_PATH
 
 ENV ZINC_SEARCH_API_URL=${ZINC_SEARCH_API_URL} \
     DB_USER=${DB_USER} \
