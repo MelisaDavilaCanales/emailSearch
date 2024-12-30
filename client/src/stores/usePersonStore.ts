@@ -9,20 +9,11 @@ export interface Person {
 
 export const usePersonStore = defineStore('persons', () => {
   const personList = ref<Person[]>([]);
-  // const selectedPersonEmail = ref<string>(localStorage.getItem('selectedPersonEmail') || '');
-
-  // const totalPage = ref<number>(0);
-  // const pageNumber = ref<number>(parseInt(localStorage.getItem('pageNumber') || '1', 10));
-  // const pageSize = ref<number>(parseInt(localStorage.getItem('pageSize') || '40', 10));
-  // const searchTerm = ref<string>(localStorage.getItem('searchTerm') || '');
-  // const searchField = ref<string>(localStorage.getItem('searchField') || '_all');
-  // const sortField = ref<string>(localStorage.getItem('sortField') || 'name');
-  // const sortOrder = ref<string>(localStorage.getItem('sortOrder') || 'asc');
 
   const selectedPersonEmail = ref<string>('');
 
   const totalPage = ref<number>(0);
-  const pageNumber = ref<number>(0);
+  const pageNumber = ref<number>(1);
   const pageSize = ref<number>(0);
   const sortField = ref<string>('name');
   const sortOrder = ref<string>( 'asc');
@@ -53,31 +44,31 @@ export const usePersonStore = defineStore('persons', () => {
   async function fetchPersons() {
     console.log('fetching persons:', personSearchURL.value);
     const response = await fetch(personSearchURL.value);
-    const data = await response.json();
 
     personList.value = [];
 
     if (response.ok) {
-      data.data.persons.forEach((person: Person) => {
-        personList.value.push({
-          id: person.id,
-          name: person.name,
-          email: person.email,
+      const data = await response.json();
+
+      if (data && data.data &&  data.data.persons !== null) {
+        data.data.persons.forEach((person: Person) => {
+          personList.value.push({
+            id: person.id,
+            name: person.name,
+            email: person.email,
+          });
         });
-      });
 
-      totalPage.value = data.data.total_pages;
-      pageNumber.value = data.data.page;
-      pageSize.value = data.data.page_size;
-      // localStorage.setItem('pageNumber', String(pageNumber.value));
-      // localStorage.setItem('pageSize', String(pageSize.value));
+        totalPage.value = data.data.total_pages || 0;
+        pageNumber.value = data.data.page || 1;
+        pageSize.value = data.data.page_size || 0;
+        console.log('statusCode:' + response.status);
+        console.log('data:', data);
+      }
 
-      console.log('statusCode:' + response.status);
-      console.log('data:', data);
-    } else {
-      console.log('Error fetching emails:', response.statusText);
     }
   }
+
 
   function setPersonPageNumber(page: number) {
     pageNumber.value = page;
@@ -131,15 +122,9 @@ export const usePersonStore = defineStore('persons', () => {
     }
   }
 
-
   watch(query, fetchPersons);
-
-  watch([pageNumber, pageSize, searchParam, sortField, sortOrder], () => {
-    localStorage.setItem('pageNumber', String(pageNumber.value));
-    localStorage.setItem('pageSize', String(pageSize.value));
-    localStorage.setItem('searchParam', searchParam.value);
-    localStorage.setItem('sortField', sortField.value);
-    localStorage.setItem('sortOrder', sortOrder.value);
+  watch(query, () => {
+    console.log('query:', query.value);
   });
 
   return {

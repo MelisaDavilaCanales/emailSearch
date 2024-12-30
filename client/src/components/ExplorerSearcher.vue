@@ -25,13 +25,15 @@ const searchHandler = () => {
     return
   }
 
+  previousSearchContent.value = searchContent.value
+  previousSearchFieldActive.value = searchFieldActive.value
+
   if (searchType.value === 'emails') {
     setEmailSearchParams(searchFieldActive.value, searchContent.value)
-    previousSearchContent.value = searchContent.value
-    previousSearchFieldActive.value = searchFieldActive.value
   } else if (searchType.value === 'persons') {
     setPersonSearchParams(searchFieldActive.value, searchContent.value)
   }
+
 }
 
 const handlerClearSearchField = () => {
