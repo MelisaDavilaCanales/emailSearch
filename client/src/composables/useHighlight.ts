@@ -6,5 +6,9 @@ export const useHighlight = () => {
     return text.replace(regex, '<span class="highlight">$1</span>');
   };
 
-  return { highlightText };
+  const removeHighlightTags = (email: string): string => {
+    return email.replace(/<span class="highlight">|<\/span>/g, "");
+  };
+
+  return { highlightText, removeHighlightTags };
 };

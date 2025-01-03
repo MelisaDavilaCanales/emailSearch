@@ -1,34 +1,42 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
-import type { SumaryEmail } from '@/types/search'
-
-function extractDayAndTime(isoDate: string): { day: string; time: string } {
-  const [datePart, timePart] = isoDate.split('T')
-  const day = datePart // YYYY-MM-DD
-  const time = timePart.split('-')[0] // HH:mm:ss
-  return { day, time }
-}
+import type { ISumaryEmail, IRequestError, IServerErrorResponse } from '@/types/index'
+import { useFormatData } from '@/composables/useFormatData'
 
 export const useEmailTableStore = defineStore('emailTable', () => {
-  const emailList = ref<SumaryEmail[]>([])
+  const emailList = ref<ISumaryEmail[]>([])
 
   const pageNumber = ref<number>(1)
-  const pageSize = ref<number>(0)
+  const pageSize = ref<number>(10)
   const totalPage = ref<number>(0)
-  const searchTerm = ref<string>('')
-  const searchField = ref<string>('_all') // ### refactor
   const searchParam = ref<string>('')
-  const sortField= ref<string>('date')
+  const searchTerm = ref<string>('')
+  const searchField = ref<string>('')
+  const sortField = ref<string>('date')
   const sortOrder = ref<string>('desc')
 
-  const baseUrl = import.meta.env.VITE_API_URL
+  const isEmailsLoading = ref<boolean>(false)
 
-  const emailSearchURL = computed(() => {
-    return baseUrl + '/emails' + query.value
+  const fetchEmailsError = ref<IRequestError>({
+    status: false,
+    message: '',
   })
 
-  // http://localhost:8080/emails?page=1&page_size=5&term=charles&field=from&sort=to&order=desc
+  const serverError = ref<IServerErrorResponse>({
+    status: false,
+    code: 0,
+    message: '',
+  })
+
+  const emailBaseUrl = import.meta.env.VITE_API_URL + '/emails'
+
+  const { formatDate } = useFormatData()
+
+  const emailSearchURL = computed(() => {
+    return emailBaseUrl + query.value
+  })
+
   const query = computed(() => {
     return (
       '?' +
@@ -45,22 +53,31 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   })
 
   async function fetchEmails() {
-    console.log('FETCHING emailSearchURL:', emailSearchURL.value)
-    const response = await fetch(emailSearchURL.value)
-    const data = await response.json()
-
     emailList.value = []
+    isEmailsLoading.value = true
 
-    if (response.ok) {
-      data.data.emails?.forEach((email: SumaryEmail) => {
-        const { day, time } = extractDayAndTime(email.date.toString())
-        const dateFormatted = day + ' ' + time
+    try {
+      const response = await fetch(emailSearchURL.value)
 
+      if (!response.ok) {
+        const responseData: IServerErrorResponse = await response.json()
+        fetchEmailsError.value = {
+          status: true,
+          message: responseData.message,
+        }
+        isEmailsLoading.value = false
+        return
+      }
+
+      const data = await response.json()
+
+      data.data.emails?.forEach((email: ISumaryEmail) => {
+        const formattedDate = formatDate(email.date.toString())
         const toArray = email.to.split(',').map((email: string) => email.trim())
 
         emailList.value.push({
           id: email.id,
-          date: dateFormatted,
+          date: formattedDate,
           from: email.from,
           to: email.to,
           toArray: toArray,
@@ -68,22 +85,27 @@ export const useEmailTableStore = defineStore('emailTable', () => {
         })
       })
 
-      pageNumber.value = data.data.page
-      pageSize.value = data.data.page_size
-      totalPage.value = data.data.total_pages
+      pageNumber.value = data.data?.page || 0
+      pageSize.value = data.data?.page_size || 0
+      totalPage.value = data.data?.total_pages || 0
 
-      console.log('data:', data)
-    } else {
-      console.log('Error fetching emails:', response.statusText)
+      restoreFetchError()
+    } catch {
+      serverError.value = {
+        status: true,
+        code: 500,
+        message: 'Internal Server Error',
+      }
+    } finally {
+      isEmailsLoading.value = false
     }
   }
 
-  function setEmailPageNumber(page: number) {
-    pageNumber.value = page
-  }
-
-  function setEmailPageSize(size: number) {
-    pageSize.value = size
+  function restoreFetchError() {
+    fetchEmailsError.value = {
+      status: false,
+      message: '',
+    }
   }
 
   function setEmailSearchField(field: string) {
@@ -92,23 +114,10 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
   function setEmailSearchParams(field: string, term: string) {
     pageNumber.value = 1
-    if (field === '-') {
-      searchTerm.value = term
-      searchParam.value = '&field=' + searchField.value + '&term=' + term
-      return
-    } else if (term === '-') {
-      searchField.value = field
-      searchParam.value = '&field=' + field + '&term=' + searchTerm.value
-      return
-    }
 
-    searchField.value = field
     searchTerm.value = term
-    searchParam.value =  '&field=' + field + '&term=' + term
-  }
-
-  function setEmailSortField(field: string) {
-    sortField.value = field
+    searchField.value = field
+    searchParam.value = '&field=' + field + '&term=' + term
   }
 
   function sortEmailsByField(field: string) {
@@ -117,11 +126,9 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
     if (sortOrder.value == 'asc') {
       sortOrder.value = 'desc'
-
-      return
+    } else {
+      sortOrder.value = 'asc'
     }
-
-    sortOrder.value = 'asc'
   }
 
   function setNextPage() {
@@ -136,33 +143,26 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     }
   }
 
-  watch(emailSearchURL, fetchEmails)
+  watch(query, fetchEmails)
 
   return {
     emailList,
+    fetchEmailsError,
     emailSearchURL,
-
-    sortOrder,
-    sortField,
-
+    isEmailsLoading,
     pageNumber,
     pageSize,
+    searchField,
+    serverError,
+    sortField,
+    sortOrder,
     totalPage,
 
-    searchField,
-
+    fetchEmails,
+    setEmailSearchField,
+    setEmailSearchParams,
     setNextPage,
     setPreviousPage,
-
-    fetchEmails,
-
-    setEmailPageNumber,
-    setEmailPageSize,
-    setEmailSearchParams,
-    setEmailSearchField,
-    setEmailSortField,
-
     sortEmailsByField,
   }
 })
-

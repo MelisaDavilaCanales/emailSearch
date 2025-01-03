@@ -51,6 +51,11 @@ func GetPersons(w http.ResponseWriter, r *http.Request) {
 
 			return
 		}
+
+		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting persons", err)
+		http.Error(w, responseError.Error(), responseError.StatusCode)
+
+		return
 	}
 
 	if personHitsData == nil || personHitsData.Total.Value == 0 {

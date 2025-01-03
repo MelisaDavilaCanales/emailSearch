@@ -25,7 +25,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return resp, err
+		return nil, err
 	}
 
 	var bodyBuffer bytes.Buffer
@@ -41,13 +41,13 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 	resp.Body = io.NopCloser(&bodyBuffer)
 
 	if resp.StatusCode >= 400 && resp.StatusCode < 500 {
-		return resp, &models.NotFoundError{
+		return nil, &models.NotFoundError{
 			Message: string(bodyContent),
 		}
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return resp, &models.InternalServerError{
+		return nil, &models.InternalServerError{
 			Message: "internalServerError",
 		}
 	}

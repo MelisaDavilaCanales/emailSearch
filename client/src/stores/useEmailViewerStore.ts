@@ -1,42 +1,47 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
-import type { CardEmailI, Email } from '@/types/search'
-
-function extractDayAndTime(isoDate: string): { day: string; time: string } {
-  const [datePart, timePart] = isoDate.split('T')
-  const day = datePart
-  const time = timePart.split(':').slice(0, 2).join(':') // Extrae solo hh:mm
-  return { day, time }
-}
+import type { ICardEmail, IEmail, IRequestError, IServerErrorResponse } from '@/types'
+import { useFormatData } from '@/composables/useFormatData'
 
 export const useEmailViewerStore = defineStore('emailViewer', () => {
-  const emailList = ref<CardEmailI[]>([])
-  const emailDetail = ref<Email | null>(null)
-  const emailListType = ref<string>("")
+  const emailDetail = ref<IEmail | null>(null)
+  const isEmailDetailLoading = ref<boolean>(false)
 
-  const existsSentEmails = ref<boolean>(true)
-  const existsReceivedEmails = ref<boolean>(true)
-  const existsCopiedEmails = ref<boolean>(true)
-  const fetchEmailsListByDefault = ref<boolean>(false)
+  const emailList = ref<ICardEmail[]>([])
+  const emailListType = ref<string>('')
+  const isEmailListLoading = ref<boolean>(false)
+  const isFetchEmailsByDefault = ref<boolean>(false)
 
+  const searchParam = ref<string>('')
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(0)
   const totalPages = ref<number>(0)
   const searchTerm = ref<string>('')
   const searchField = ref<string>('_all')
-  const sortField= ref<string>('date')
+  const sortField = ref<string>('date')
   const sortOrder = ref<string>('desc')
 
-  const showAllSentEmails = ref(false)
-  const showAllCopiedEmails = ref(false)
+  const isAllSentEmailsVisible = ref(false)
+  const isAllCopiedEmailsVisible = ref(false)
 
-  const searchParam = ref<string>('')
+  const fetchEmailsError = ref<IRequestError>({
+    status: false,
+    message: '',
+  })
 
-  const baseUrl = import.meta.env.VITE_API_URL
+  const serverError = ref<IServerErrorResponse>({
+    status: false,
+    code: 0,
+    message: '',
+  })
+
+  const emailBaseUrl = import.meta.env.VITE_API_URL + '/emails'
+
+  const { formatDate, convertToArray } = useFormatData()
 
   const emailSearchURL = computed(() => {
-    return baseUrl + '/emails' + query.value
+    return emailBaseUrl + query.value
   })
 
   const query = computed(() => {
@@ -53,141 +58,137 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       sortOrder.value
     )
   })
+
   async function fetchEmails() {
-    const response = await fetch(emailSearchURL.value)
-    const data = await response.json()
-
     emailList.value = []
+    isEmailListLoading.value = true
 
-    if (response.ok) {
+    try {
+      const response = await fetch(emailSearchURL.value)
 
+      if (!response.ok) {
+        const responseData: IServerErrorResponse = await response.json()
+        fetchEmailsError.value = {
+          status: true,
+          message: responseData.message,
+        }
+        isEmailListLoading.value = false
+        return
+      }
 
-      if (data.data.emails === null && fetchEmailsListByDefault.value) {
+      const data = await response.json()
+      const emails = data.data.emails
+
+      // If no "from" emails are found, it automatically searches by "to" and then by "cc" to display if any type of emails exist
+      if (isFetchEmailsByDefault.value && emails === null) {
         if (searchField.value === 'from') {
-          existsSentEmails.value = false
           searchField.value = 'to'
           searchParam.value = '&field=to&term=' + searchTerm.value
-
           return
         }
-
         if (searchField.value === 'to') {
-          existsReceivedEmails.value = false
           searchField.value = 'cc'
           searchParam.value = '&field=cc&term=' + searchTerm.value
-
-          return
-        }
-
-        if (searchField.value === 'cc') {
-          existsCopiedEmails.value = false
-
           return
         }
       }
 
-      if (fetchEmailsListByDefault.value && data.data.emails !== null) {
-        fetchEmailsListByDefault.value = false
-      }
-
-
-      if (!fetchEmailsListByDefault.value && data.data.emails === null) {
-        if (searchField.value === 'from') {
-          existsSentEmails.value = false
-          return
-        }
-
-        if (searchField.value === 'to') {
-          existsReceivedEmails.value = false
-          return
-        }
-
-        if (searchField.value === 'cc') {
-          existsCopiedEmails.value = false
-          return
-        }
+      // It is set to false so that if the user tries to search for a specific type of email, it doesn't search by default again
+      if (isFetchEmailsByDefault.value && emails !== null) {
+        isFetchEmailsByDefault.value = false
       }
 
       emailListType.value = searchField.value
 
-      data.data.emails?.forEach((email: CardEmailI) => {
-      const { day, time } = extractDayAndTime(email.date.toString())
-
-        const dateFormatted = day + ' ' + time
+      data.data.emails?.forEach((email: ICardEmail) => {
+        const formattedDate = formatDate(email.date.toString())
 
         emailList.value.push({
           id: email.id,
           from: email.from,
           to: email.to,
           subject: email.subject,
-          date: dateFormatted,
+          date: formattedDate,
         })
       })
 
-      pageNumber.value = data.data.page
-      pageSize.value = data.data.page_size
-      totalPages.value = data.data.total_pages
+      pageNumber.value = data.data?.page || 0
+      pageSize.value = data.data?.page_size || 0
+      totalPages.value = data.data?.total_pages || 0
 
-      console.log('data:', data)
-    } else {
-      console.log('Error fetching emails:', response.statusText)
+      restoreFetchError()
+    } catch {
+      serverError.value = {
+        status: true,
+        code: 500,
+        message: 'Internal Server Error',
+      }
+    } finally {
+      isEmailListLoading.value = false
     }
   }
 
   async function fetchEmail(message_id: string) {
-    const response = await fetch(`http://localhost:8080/emails/${message_id}`)
-    const data = await response.json()
+    emailDetail.value = null
+    isEmailDetailLoading.value = true
 
-    if (response.ok) {
-      const email = data.data
+    const response = await fetch(`${emailBaseUrl}/${message_id}`)
 
-      const { day, time } = extractDayAndTime(email.date.toString())
+    try {
+      if (!response.ok) {
+        const responseData: IServerErrorResponse = await response.json()
+        fetchEmailsError.value = {
+          status: true,
+          message: responseData.message,
+        }
+        isEmailDetailLoading.value = false
 
-      const dateFormatted = day + ' ' + time
-
-      const toArray = email.to
-        .split(',')
-        .map((email: string) => email.trim())
-        .filter((email: string) => email !== '');
-
-      const ccArray = email.cc
-        .split(',')
-        .map((email: string) => email.trim())
-        .filter((email: string) => email !== '');
-
-      emailDetail.value = {
-        id: email.id,
-        message_id: email.message_id,
-        date: dateFormatted,
-        from: email.from,
-        to: email.to,
-        toArray: toArray,
-        subject: email.subject,
-        cc: email.cc,
-        ccArray: ccArray,
-        bcc: email.bcc,
-        x_folder: email.x_folder,
-        x_origin: email.x_origin,
-        x_file_name: email.x_file_name,
-        content: email.content,
+        return
       }
 
-      console.log('Email Details:', emailDetail.value)
-    } else {
-      console.log('Error fetching email:', response.statusText)
+      const data = await response.json()
+      const email = data.data
+
+      if (email !== null) {
+        const formattedDate = formatDate(email.date.toString())
+        const toArray = convertToArray(email.to)
+        const ccArray = convertToArray(email.cc)
+
+        emailDetail.value = {
+          id: email.id,
+          message_id: email.message_id,
+          date: formattedDate,
+          from: email.from,
+          to: email.to,
+          toArray: toArray,
+          subject: email.subject,
+          cc: email.cc,
+          ccArray: ccArray,
+          bcc: email.bcc,
+          x_folder: email.x_folder,
+          x_origin: email.x_origin,
+          x_file_name: email.x_file_name,
+          content: email.content,
+        }
+      }
+
+      restoreFetchError()
+    } catch {
+      serverError.value = {
+        status: true,
+        code: 500,
+        message: 'Internal Server Error',
+      }
+    } finally {
+      isEmailDetailLoading.value = false
     }
   }
 
-  function setEmailPageNumber(page: number) {
-    pageNumber.value = page
-  }
-
-  function setEmailPageSize(size: number) {
-    pageSize.value = size
-  }
-
-  function setEmailSortField(field: string) {
-    sortField.value = field
+  function restoreFetchError() {
+    fetchEmailsError.value = {
+      status: false,
+      message: '',
+    }
   }
 
   function setEmailListType(field: string) {
@@ -196,7 +197,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     searchParam.value = '&field=' + field + '&term=' + searchTerm.value
     searchField.value = field
   }
-
 
   function setNextPage() {
     if (pageNumber.value < totalPages.value) {
@@ -210,88 +210,60 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     }
   }
 
-  function setEmailSearchParams(field: string, term: string) { // ### Refactor
+  function setEmailSearchParams(field: string, term: string) {
     pageNumber.value = 1
-    if (field === '' && term !== '') {
-      searchTerm.value = term
-      searchParam.value = '&field=' + searchField.value + '&term=' + term
-      return
-    } else if (term === '' && field !== '') {
-      searchField.value = field
-      searchParam.value = '&field=' + field + '&term=' + searchTerm.value
-      return
-    }
 
-    searchField.value = field
     searchTerm.value = term
-    searchParam.value =  '&field=' + field + '&term=' + term
-  }
-
-  function resetEmailExistence () {
-    existsSentEmails.value = true
-    existsReceivedEmails.value = true
-    existsCopiedEmails.value = true
+    searchField.value = field
+    searchParam.value = '&field=' + field + '&term=' + term
   }
 
   function setFetchEmailsListByDefault(value: boolean) {
-    fetchEmailsListByDefault.value = value
+    isFetchEmailsByDefault.value = value
   }
 
   const toggleShowAllSentEmails = (value: boolean) => {
-    showAllSentEmails.value = value
+    isAllSentEmailsVisible.value = value
   }
 
   const toggleShowAllCopiedEmails = (value: boolean) => {
-    showAllCopiedEmails.value = value
+    isAllCopiedEmailsVisible.value = value
   }
 
+  // Reset isAllSentEmailsVisible and isAllCopiedEmailsVisible  when emailDetail changes to hide the email list
   watch(emailDetail, () => {
-    showAllSentEmails.value = false
-    showAllCopiedEmails.value = false
+    isAllSentEmailsVisible.value = false
+    isAllCopiedEmailsVisible.value = false
   })
 
   watch(emailSearchURL, fetchEmails)
   watch(emailListType, fetchEmails)
 
   return {
-    emailList,
     emailDetail,
-    emailSearchURL,
+    emailList,
     emailListType,
-
+    emailSearchURL,
+    fetchEmailsError,
+    isAllCopiedEmailsVisible,
+    isAllSentEmailsVisible,
+    isFetchEmailsByDefault,
+    isEmailDetailLoading,
+    isEmailListLoading,
     pageNumber,
     pageSize,
+    searchTerm,
+    serverError,
     totalPages,
 
-    searchTerm,
-
-    existsSentEmails,
-    existsReceivedEmails,
-    existsCopiedEmails,
-
-    fetchEmailsListByDefault,
+    setEmailListType,
+    setEmailSearchParams,
     setFetchEmailsListByDefault,
-
-    resetEmailExistence,
-
     setNextPage,
     setPreviousPage,
-
-    fetchEmails,
     fetchEmail,
-
-    setEmailSearchParams,
-    setEmailPageNumber,
-    setEmailPageSize,
-    setEmailSortField,
-
-    setEmailListType,
-
-    toggleShowAllSentEmails,
+    fetchEmails,
     toggleShowAllCopiedEmails,
-
-    showAllSentEmails,
-    showAllCopiedEmails,
-
+    toggleShowAllSentEmails,
   }
 })

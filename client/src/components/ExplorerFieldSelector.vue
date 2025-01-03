@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useSearchTypeStore } from '@/stores/useSearchTypeStore';
+import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import { ref, computed, onMounted } from 'vue';
 
-const searchTypeStore = useSearchTypeStore();
-const { setSearchFieldActive } = searchTypeStore;
-const { searchType, searchFieldActive } = storeToRefs(searchTypeStore);
+import { useSearchTypeStore } from '@/stores/useSearchTypeStore';
+
+const { setSearchFieldActive } = useSearchTypeStore();
+const { searchFieldActive } = storeToRefs(useSearchTypeStore());
 
 const searchEmailOptions = [
   { value: '_all', label: '[all fields]' },
@@ -22,36 +22,20 @@ const searchEmailOptions = [
   { value: 'content', label: 'Content' },
 ];
 
-const searchPersonaOptions = [
-  { value: '_all', label: '[all fields]' },
-  { value: 'name', label: 'Name' },
-  { value: 'email', label: 'Email' },
-];
-
-const options = computed(() => {
-  if (searchType.value === 'emails') {
-    return searchEmailOptions;
-  } else if (searchType.value === 'persons') {
-    return searchPersonaOptions;
-  }
-  return [];
-});
-
 const selectedOption = ref<string>('');
 
 onMounted(() => {
-  // Set the initial value of the select to searchFieldActive
-  if (selectedOption.value === '')
+  // Set the initial value of the select based on the value of searchFieldActive
+  if (selectedOption.value === '') {
     selectedOption.value = searchFieldActive.value;
+  }
 });
 
-function handleSelectChange(event: Event) {
+function handleSearchFieldChange(event: Event) {
   const target = event.target as HTMLSelectElement;
   const value = target.value;
   selectedOption.value = value;
-  if (searchType.value === 'emails' || searchType.value === 'persons') {
-    setSearchFieldActive(value);
-  }
+  setSearchFieldActive(value);
 }
 </script>
 
@@ -61,9 +45,9 @@ function handleSelectChange(event: Event) {
       <p class="text-sm text-gray-800">Search for matches only in the field:</p>
       <select
         class="text-sm border border-primarySoft p-1 rounded focus:outline-none focus:ring-1 focus:ring-primarySoft"
-        v-model="selectedOption" @change="handleSelectChange">
+        v-model="selectedOption" @change="handleSearchFieldChange">
         <option value="" disabled>Select field</option>
-        <option v-for="option in options" :key="option.value" :value="option.value">
+        <option v-for="option in searchEmailOptions" :key="option.value" :value="option.value">
           {{ option.label }}
         </option>
       </select>

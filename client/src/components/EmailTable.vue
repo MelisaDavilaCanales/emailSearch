@@ -1,41 +1,40 @@
 <script setup lang="ts">
+import { onBeforeMount, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+
+import Pagination from '@/components/ExplorerDataTablePagination.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import BannerDataNotFound from '@/components/BannerDataNotFound.vue'
+import BannerServerError from '@/components/BannerServerError.vue'
+
 import { useEmailTableStore } from '@/stores/useEmailTableStore'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
-import { onBeforeMount, computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import { useHighlight } from '@/composables/useHighlight'
-const { highlightText } = useHighlight()
 
-import Pagination from '@/components/ExplorerDataTablePagination.vue'
-import DataNotFoundBanner from '@/components/DataNotFoundBanner.vue'
-
-library.add(fas)
-
-const emailStore = useEmailTableStore()
-const { emailList, pageNumber, pageSize, totalPage, sortOrder, sortField } = storeToRefs(emailStore)
+const { emailList, isEmailsLoading, pageNumber, pageSize, totalPage, sortOrder, sortField, fetchEmailsError } = storeToRefs(useEmailTableStore())
 const { fetchEmails, sortEmailsByField, setNextPage, setPreviousPage } = useEmailTableStore()
 
 const { fetchEmail } = useEmailViewerStore()
 
 const { setSelectedItemType } = useItemSelectedStore()
 
-const searchTypeStore = useSearchTypeStore()
-const { searchTerm } = storeToRefs(searchTypeStore)
+const { searchTerm } = storeToRefs(useSearchTypeStore())
+
+const { highlightText } = useHighlight()
+
+library.add(faArrowUp, faArrowDown);
 
 const showEmailDetail = (emailId: string) => {
   fetchEmail(emailId)
   setSelectedItemType('email')
 }
-
-onBeforeMount(async () => {
-  fetchEmails()
-});
 
 const tableHeaders = [
   { field: 'date', label: 'Date' },
@@ -57,19 +56,23 @@ const highlightedEmails = computed(() => {
   });
 });
 
+onBeforeMount(async () => {
+  fetchEmails()
+});
+
 </script>
 
 <template>
 
-  <DataNotFoundBanner v-if="emailList.length === 0" />
+  <LoadingSpinner v-if="isEmailsLoading" />
+  <BannerDataNotFound v-if="!isEmailsLoading && emailList.length === 0 && !fetchEmailsError.status" />
+  <BannerServerError v-if="fetchEmailsError.status" :message="fetchEmailsError.message" />
 
-  <main v-if="emailList.length !== 0" class="h-full table-container rounded-md">
+  <main v-if="emailList.length !== 0 && !isEmailsLoading" class="h-full table-container rounded-md">
     <div class="h-full flex flex-col items-start overflow-hidden border rounded-lg">
-
-      <!-- Contenedor con scroll para las filas -->
+      <!-- table container -->
       <div class="flex-grow overflow-y-auto custom-scrollbar">
         <table class="w-full overflow-x-auto min-w-full table-fixed  text-sm">
-
           <thead class="bg-gray-100 border-b sticky top-0 z-10">
             <tr>
               <th class="w-7 pl-3 py-2 text-top cursor-pointer whitespace-nowrap">#</th>
@@ -111,25 +114,4 @@ const highlightedEmails = computed(() => {
 
     </div>
   </main>
-
 </template>
-
-<style scoped>
-.highlight {
-  background-color: yellow;
-  font-weight: bold;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #f9fafb;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #d1d5db;
-  border-radius: 10px;
-}
-</style>

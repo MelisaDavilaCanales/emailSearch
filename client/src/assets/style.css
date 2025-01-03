@@ -3,10 +3,47 @@
 @tailwind utilities;
 
 @layer components {
+  @import 'flowbite'; /* Aislar solo los componentes de Flowbite */
+}
+
+@layer components {
   .btn-primary {
     @apply bg-primary text-white  py-2 px-5 rounded hover:bg-primaryDark;
   }
   .btn-secondary {
     @apply bg-primaryMiddle text-white text-xs py-1 px-3 rounded hover:bg-primaryDark;
   }
+
+  .highlight {
+    @apply bg-yellow-300 font-bold;
+  }
+
+  .custom-scrollbar {
+    @apply overflow-auto; /* Para permitir el desplazamiento */
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f9fafb;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 10px;
+  }
 }
+
+/* @layer components {
+  .input-group-register {
+    @apply flex m-1 py-1 space-x-2 text-sm font-roboto 
+           [&>input]:flex-1 
+           [&>input]:border 
+           [&>input]:border-primary 
+           [&>input]:text-sm 
+           [&>input]:pl-2
+           [&>input]:mt-1
+           [&>input]:bg-softprimary
+           [&>input]:placeholder:text-xs;
+  }
+} */

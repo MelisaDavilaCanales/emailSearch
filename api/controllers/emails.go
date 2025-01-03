@@ -57,6 +57,8 @@ func GetEmails(w http.ResponseWriter, r *http.Request) {
 
 		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting emails", err)
 		http.Error(w, responseError.Error(), responseError.StatusCode)
+
+		return
 	}
 
 	if emailHitsData == nil || emailHitsData.Total.Value == 0 {

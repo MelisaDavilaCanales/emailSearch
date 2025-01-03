@@ -9,7 +9,7 @@ defineProps<Props>();
 
 <template>
   <div class="w-full py-2  flex items-center justify-between px-4 sm:px-6 border-t border-gray-200">
-    <!-- Información de paginación -->
+    <!-- Pagination information -->
     <div class="flex justify-between w-screen sm:flex sm:flex-1 sm:items-center sm:justify-between">
       <div>
         <p class="text-sm text-gray-700 sm:flex space-x-1">
@@ -23,10 +23,10 @@ defineProps<Props>();
           </slot>
         </p>
       </div>
-      <!-- Botones de paginación -->
+      <!-- Pagination buttons -->
       <div>
         <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-          <!-- Botón Anterior -->
+          <!-- Previous button -->
           <slot name="previous-button" :onClick="() => $emit('prevPage')">
             <button
               class="relative inline-flex items-center rounded-l-md px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -40,7 +40,7 @@ defineProps<Props>();
             </button>
           </slot>
 
-          <!-- Página Actual -->
+          <!-- Current page -->
           <slot name="current-page">
             <span aria-current="page"
               class="relative z-10 inline-flex items-center justify-center bg-primary px-4 py-1 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryVariant text-center self-center w-14">
@@ -48,7 +48,7 @@ defineProps<Props>();
             </span>
           </slot>
 
-          <!-- Botón Siguiente -->
+          <!-- Next button -->
           <slot name="next-button" :onClick="() => $emit('nextPage')">
             <button
               class="relative inline-flex items-center rounded-r-md px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"

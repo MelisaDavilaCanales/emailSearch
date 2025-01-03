@@ -1,15 +1,18 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { searchTypeI } from '@/types/search'
+import type { searchTypeI } from '@/types'
 
 export const useSearchTypeStore = defineStore('searchType', () => {
+  const isEmailSearchActive = ref(true)
+  const isPersonSearchActive = ref(false)
+
   const searchType = ref<searchTypeI>('emails')
   const searchFieldActive = ref('')
   const searchTerm = ref<string>('')
 
-  const isEmailSearchActive = ref(true)
-  const isPersonSearchActive = ref(false)
-  const existsSearchData = ref(false)
+  function setEmailSearchTerm(term: string) {
+    searchTerm.value = term
+  }
 
   function setSearchFieldActive(value: string) {
     searchFieldActive.value = value
@@ -27,23 +30,15 @@ export const useSearchTypeStore = defineStore('searchType', () => {
     }
   }
 
-    function setEmailSearchTerm(term: string) {
-    searchTerm.value = term
-    console.log('searchTerm:', searchTerm.value)
-  }
-
   return {
-    searchType,
     isEmailSearchActive,
     isPersonSearchActive,
-    existsSearchData,
-
+    searchType,
     searchFieldActive,
-    setSearchFieldActive,
-
-    toggleSearchType,
-
     searchTerm,
-    setEmailSearchTerm
+
+    setEmailSearchTerm,
+    setSearchFieldActive,
+    toggleSearchType,
   }
 })

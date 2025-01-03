@@ -1,34 +1,30 @@
 <script setup lang="ts">
-
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
+
+import BannerServerError from '@/components/BannerServerError.vue'
+
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { usePersonStore } from '@/stores/usePersonStore'
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
+
 import { useHighlight } from '@/composables/useHighlight'
 
-const emailStore = useEmailViewerStore()
-const { emailDetail, showAllSentEmails } = storeToRefs(emailStore)
-const { setEmailSearchParams, resetEmailExistence, setFetchEmailsListByDefault, toggleShowAllSentEmails } = useEmailViewerStore()
+const { emailDetail, isAllSentEmailsVisible, isAllCopiedEmailsVisible, fetchEmailsError } = storeToRefs(useEmailViewerStore())
+const { setEmailSearchParams, setFetchEmailsListByDefault, toggleShowAllSentEmails, toggleShowAllCopiedEmails } = useEmailViewerStore()
 
 const { setSelectedItemType } = useItemSelectedStore()
 
 const { setSelectedPersonEmail } = usePersonStore()
 
-const searchTypeStore = useSearchTypeStore()
-const { searchTerm } = storeToRefs(searchTypeStore)
+const { searchTerm } = storeToRefs(useSearchTypeStore())
 
-const { highlightText } = useHighlight()
-
-import { useCleanTerm } from '@/composables/useCleanTerm'
-const { cleanEmail } = useCleanTerm()
+const { highlightText, removeHighlightTags } = useHighlight()
 
 const showPersonDetail = (personEmail: string) => {
+  const cleanedEmail: string = removeHighlightTags(personEmail)
 
-  const cleanedEmail: string = cleanEmail(personEmail)
-
-  resetEmailExistence()
   setFetchEmailsListByDefault(true)
   setEmailSearchParams('from', cleanedEmail)
   setSelectedPersonEmail(cleanedEmail)
@@ -56,11 +52,13 @@ const highlightedEmailDetail = computed(() => {
 </script>
 
 <template>
-  <div class="font-roboto space-y-3 overflow-x-hidden h-full flex flex-col pb-2">
-    <!-- Contenedor general con altura máxima y desplazamiento habilitado -->
-    <div class="flex flex-col space-y-2 flex-1 overflow-y-auto">
 
-      <!-- Datos principales del correo -->
+
+  <div class="font-roboto space-y-3 overflow-x-hidden h-full flex flex-col pb-2">
+    <BannerServerError v-if="fetchEmailsError.status" :message="fetchEmailsError.message" />
+
+    <div v-if="emailDetail !== null" class="flex flex-col space-y-2 flex-1 overflow-y-auto">
+      <!-- Email main headers -->
       <div class="w-full overflow-x-hidden flex-none">
         <div>
           <div class="flex justify-between">
@@ -96,14 +94,15 @@ const highlightedEmailDetail = computed(() => {
         </div>
       </div>
 
-      <!-- Contenido del correo -->
+      <!-- Email content -->
       <div class="flex-1 overflow-y-auto m-1 custom-scrollbar">
-        <!-- Datos de destinatarios -->
+
+        <!-- Received emails (TO) -->
         <div class="text-sm flex">
           <span class="font-bold flex mr-1">To:</span>
           <div class=""
             v-if="emailDetail?.toArray && highlightedEmailDetail?.toArray.length > 0 && highlightedEmailDetail?.toArray[0] !== ''">
-
+            <!-- First items -->
             <span
               class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
               v-for="(emailAddress, index) in highlightedEmailDetail?.toArray.slice(0, 7)" :key="index"
@@ -111,11 +110,12 @@ const highlightedEmailDetail = computed(() => {
               <span v-html="emailAddress"></span>
               <span v-if="index < highlightedEmailDetail?.toArray.length - 1">,</span>
             </span>
+            <!-- Option to show remaining items -->
             <span @click="toggleShowAllSentEmails(true)" v-if="highlightedEmailDetail.toArray.length > 7"
-              class="opacity-60 cursor-pointer hover:opacity-100" :class="{ 'hidden': showAllSentEmails }">...
-              Ver mas</span>
-
-            <span v-if="showAllSentEmails && highlightedEmailDetail?.toArray.length > 7">
+              class="opacity-60 cursor-pointer hover:opacity-100" :class="{ 'hidden': isAllSentEmailsVisible }">...
+              See more</span>
+            <!-- Remaining items -->
+            <span v-if="isAllSentEmailsVisible && highlightedEmailDetail?.toArray.length > 7">
               <div
                 class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
                 v-for="(emailAddress, index) in highlightedEmailDetail?.toArray.slice(7,)" :key="index"
@@ -124,24 +124,23 @@ const highlightedEmailDetail = computed(() => {
                 <span v-if="index < highlightedEmailDetail?.toArray.length - 8">,</span>
               </div>
             </span>
-
+            <!-- Option to hide remaining items -->
             <span @click="toggleShowAllSentEmails(false)"
-              v-if="showAllSentEmails && highlightedEmailDetail.toArray.length > 7"
+              v-if="isAllSentEmailsVisible && highlightedEmailDetail.toArray.length > 7"
               class="opacity-60 cursor-pointer hover:opacity-100">
-              Ver menos</span>
-
+              See less</span>
           </div>
           <span v-else class="text-sm flex pt-1 ml-1">N/A</span>
         </div>
 
-        <!-- Datos de copia -->
+        <!-- Copied emails (CC) -->
         <div class="text-sm flex"
           v-if="emailDetail?.ccArray && highlightedEmailDetail?.ccArray.length > 0 && highlightedEmailDetail?.ccArray[0] !== ''">
           <span class="font-bold flex mr-1">Cc:</span>
           <div class="overflow-x-hidden ">
             <div class=""
               v-if="emailDetail?.ccArray && highlightedEmailDetail?.ccArray.length > 0 && highlightedEmailDetail?.ccArray[0] !== ''">
-
+              <!-- First items -->
               <span
                 class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
                 v-for="(emailAddress, index) in highlightedEmailDetail?.ccArray.slice(0, 7)" :key="index"
@@ -149,11 +148,12 @@ const highlightedEmailDetail = computed(() => {
                 <span v-html="emailAddress"></span>
                 <span v-if="index < highlightedEmailDetail?.ccArray.length - 1">,</span>
               </span>
-              <span @click="toggleShowAllSentEmails(true)" v-if="highlightedEmailDetail.ccArray.length > 7"
-                class="opacity-60 cursor-pointer hover:opacity-100" :class="{ 'hidden': showAllSentEmails }">...
-                Ver mas</span>
-
-              <span v-if="showAllSentEmails && highlightedEmailDetail?.ccArray.length > 7">
+              <!-- Option to show remaining items -->
+              <span @click="toggleShowAllCopiedEmails(true)" v-if="highlightedEmailDetail.ccArray.length > 7"
+                class="opacity-60 cursor-pointer hover:opacity-100" :class="{ 'hidden': isAllCopiedEmailsVisible }">...
+                See more</span>
+              <!-- Remaining items -->
+              <span v-if="isAllCopiedEmailsVisible && highlightedEmailDetail?.ccArray.length > 7">
                 <div
                   class="cursor-pointer px-1 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 hover:bg-gray-200 inline-block whitespace-nowrap"
                   v-for="(emailAddress, index) in highlightedEmailDetail?.ccArray.slice(7,)" :key="index"
@@ -162,19 +162,18 @@ const highlightedEmailDetail = computed(() => {
                   <span v-if="index < highlightedEmailDetail?.ccArray.length - 8">,</span>
                 </div>
               </span>
-
-              <span @click="toggleShowAllSentEmails(false)"
-                v-if="showAllSentEmails && highlightedEmailDetail.ccArray.length > 7"
+              <!-- Option to hide remaining items -->
+              <span @click="toggleShowAllCopiedEmails(false)"
+                v-if="isAllCopiedEmailsVisible && highlightedEmailDetail.ccArray.length > 7"
                 class="opacity-60 cursor-pointer hover:opacity-100">
-                Ver menos</span>
-
+                See less</span>
             </div>
           </div>
         </div>
 
         <hr class="border-t mt-2 border-grayDark w-[98%]">
 
-        <!-- Metadata -->
+        <!-- Email metadata -->
         <div class="mt-2">
           <p class="text-sm" v-if="emailDetail?.x_folder && highlightedEmailDetail?.x_folder.trim() !== ''">
             <span class="font-bold">Folder:</span>
@@ -190,8 +189,7 @@ const highlightedEmailDetail = computed(() => {
           </p>
         </div>
 
-        <!-- Contenido -->
-        <!-- <div class="overflow-x-hidden">  -->
+        <!-- Email content -->
         <div class="custom-scrollbar">
           <p class="font-bold sticky top-0 bg-grayExtraSoft z-10">Contenido:</p>
           <p class="text-sm py-1 pr-2" v-html="highlightedEmailDetail?.content || 'No content available'"></p>
@@ -200,26 +198,3 @@ const highlightedEmailDetail = computed(() => {
     </div>
   </div>
 </template>
-
-
-
-<style scoped>
-.highlight {
-  background-color: yellow;
-  font-weight: bold;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #f9fafb;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #d1d5db;
-  border-radius: 10px;
-}
-</style>
