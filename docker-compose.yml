@@ -10,23 +10,6 @@ services:
       - my_network
     volumes:
       - ./zincsearch:/var/lib/zincsearch
-  indexer:
-    build:
-      context: ./indexer
-      args:
-        DATA_PATH: ${DATA_PATH}
-    environment:
-      - ZINC_SEARCH_API_URL=${ZINC_SEARCH_API_URL}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DATA_PATH=${DATA_PATH}
-    volumes:
-      - ${DATA_PATH}:${DATA_PATH}
-    networks:
-      - my_network
-    restart: on-failure
-    depends_on:
-      - zincsearch
   api:
     build:
       context: ./api
