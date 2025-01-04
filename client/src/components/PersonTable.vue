@@ -12,14 +12,24 @@ import { usePersonStore } from '@/stores/usePersonStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import { useHighlight } from '@/composables/useHighlight'
 
-const { personList, isPersonsLoading, pageNumber, pageSize, totalPage, sortOrder, sortField, fetchPersonsError } = storeToRefs(usePersonStore())
-const { fetchPersons, sortPersonsByField, setSelectedPersonEmail, setNextPage, setPreviousPage } = usePersonStore()
+const {
+  personList,
+  isPersonsLoading,
+  pageNumber,
+  pageSize,
+  totalPage,
+  sortOrder,
+  sortField,
+  fetchPersonsError,
+} = storeToRefs(usePersonStore())
+const { fetchPersons, sortPersonsByField, setSelectedPersonEmail, setNextPage, setPreviousPage, setPageSize } =
+  usePersonStore()
 
 const { setSelectedItemType } = useItemSelectedStore()
 
@@ -29,8 +39,7 @@ const { searchTerm } = storeToRefs(useSearchTypeStore())
 
 const { highlightText, removeHighlightTags } = useHighlight()
 
-library.add(faUser);
-
+library.add(faUser)
 
 const showPersonDetail = (personEmail: string) => {
   const cleanedEmail: string = removeHighlightTags(personEmail)
@@ -47,39 +56,38 @@ const tableHeaders = [
 ]
 
 const highlightedPersons = computed(() => {
-  const term = searchTerm.value || '';
-  return personList.value.map(person => {
+  const term = searchTerm.value || ''
+  return personList.value.map((person) => {
     return {
       ...person,
       email: highlightText(person.email, term),
       name: highlightText(person.name, term),
-    };
-  });
-});
+    }
+  })
+})
 
 onBeforeMount(async () => {
   fetchPersons()
-});
+})
 </script>
 
 <template>
-  <div class="h-full mt-8">
-
+  <div class="mt-9 h-[93%] w-full">
     <LoadingSpinner v-if="isPersonsLoading" />
     <BannerServerError v-if="fetchPersonsError.status" :message="fetchPersonsError.message" />
     <BannerDataNotFound v-if="!isPersonsLoading && personList.length === 0 && !fetchPersonsError.status" />
 
-    <main v-if="!isPersonsLoading && personList.length !== 0" class="h-full table-container rounded-md">
+    <div v-if="!isPersonsLoading && personList.length !== 0" class="h-full table-container rounded-md">
       <div class="h-full flex flex-col items-start overflow-hidden border rounded-lg">
         <!-- table container -->
         <div class="flex-grow overflow-y-auto custom-scrollbar">
-          <table class="w-full overflow-x-auto min-w-full table-fixed  text-sm">
+          <table class="w-full overflow-x-auto min-w-full table-fixed text-sm">
             <thead class="bg-gray-100 border-b sticky top-0 z-10">
               <tr>
                 <th class="w-7 px-2 py-2 text-center cursor-pointer">#</th>
                 <th @click="sortPersonsByField(header.field)" v-for="header in tableHeaders" :key="header.field"
                   class="overflow-x-hidden px-2 py-2 text-left cursor-pointer whitespace-nowrap">
-                  <div class="inline-flex items-center justify-center  space-x-1">
+                  <div class="inline-flex items-center justify-center space-x-1">
                     <span>{{ header.label }}</span>
 
                     <span v-if="sortField == header.field && sortOrder == 'asc'">
@@ -99,7 +107,6 @@ onBeforeMount(async () => {
                     <span v-if="sortField != header.field"> ↕ </span>
                   </div>
                 </th>
-
               </tr>
             </thead>
             <tbody class="text-gray-600">
@@ -110,17 +117,15 @@ onBeforeMount(async () => {
                   <font-awesome-icon icon="user" />
                   <span v-html="person.email"></span>
                 </td>
-                <td class="overflow-x-hidden break-words  px-2 py-2 align-top " v-html="person.name">
-                </td>
+                <td class="overflow-x-hidden break-words px-2 py-2 align-top" v-html="person.name"></td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <Pagination :currentPage="pageNumber" :totalPages="totalPage" :pageSize="pageSize" @prevPage="setPreviousPage"
-          @nextPage="setNextPage" />
+          @nextPage="setNextPage" @pageSizeChange="setPageSize" />
       </div>
-    </main>
-
+    </div>
   </div>
 </template>

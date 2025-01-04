@@ -11,7 +11,7 @@ const { isEmailSearchActive, isPersonSearchActive } = storeToRefs(useSearchTypeS
 </script>
 
 <template>
-  <div class="w-full h-[97%]">
+  <div class="w-full h-[95%] overflow-y-hidden">
     <EmailTable v-if="isEmailSearchActive" />
     <PersonTable v-if="isPersonSearchActive" />
   </div>

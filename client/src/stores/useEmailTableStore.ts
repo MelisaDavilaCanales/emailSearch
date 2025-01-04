@@ -143,6 +143,10 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     }
   }
 
+  function setPageSize(size: number) {
+    pageSize.value = size
+  }
+
   watch(query, fetchEmails)
 
   return {
@@ -153,6 +157,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     pageNumber,
     pageSize,
     searchField,
+    searchParam,
     serverError,
     sortField,
     sortOrder,
@@ -162,6 +167,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     setEmailSearchField,
     setEmailSearchParams,
     setNextPage,
+    setPageSize,
     setPreviousPage,
     sortEmailsByField,
   }

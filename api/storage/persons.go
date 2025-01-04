@@ -38,10 +38,13 @@ func buildPersonQuery(params models.SearchParams) string {
 	if params.SearchTerm == "" {
 		return fmt.Sprintf(`
 		{
-			"search_type": "matchall",
-			"sort_fields": ["%s"],
+			"search_type": "query",
+			"query": {
+				"match_all": {}
+			},
+			"sort": ["%s"],
 			"from": %d,
-			"max_results": %d,
+			"size": %d,
 			"_source": []
 		}`, sort, params.ResultsFrom, params.MaxResults)
 	}
@@ -61,9 +64,9 @@ func buildPersonQuery(params models.SearchParams) string {
 					}
 				}
 			},
-			"sort_fields": ["%s"],
+			"sort": ["%s"],
 			"from": %d,
-			"max_results": %d,
+			"size": %d,
 			"_source": []
 		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
 

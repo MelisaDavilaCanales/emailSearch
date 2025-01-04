@@ -1,5 +1,5 @@
 ### 
-GET http://localhost:8080/emails?page=1&page_size=5&sort=date&order=asc
+GET http://localhost:8080/emails?page=1&page_size=3&sort=date&order=asc
 
 
 ###
@@ -20,7 +20,7 @@ GET http://localhost:8080/emails/2e7o7XCBXPz
 
 
 ### EMAILS 
-GET http://localhost:8080/emails?page=1&page_size=10&term=charles&field=from&sort=to&order=desc
+GET http://localhost:8080/emails?page=1&page_size=2&term=charles&field=from&sort=to&order=desc
 
 ### EMAILS 
 GET http://localhost:8080/emails?page=503&page_size=20&sort=from&order=asc

@@ -48,11 +48,6 @@ export const usePersonStore = defineStore('persons', () => {
     return baseUrl + '/persons' + query.value
   })
 
-  function setPersonSearchParams(field: string, term: string) {
-    pageNumber.value = 1
-    searchParam.value = '&field=' + field + '&term=' + term
-  }
-
   async function fetchPersons() {
     personList.value = []
     isPersonsLoading.value = true
@@ -71,7 +66,6 @@ export const usePersonStore = defineStore('persons', () => {
       }
 
       const data = await response.json()
-
       if (data && data.data && data.data.persons !== null) {
         data.data.persons.forEach((person: IPerson) => {
           personList.value.push({
@@ -105,6 +99,11 @@ export const usePersonStore = defineStore('persons', () => {
     }
   }
 
+  function setPersonSearchParams(field: string, term: string) {
+    pageNumber.value = 1
+    searchParam.value = '&field=' + field + '&term=' + term
+  }
+
   function setSelectedPersonEmail(email: string) {
     selectedPersonEmail.value = email
   }
@@ -131,6 +130,10 @@ export const usePersonStore = defineStore('persons', () => {
     }
   }
 
+  function setPageSize(size: number) {
+    pageSize.value = size
+  }
+
   watch(query, fetchPersons)
 
   return {
@@ -148,6 +151,7 @@ export const usePersonStore = defineStore('persons', () => {
 
     fetchPersons,
     setNextPage,
+    setPageSize,
     setPreviousPage,
     setSelectedPersonEmail,
     setPersonSearchParams,

@@ -12,7 +12,7 @@ import { usePersonStore } from '@/stores/usePersonStore'
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 import { useHighlight } from '@/composables/useHighlight'
 
-const { fetchEmail, setEmailListType, setNextPage, setPreviousPage } = useEmailViewerStore()
+const { fetchEmail, setEmailListType, setNextPage, setPreviousPage, setPageSize } = useEmailViewerStore()
 const { emailList, isEmailListLoading, pageSize, pageNumber, totalPages, emailListType, fetchEmailsError } = storeToRefs(useEmailViewerStore())
 
 const { selectedPersonEmail } = storeToRefs(usePersonStore())
@@ -151,6 +151,7 @@ const highlightedEmails = computed(() => {
     </div>
 
     <Pagination v-if="!fetchEmailsError.status && emailList.length > 0" :currentPage="pageNumber"
-      :totalPages="totalPages" :pageSize="pageSize" @prevPage="setPreviousPage" @nextPage="setNextPage" />
+      :totalPages="totalPages" :pageSize="pageSize" @prevPage="setPreviousPage" @nextPage="setNextPage"
+      @pageSizeChange="setPageSize" />
   </div>
 </template>

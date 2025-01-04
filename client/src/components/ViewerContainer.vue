@@ -4,12 +4,14 @@ import { storeToRefs } from "pinia"
 import PersonDetail from '@/components/PersonDetail.vue'
 import EmailDetail from '@/components/EmailDetail.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import BannerServerError from '@/components/BannerServerError.vue'
+
 
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 
 const { isEmailSelected, isPersonSelected, isItemSelected } = storeToRefs(useItemSelectedStore())
-const { isEmailDetailLoading } = storeToRefs(useEmailViewerStore())
+const { isEmailDetailLoading, fetchEmailsError } = storeToRefs(useEmailViewerStore())
 
 </script>
 
@@ -17,9 +19,10 @@ const { isEmailDetailLoading } = storeToRefs(useEmailViewerStore())
   <div class="h-screen flex flex-col items-center justify-center md:h-full  py-4 px-4 space-y-2">
     <div :class="{ 'h-[95%] overflow-hidden w-full ': isItemSelected }"
       class="h-[90%] w-full bg-grayExtraSoft rounded-md p-4">
-      <PersonDetail v-if="isPersonSelected" />
-      <EmailDetail v-if="isEmailSelected && !isEmailDetailLoading" />
       <LoadingSpinner v-if="isEmailSelected && isEmailDetailLoading" />
+      <PersonDetail v-if="isPersonSelected" />
+      <EmailDetail v-if="isEmailSelected && !isEmailDetailLoading && !fetchEmailsError.status" />
+      <BannerServerError v-if="fetchEmailsError.status" :message="fetchEmailsError.message" />
 
       <!-- Display a message if no item is selected -->
       <div v-if="!isPersonSelected && !isEmailSelected && !isEmailDetailLoading"

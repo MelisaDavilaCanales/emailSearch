@@ -16,18 +16,19 @@ const { serverError: personStoreServerError } = storeToRefs(usePersonStore())
 </script>
 
 <template>
+  <main class="lg:h-full lg:max-h-full lg:overflow-y-hidden w-full flex flex-col lg:flex-row">
+    <BannerServerError v-if="emailTableServerError.status" :message="emailTableServerError.message" />
+    <BannerServerError v-if="emailViewerServerError.status" :message="emailViewerServerError.message" />
+    <BannerServerError v-if="personStoreServerError.status" :message="personStoreServerError.message" />
 
-  <BannerServerError v-if="emailTableServerError.status" :message="emailTableServerError.message" />
-  <BannerServerError v-if="emailViewerServerError.status" :message="emailViewerServerError.message" />
-  <BannerServerError v-if="personStoreServerError.status" :message="personStoreServerError.message" />
-
-  <main v-if="!emailTableServerError.status && !emailViewerServerError.status && !personStoreServerError.status"
-    class="lg:h-full lg:overflow-y-hidden w-full flex flex-col lg:flex-row">
-    <div class="lg:w-7/12">
-      <ExplorerContainer />
-    </div>
-    <div class="lg:w-5/12">
-      <ViewerContainer />
+    <div v-if="!emailTableServerError.status && !emailViewerServerError.status && !personStoreServerError.status"
+      class="w-full flex flex-col lg:flex-row">
+      <div class="lg:w-7/12">
+        <ExplorerContainer />
+      </div>
+      <div class="lg:w-5/12 ">
+        <ViewerContainer />
+      </div>
     </div>
   </main>
 </template>

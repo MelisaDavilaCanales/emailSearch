@@ -1,14 +1,33 @@
 <script setup lang="ts">
+
+import { defineProps, ref, defineEmits, onMounted } from 'vue';
+
 interface Props {
   currentPage: number;
   totalPages: number;
   pageSize: number;
 }
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const currentPageSize = ref(0);
+const emit = defineEmits(['pageSizeChange', 'prevPage', 'nextPage']);
+
+const handlerPageSizeChange = (event: Event) => {
+  const newSize = (event.target as HTMLSelectElement).value;
+  currentPageSize.value = parseInt(newSize)
+  emit('pageSizeChange', currentPageSize.value)
+};
+
+const sizes = [5, 10, 20, 30, 40, 50];
+
+onMounted(() => {
+  currentPageSize.value = props.pageSize;
+});
+
 </script>
 
 <template>
-  <div class="w-full py-2  flex items-center justify-between px-4 sm:px-6 border-t border-gray-200">
+  <div class="w-full py-2 flex items-center justify-between px-4 sm:px-6 border-t border-gray-200">
     <!-- Pagination information -->
     <div class="flex justify-between w-screen sm:flex sm:flex-1 sm:items-center sm:justify-between">
       <div>
@@ -18,8 +37,13 @@ defineProps<Props>();
             <span class="font-extrabold text-primary">{{ currentPage }}</span>
             <span>of</span>
             <span class="font-extrabold text-primary">{{ totalPages }}</span>
-            <span class="hidden sm:block"> | Page size:</span>
-            <span class="hidden sm:block font-medium">{{ pageSize }}</span>
+            <span class="mx-4">|</span>
+            <span class="hidden sm:block">Page size:</span>
+            <select v-model="currentPageSize" @change="handlerPageSizeChange"
+              class="hidden sm:inline-block text-sm text-gray-700 bg-none ml-1 bg-transparent cursor-pointer">
+              <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+            </select>
+            <!-- <span class="hidden sm:block font-medium">{{ pageSize }}</span> -->
           </slot>
         </p>
       </div>

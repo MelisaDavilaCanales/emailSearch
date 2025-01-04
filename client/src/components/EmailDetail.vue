@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import BannerServerError from '@/components/BannerServerError.vue'
+// import BannerServerError from '@/components/BannerServerError.vue'
 
 import { useEmailViewerStore } from '@/stores/useEmailViewerStore'
 import { useItemSelectedStore } from '@/stores/useItemSelectedStore'
@@ -11,7 +11,7 @@ import { useSearchTypeStore } from '@/stores/useSearchTypeStore'
 
 import { useHighlight } from '@/composables/useHighlight'
 
-const { emailDetail, isAllSentEmailsVisible, isAllCopiedEmailsVisible, fetchEmailsError } = storeToRefs(useEmailViewerStore())
+const { emailDetail, isAllSentEmailsVisible, isAllCopiedEmailsVisible } = storeToRefs(useEmailViewerStore())
 const { setEmailSearchParams, setFetchEmailsListByDefault, toggleShowAllSentEmails, toggleShowAllCopiedEmails } = useEmailViewerStore()
 
 const { setSelectedItemType } = useItemSelectedStore()
@@ -52,12 +52,10 @@ const highlightedEmailDetail = computed(() => {
 </script>
 
 <template>
-
-
   <div class="font-roboto space-y-3 overflow-x-hidden h-full flex flex-col pb-2">
-    <BannerServerError v-if="fetchEmailsError.status" :message="fetchEmailsError.message" />
+    <!-- <BannerServerError v-if="fetchEmailsError.status" :message="fetchEmailsError.message" /> -->
 
-    <div v-if="emailDetail !== null" class="flex flex-col space-y-2 flex-1 overflow-y-auto">
+    <div class="flex flex-col space-y-2 flex-1 overflow-y-auto">
       <!-- Email main headers -->
       <div class="w-full overflow-x-hidden flex-none">
         <div>

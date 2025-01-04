@@ -97,12 +97,16 @@ func buildEmailQuery(params models.SearchParams) string {
 	if params.SearchTerm == "" {
 		return fmt.Sprintf(`
 		{
-			"search_type": "matchall",
-			"sort_fields": ["%s"],
+			"search_type": "query",
+			"query": {
+				"match_all": {}
+			},
+			"sort": ["%s"],
 			"from": %d,
-			"max_results": %d,
-			"_source": [ "to", "from","date", "subject"]
-		}`, sort, params.ResultsFrom, params.MaxResults)
+			"size": %d,
+			"_source": ["to", "from", "date", "subject"]
+		}`,
+			sort, params.ResultsFrom, params.MaxResults)
 	}
 
 	if params.SearchField == "" {
@@ -122,11 +126,21 @@ func buildEmailQuery(params models.SearchParams) string {
 			},
 			"sort": ["%s"],
 			"from": %d,
-			"size": 20,
+			"size": %d,
 			"_source": [ "to", "from","date", "subject"]
-		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom)
-	// }`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
+		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
 }
+
+// QUERY SIN TERMINO OPCION INICIAL
+
+// fmt.Sprintf(`
+// 	{
+// 		"search_type": "matchall",
+// 		"sort_fields": ["%s"],
+// 		"from": %d,
+// 		"max_results": %d,
+// 		"_source": [ "to", "from","date", "subject"]
+// 	}`, sort, params.ResultsFrom, params.MaxResults)
 
 // EL MEJOR HASTA AHORA ES ESTE DE ABAJO => flexible -parcial por tokens - completos -no errores (datos incorrectos)
 // {

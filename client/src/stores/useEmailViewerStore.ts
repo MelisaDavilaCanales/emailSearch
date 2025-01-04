@@ -198,18 +198,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     searchField.value = field
   }
 
-  function setNextPage() {
-    if (pageNumber.value < totalPages.value) {
-      pageNumber.value++
-    }
-  }
-
-  function setPreviousPage() {
-    if (pageNumber.value > 1) {
-      pageNumber.value--
-    }
-  }
-
   function setEmailSearchParams(field: string, term: string) {
     pageNumber.value = 1
 
@@ -230,7 +218,24 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     isAllCopiedEmailsVisible.value = value
   }
 
-  // Reset isAllSentEmailsVisible and isAllCopiedEmailsVisible  when emailDetail changes to hide the email list
+  function setNextPage() {
+    if (pageNumber.value < totalPages.value) {
+      pageNumber.value++
+    }
+  }
+
+  function setPreviousPage() {
+    if (pageNumber.value > 1) {
+      pageNumber.value--
+    }
+  }
+
+  function setPageSize(size: number) {
+    pageSize.value = size
+  }
+
+  // Reset isAllSentEmailsVisible and isAllCopiedEmailsVisible when emailDetail changes,
+  // so that when a new email is selected the copied and sent emails should be hidden
   watch(emailDetail, () => {
     isAllSentEmailsVisible.value = false
     isAllCopiedEmailsVisible.value = false
@@ -252,6 +257,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     isEmailListLoading,
     pageNumber,
     pageSize,
+    searchParam,
     searchTerm,
     serverError,
     totalPages,
@@ -260,6 +266,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     setEmailSearchParams,
     setFetchEmailsListByDefault,
     setNextPage,
+    setPageSize,
     setPreviousPage,
     fetchEmail,
     fetchEmails,
