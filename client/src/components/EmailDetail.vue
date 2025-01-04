@@ -87,7 +87,7 @@ const highlightedEmailDetail = computed(() => {
           </div>
 
           <p class="text-sm mb-1" v-if="emailDetail?.subject && highlightedEmailDetail?.subject.trim() !== ''">
-            <span class="font-bold">Subject:</span> {{ highlightedEmailDetail?.subject }}
+            <span class="font-bold">Subject:</span> <span v-html="highlightedEmailDetail?.subject"></span>
           </p>
         </div>
       </div>
