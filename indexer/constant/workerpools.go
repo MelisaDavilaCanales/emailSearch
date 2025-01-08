@@ -3,7 +3,7 @@ package constant
 const (
 
 	// BUFFER_CAPACITY is the capacity of the buffer for the channels.
-	BUFFER_CAPACITY = 500
+	BUFFER_CAPACITY = 100
 
 	// PROCESS_EMAILS_WORKERS_COUNT Number of workers (goroutines) for the email-processing WorkerPool
 	PROCESS_EMAILS_WORKERS_COUNT = 1

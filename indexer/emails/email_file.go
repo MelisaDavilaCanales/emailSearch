@@ -36,9 +36,11 @@ const (
 	X_FILE_NAME               headerKey = "X-FileName"
 )
 
-var TotalEmails int
-var TotalEmailsValid int
-var TotalEmailsInvalid int
+var (
+	TotalEmails        int
+	TotalEmailsValid   int
+	TotalEmailsInvalid int
+)
 
 // ProcessEmailsFiles reads and processes the email file, iterate the file line by line to parse and storing it in an Email structure.
 func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
@@ -100,7 +102,7 @@ func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 // validateEmailStructure validates the correct structure of the email.
 func validateEmailStructure(messageIdField, content string) error {
 	if messageIdField == "" {
-		return errors.New("eaderstructure invalid: Message-ID field is empty")
+		return errors.New("estructure invalid: Message-ID field is empty")
 	}
 
 	if strings.TrimSpace(content) == "" {
