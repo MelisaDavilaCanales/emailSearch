@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"runtime"
 	"sync"
 	"time"
 
@@ -20,6 +21,9 @@ func main() {
 
 	// cpuFile, memFile := profiling.StartProfiling()
 	// defer profiling.StopProfiling(cpuFile, memFile)
+
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	fmt.Println("Number of CPUs: ", runtime.NumCPU())
 
 	timeInit := time.Now()
 
