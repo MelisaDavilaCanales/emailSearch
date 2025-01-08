@@ -8,8 +8,6 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
 )
 
-var totalFiles int
-
 // ProcessEmailDirectory retrieves the directory path from the command-line arguments, processes the specified directory,
 // and scans it for email files, and sends their paths to the provided channel.
 func ProcessEmailDirectory(emailPathCh chan string) error {
@@ -53,13 +51,7 @@ func scanDirectory(path string, emailPathCh chan string) error {
 		return fmt.Errorf("reading directory: %v", err)
 	}
 
-	count := 0
-	const maxFiles = 1000
-
 	for _, file := range files {
-		if count >= maxFiles {
-			break
-		}
 		filePath := filepath.Join(path, file.Name())
 		if file.IsDir() {
 			err := scanDirectory(filePath, emailPathCh)
@@ -69,7 +61,6 @@ func scanDirectory(path string, emailPathCh chan string) error {
 		}
 
 		emailPathCh <- filePath
-		count++
 	}
 
 	return nil

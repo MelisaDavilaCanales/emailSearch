@@ -1,6 +1,7 @@
 services:
   zincsearch:
     image: public.ecr.aws/zinclabs/zinc:latest
+    container_name: zincsearch
     environment:
       - ZINC_DATA_PATH=/zincsearch
       - ZINC_FIRST_ADMIN_USER=admin
@@ -21,6 +22,7 @@ services:
         DB_PASSWORD: ${DB_PASSWORD}
         ZINC_SEARCH_API_URL: ${ZINC_SEARCH_API_URL}
         ZINC_SEARCH_AGGREGATION_API_URL: ${ZINC_SEARCH_AGGREGATION_API_URL}
+    container_name: api
     environment:
       - ZINC_SEARCH_API_URL=${ZINC_SEARCH_API_URL}
       - ZINC_SEARCH_AGGREGATION_API_URL=${ZINC_SEARCH_AGGREGATION_API_URL}
@@ -36,14 +38,12 @@ services:
       context: ./client
       args:
         VITE_API_URL: ${API_URL}
+    container_name: client
     environment:
       - VITE_API_URL=${API_URL}
     ports:
       - 80:8080
     networks:
       - shared-network
-    restart: on-failure
-    depends_on:
-      - api
 networks:
   shared-network: 

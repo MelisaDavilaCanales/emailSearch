@@ -44,8 +44,8 @@ func setGlobalEnvVars() {
 	CREATE_INDEX_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index"
 	CHECK_INDEX_EXISTS_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index/"
 	TRY_CONNECTION_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index/"
+	EMAIL_DIR_SUBPATH = ""
 
-	EMAIL_DIR_SUBPATH = "/maildir"
 }
 
 func SetEnvVars() error {

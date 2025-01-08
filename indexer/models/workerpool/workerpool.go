@@ -1,6 +1,9 @@
 package models
 
-import "sync"
+import (
+	"sync"
+	"runtime"
+)
 
 type WorkerPool[Input any, Output any] struct {
 	taskExecutor TaskExecutor[Input, Output]
@@ -43,6 +46,8 @@ func (wp *WorkerPool[Input, Output]) Start() {
 
 	go func() {
 		wp.wg.Wait()
+
+		runtime.GC()
 
 		if len(wp.resultChList) > 0 {
 			for _, ch := range wp.resultChList {

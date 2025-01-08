@@ -14,7 +14,6 @@ func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
 	var ResponseData models.PersonSearchResponse
 
 	query := buildPersonQuery(params)
-	fmt.Println(query)
 
 	url := config.GET_PERSONS_API_URL
 

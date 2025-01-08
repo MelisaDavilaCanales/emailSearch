@@ -16,4 +16,5 @@ const (
 
 	// BUILD_PERSON_BATCHES_WORKERS_COUNT Number of workers (goroutines) for the personBatches-building WorkerPool
 	BUILD_PERSON_BATCHES_WORKERS_COUNT = 1
+
 )

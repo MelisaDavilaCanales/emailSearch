@@ -75,7 +75,6 @@ func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
 	url := config.GET_EMAILS_API_URL
 
 	query := buildEmailQuery(params)
-	fmt.Println(query)
 
 	res, err := DoRequestFunc(http.MethodPost, url, strings.NewReader(query))
 	if err != nil {
