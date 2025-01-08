@@ -12,15 +12,14 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/persons"
-	"github.com/MelisaDavilaCanales/emailSearch/indexer/profiling"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
 func main() {
-	profiling.StartHTTPProfiler()
+	// profiling.StartHTTPProfiler()
 
-	cpuFile, memFile := profiling.StartProfiling()
-	defer profiling.StopProfiling(cpuFile, memFile)
+	// cpuFile, memFile := profiling.StartProfiling()
+	// defer profiling.StopProfiling(cpuFile, memFile)
 
 	timeInit := time.Now()
 

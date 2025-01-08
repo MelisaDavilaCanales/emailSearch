@@ -12,11 +12,8 @@ import (
 
 var (
 	// Persons is the Map to add the people, it is used to avoid duplicates and then all the data will be added to a batch as structured Persons
-	Persons         map[string]string
-	mu              sync.Mutex
-	ExistingPersons int
-	UniquePersons   int
-	TotalPersons    int
+	Persons map[string]string
+	mu      sync.Mutex
 )
 
 func init() {
@@ -107,17 +104,12 @@ func appendPerson(correo, nombre string) {
 		return
 	}
 
-	TotalPersons++
-
 	mu.Lock()
 	defer mu.Unlock()
 
 	if _, exists := Persons[correo]; exists {
-		ExistingPersons++
 		return
 	}
-
-	UniquePersons++
 
 	Persons[correo] = nombre
 }

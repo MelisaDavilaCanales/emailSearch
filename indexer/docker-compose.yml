@@ -1,18 +1,20 @@
-services:
-  indexer:
-    build:
-      context: .
-      args:
-        DATA_PATH: ${DATA_PATH}
-    environment:
-      - ZINC_SEARCH_API_URL=${ZINC_SEARCH_API_URL}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DATA_PATH=${DATA_PATH}
-    volumes:
-      - ${DATA_PATH}:${DATA_PATH}
-    networks:
-      - my_network
-    restart: on-failure
-    depends_on:
-      - zincsearch
+# services:
+#   indexer:
+#     build:
+#       context: .
+#       args:
+#         DATA_PATH: ${DATA_PATH}
+#     environment:
+#       - ZINC_SEARCH_API_URL=${ZINC_SEARCH_API_URL}
+#       - DB_USER=${DB_USER}
+#       - DB_PASSWORD=${DB_PASSWORD}
+#       - DATA_PATH=${DATA_PATH}
+#     volumes:
+#       - ${VOLUME_PATH}:${VOLUME_PATH}
+#     restart: on-failure
+#     networks:
+#       - emailsearch_shared-network
+
+# networks:
+#   emailsearch_shared-network:
+#     external: true
