@@ -2,6 +2,7 @@ services:
   zincsearch:
     image: public.ecr.aws/zinclabs/zinc:latest
     environment:
+      - ZINC_DATA_PATH=/zincsearch
       - ZINC_FIRST_ADMIN_USER=admin
       - ZINC_FIRST_ADMIN_PASSWORD=Complexpass#123
     ports:
@@ -9,7 +10,7 @@ services:
     networks:
       - shared-network
     volumes:
-      - ./zincsearch:/var/lib/zincsearch
+      - ./zincsearch:/zincsearch
   api:
     build:
       context: ./api
