@@ -36,7 +36,8 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 		return resp, fmt.Errorf("reading response body: %s", readErr)
 	}
 
-	// PrintLogs(resp, bodyContent)
+	fmt.Println("##################################### RESPUESTA DE ZINCSEARCH ###################################")
+	PrintLogs(resp, bodyContent)
 
 	resp.Body = io.NopCloser(&bodyBuffer)
 

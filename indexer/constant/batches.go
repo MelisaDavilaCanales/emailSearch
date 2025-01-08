@@ -5,5 +5,5 @@ const (
 	EMAIL_BATCHES_COUNT = SEND_EMAILS_WORKERS_COUNT
 
 	// EMAIL_BATCH_SIZE represents the size/capacity of each EmailBatch. That is, the number of emails each batch will contain.
-	EMAIL_BATCH_SIZE = 1000
+	EMAIL_BATCH_SIZE = 100
 )
