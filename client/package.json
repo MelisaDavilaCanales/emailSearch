@@ -22,7 +22,8 @@
     "flowbite": "^2.5.2",
     "pinia": "^2.2.6",
     "vue": "^3.5.13",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@pinia/testing": "^0.1.7",
