@@ -1,0 +1,4 @@
+*.tfvars
+retotecnico.pub
+.terraform
+.terraform.lock.hcl
