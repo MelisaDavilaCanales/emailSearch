@@ -22,9 +22,9 @@ import (
 var CantGoRutine int
 
 func main() {
-	// profiling.CreateCPUProfiling()
-	profiling.CreateMemoryProfiling()
-	// profiling.CreateTraceProfilin()
+
+	cpuFile, memFile, traceFile := profiling.StartProfiling()
+	defer profiling.StopProfiling(cpuFile, memFile, traceFile)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	fmt.Println("Number of CPUs: ", runtime.NumCPU())
