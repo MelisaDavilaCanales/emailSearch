@@ -15,6 +15,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/persons"
+	"github.com/MelisaDavilaCanales/emailSearch/indexer/profiling"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
@@ -22,7 +23,7 @@ var CantGoRutine int
 
 func main() {
 	// profiling.CreateCPUProfiling()
-	// profiling.CreateMemoryProfiling()
+	profiling.CreateMemoryProfiling()
 	// profiling.CreateTraceProfilin()
 
 	runtime.GOMAXPROCS(runtime.NumCPU())

@@ -29,6 +29,11 @@ func CreateMemoryProfiling() {
 	defer memFile.Close()
 
 	runtime.GC()
+
+	err = pprof.WriteHeapProfile(memFile)
+	if err != nil {
+		fmt.Println("Error writing memory profile:", err)
+	}
 }
 
 func CreateTraceProfilin() {
