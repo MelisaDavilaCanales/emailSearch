@@ -6,35 +6,43 @@ import (
 	"os"
 	"runtime"
 	"runtime/pprof"
+	"runtime/trace"
 )
 
-func StartProfiling() (cpuFile *os.File, memFile *os.File) {
+func CreateCPUProfiling() {
 	cpuFile, err := os.Create("cpu.prof")
 	if err != nil {
 		fmt.Println("Error creating CPU profile file:", err)
 	}
+
 	if err := pprof.StartCPUProfile(cpuFile); err != nil {
 		fmt.Println("Error starting CPU profiling:", err)
 	}
+	defer pprof.StopCPUProfile()
+}
 
-	memFile, err = os.Create("mem.prof")
+func CreateMemoryProfiling() {
+	memFile, err := os.Create("mem.prof")
 	if err != nil {
 		fmt.Println("Error creating memory profile file:", err)
 	}
+	defer memFile.Close()
 
-	return cpuFile, memFile
+	runtime.GC()
 }
 
-func StopProfiling(cpuFile *os.File, memFile *os.File) {
-	pprof.StopCPUProfile()
-	cpuFile.Close()
-
-	// Run memory profiling
-	runtime.GC() // Force garbage collection before memory profiling
-	if err := pprof.WriteHeapProfile(memFile); err != nil {
-		fmt.Println("Error writing memory profile:", err)
+func CreateTraceProfilin() {
+	traceFile, err := os.Create("trace.prof")
+	if err != nil {
+		fmt.Println("Error creating trace profile file:", err)
 	}
-	memFile.Close()
+	defer traceFile.Close()
+
+	err = trace.Start(traceFile)
+	if err != nil {
+		fmt.Println("Error starting trace profiling:", err)
+	}
+	defer trace.Stop()
 }
 
 func StartHTTPProfiler() {

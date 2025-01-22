@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"runtime"
 	"sync"
 	"time"
@@ -16,18 +18,19 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
-func main() {
-	// profiling.StartHTTPProfiler()
+var CantGoRutine int
 
-	// cpuFile, memFile := profiling.StartProfiling()
-	// defer profiling.StopProfiling(cpuFile, memFile)
+func main() {
+	// profiling.CreateCPUProfiling()
+	// profiling.CreateMemoryProfiling()
+	// profiling.CreateTraceProfilin()
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	fmt.Println("Number of CPUs: ", runtime.NumCPU())
 
 	timeInit := time.Now()
 
-	_, err := emails.GetDirectory()
+	directory, err := emails.GetDirectory()
 	if err != nil {
 		log.Fatal("Error getting directory: ", err)
 	}
@@ -57,13 +60,34 @@ func main() {
 	wgProcessDir.Add(1)
 
 	go func() {
-		defer close(emailPathCh)
 		defer wgProcessDir.Done()
 
-		err := emails.ProcessEmailDirectory(emailPathCh)
+		var wgProcessEmailDirectory sync.WaitGroup
+
+		files, err := os.ReadDir(directory)
 		if err != nil {
-			log.Fatal("Error processing email directory: ", err, " Please provide a valid directory, example: go run main.go <directory>")
+			fmt.Printf("Error reading top-level directory: %v\n", err)
+			return
 		}
+
+		for _, file := range files {
+			if file.IsDir() {
+				subDirPath := filepath.Join(directory, file.Name())
+
+				wgProcessEmailDirectory.Add(1)
+				CantGoRutine++
+				go func(path string) {
+					defer wgProcessEmailDirectory.Done()
+					err := emails.ProcessSubDirectory(path, emailPathCh)
+					if err != nil {
+						fmt.Printf("Error processing subdirectory %s: %v\n", path, err)
+					}
+				}(subDirPath)
+			}
+		}
+
+		wgProcessEmailDirectory.Wait()
+		close(emailPathCh)
 	}()
 
 	wpProcessEmailsFiles := models_wp.NewWorkerPool(emails.ProcessEmailsFiles, &wgProcessEmailFiles, constant.PROCESS_EMAILS_WORKERS_COUNT, emailPathCh, emailStructCh1, emailStructCh2)
@@ -93,4 +117,10 @@ func main() {
 	fmt.Printf("TotalEmails: %v\n", emails.TotalEmails)
 	fmt.Printf("TotalEmailsValid: %v\n", emails.TotalEmailsValid)
 	fmt.Printf("TotalEmailsInvalid: %v\n", emails.TotalEmailsInvalid)
+	fmt.Printf("--- GoRutines ---: %v\n", CantGoRutine)
+	fmt.Printf("--- EMAIL_BATCH_SIZE ---: %v\n", constant.EMAIL_BATCH_SIZE)
+	fmt.Printf("--- PROCESS_EMAILS_WORKERS_COUNT ---: %v\n", constant.PROCESS_EMAILS_WORKERS_COUNT)
+	fmt.Printf("--- SEND_EMAILS_WORKERS_COUNT ---: %v\n", constant.SEND_EMAILS_WORKERS_COUNT)
+	fmt.Printf("--- STRUCTURE_PERSONS_WORKERS_COUNT ---: %v\n", constant.STRUCTURE_PERSONS_WORKERS_COUNT)
+	fmt.Printf("--- BUFFER_CAPACITY ---: %v\n", constant.BUFFER_CAPACITY)
 }

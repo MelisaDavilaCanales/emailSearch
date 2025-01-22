@@ -31,7 +31,6 @@ var (
 	TRY_CONNECTION_API_URL string
 
 	// EMAIL_DIR_SUBPATH is the subpath to the email directory.
-	EMAIL_DIR_SUBPATH string
 )
 
 func setGlobalEnvVars() {
@@ -44,7 +43,6 @@ func setGlobalEnvVars() {
 	CREATE_INDEX_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index"
 	CHECK_INDEX_EXISTS_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index/"
 	TRY_CONNECTION_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index/"
-	EMAIL_DIR_SUBPATH = ""
 
 }
 

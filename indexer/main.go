@@ -17,10 +17,9 @@ import (
 )
 
 func main() {
-	// profiling.StartHTTPProfiler()
-
-	// cpuFile, memFile := profiling.StartProfiling()
-	// defer profiling.StopProfiling(cpuFile, memFile)
+	// profiling.CreateCPUProfiling()
+	// profiling.CreateMemoryProfiling()
+	// profiling.CreateTraceProfilin()
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	fmt.Println("Number of CPUs: ", runtime.NumCPU())
