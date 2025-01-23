@@ -107,7 +107,8 @@ func appendPerson(correo, nombre string) {
 	mu.Lock()
 	defer mu.Unlock()
 
-	if _, exists := Persons[correo]; exists {
+	_, exists := Persons[correo]
+	if exists {
 		return
 	}
 

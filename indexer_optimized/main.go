@@ -15,16 +15,13 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/persons"
-	"github.com/MelisaDavilaCanales/emailSearch/indexer/profiling"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
-var CantGoRutine int
-
 func main() {
 
-	cpuFile, memFile, traceFile := profiling.StartProfiling()
-	defer profiling.StopProfiling(cpuFile, memFile, traceFile)
+	// cpuFile, memFile, traceFile := profiling.StartProfiling()
+	// defer profiling.StopProfiling(cpuFile, memFile, traceFile)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	fmt.Println("Number of CPUs: ", runtime.NumCPU())
@@ -76,13 +73,9 @@ func main() {
 				subDirPath := filepath.Join(directory, file.Name())
 
 				wgProcessEmailDirectory.Add(1)
-				CantGoRutine++
 				go func(path string) {
 					defer wgProcessEmailDirectory.Done()
-					err := emails.ProcessSubDirectory(path, emailPathCh)
-					if err != nil {
-						fmt.Printf("Error processing subdirectory %s: %v\n", path, err)
-					}
+					emails.ProcessSubDirectory(path, emailPathCh)
 				}(subDirPath)
 			}
 		}
@@ -118,7 +111,6 @@ func main() {
 	fmt.Printf("TotalEmails: %v\n", emails.TotalEmails)
 	fmt.Printf("TotalEmailsValid: %v\n", emails.TotalEmailsValid)
 	fmt.Printf("TotalEmailsInvalid: %v\n", emails.TotalEmailsInvalid)
-	fmt.Printf("--- GoRutines ---: %v\n", CantGoRutine)
 	fmt.Printf("--- EMAIL_BATCH_SIZE ---: %v\n", constant.EMAIL_BATCH_SIZE)
 	fmt.Printf("--- PROCESS_EMAILS_WORKERS_COUNT ---: %v\n", constant.PROCESS_EMAILS_WORKERS_COUNT)
 	fmt.Printf("--- SEND_EMAILS_WORKERS_COUNT ---: %v\n", constant.SEND_EMAILS_WORKERS_COUNT)

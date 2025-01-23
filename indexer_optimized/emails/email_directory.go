@@ -28,24 +28,18 @@ func GetDirectory() (string, error) {
 }
 
 // ProcessSubDirectory processes a single subdirectory (recursively scans its contents).
-func ProcessSubDirectory(pathDirectory string, emailCh chan string) error {
+func ProcessSubDirectory(pathDirectory string, emailCh chan string) {
 	files, err := os.ReadDir(pathDirectory)
 	if err != nil {
-		return fmt.Errorf("error reading directory %s: %v", pathDirectory, err)
+		fmt.Printf("error reading directory %s: %v", pathDirectory, err)
 	}
 
 	for _, file := range files {
 		filePath := filepath.Join(pathDirectory, file.Name())
 		if file.IsDir() {
-			// Procesar de forma recursiva sin lanzar nuevas goroutines
-			err := ProcessSubDirectory(filePath, emailCh)
-			if err != nil {
-				return err
-			}
+			ProcessSubDirectory(filePath, emailCh)
 		} else {
 			emailCh <- filePath
 		}
 	}
-
-	return nil
 }
