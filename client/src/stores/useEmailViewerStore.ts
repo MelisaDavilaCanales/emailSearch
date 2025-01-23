@@ -164,7 +164,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
           subject: email.subject,
           cc: email.cc,
           ccArray: ccArray,
-          bcc: email.bcc,
           x_folder: email.x_folder,
           x_origin: email.x_origin,
           x_file_name: email.x_file_name,

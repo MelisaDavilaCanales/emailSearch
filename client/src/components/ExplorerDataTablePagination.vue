@@ -28,30 +28,30 @@ onMounted(() => {
 
 <template>
   <div class="w-full py-2 flex items-center justify-between px-4 sm:px-6 border-t border-gray-200">
-    <!-- Pagination information -->
     <div class="flex justify-between w-screen sm:flex sm:flex-1 sm:items-center sm:justify-between">
+
+      <!-- Pagination information -->
       <div>
         <p class="text-sm text-gray-700 sm:flex space-x-1">
-          <slot name="page-info">
-            <span>Page</span>
-            <span class="font-extrabold text-primary">{{ currentPage }}</span>
-            <span>of</span>
-            <span class="font-extrabold text-primary">{{ totalPages }}</span>
-            <span class="mx-4">|</span>
-            <span class="hidden sm:block">Page size:</span>
-            <select v-model="currentPageSize" @change="handlerPageSizeChange"
-              class="hidden sm:inline-block text-sm text-gray-700 bg-none ml-1 bg-transparent cursor-pointer">
-              <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
-            </select>
-            <!-- <span class="hidden sm:block font-medium">{{ pageSize }}</span> -->
-          </slot>
+          <span>Page</span>
+          <span class="font-extrabold text-primary">{{ currentPage }}</span>
+          <span>of</span>
+          <span class="font-extrabold text-primary">{{ totalPages }}</span>
+          <span class="mx-4">|</span>
+          <span class="hidden sm:block">Page size:</span>
+          <select v-model="currentPageSize" @change="handlerPageSizeChange"
+            class="hidden sm:inline-block text-sm text-gray-700 bg-none ml-1 bg-transparent cursor-pointer">
+            <option v-for="size in sizes" :key="size" :value="size">{{ size }}</option>
+          </select>
         </p>
       </div>
+
       <!-- Pagination buttons -->
       <div>
         <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+
           <!-- Previous button -->
-          <slot name="previous-button" :onClick="() => $emit('prevPage')">
+          <div :onClick="() => $emit('prevPage')">
             <button
               class="relative inline-flex items-center rounded-l-md px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
               :disabled="currentPage <= 1" @click.prevent="$emit('prevPage')">
@@ -62,18 +62,16 @@ onMounted(() => {
                   clip-rule="evenodd" />
               </svg>
             </button>
-          </slot>
+          </div>
 
           <!-- Current page -->
-          <slot name="current-page">
-            <span aria-current="page"
-              class="relative z-10 inline-flex items-center justify-center bg-primary px-4 py-1 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryVariant text-center self-center w-14">
-              {{ currentPage }}
-            </span>
-          </slot>
+          <span aria-current="page"
+            class="relative z-10 inline-flex items-center justify-center bg-primary px-4 py-1 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryVariant text-center self-center w-14">
+            {{ currentPage }}
+          </span>
 
           <!-- Next button -->
-          <slot name="next-button" :onClick="() => $emit('nextPage')">
+          <div :onClick="() => $emit('nextPage')">
             <button
               class="relative inline-flex items-center rounded-r-md px-2 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
               :disabled="currentPage == totalPages" @click.prevent="$emit('nextPage')">
@@ -84,7 +82,7 @@ onMounted(() => {
                   clip-rule="evenodd" />
               </svg>
             </button>
-          </slot>
+          </div>
         </nav>
       </div>
     </div>

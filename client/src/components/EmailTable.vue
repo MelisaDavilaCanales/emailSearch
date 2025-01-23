@@ -77,7 +77,7 @@ onBeforeMount(async () => {
               <tr>
                 <th class="w-7 pl-3 pr-8 py-2 text-top cursor-pointer whitespace-nowrap">#</th>
                 <th @click="sortEmailsByField(header.field)" v-for="header in tableHeaders" :key="header.field"
-                  class="px-2 py-2 text-left cursor-pointer whitespace-nowrap">
+                  class="px-3 py-2 text-left cursor-pointer whitespace-nowrap">
                   {{ header.label }}
                   <font-awesome-icon icon="arrow-up" v-if="sortField == header.field && sortOrder == 'asc'" />
                   <font-awesome-icon icon="arrow-down" v-if="sortField == header.field && sortOrder == 'desc'" />
@@ -92,14 +92,11 @@ onBeforeMount(async () => {
                 <td class="overflow-x-hidden px-2 py-2 align-top flex-nowrap" v-html="email.date"></td>
                 <td class="overflow-x-hidden px-2 py-2 align-top" v-html="email.from"></td>
                 <td class="overflow-x-hidden px-2 py-2 align-top">
-                  <span v-if="email?.toArray && email?.toArray.length > 0 && email?.toArray[0] !== ''"
-                    class="my-1 block max-h-32 overflow-x-hidden">
-                    <span>
-                      <span v-for="(emailAddress, index) in email.toArray.slice(0, 2)" :key="index">
-                        <span v-html="emailAddress + '</br>'"></span>
-                      </span>
-                      <span v-if="email.toArray.length > 2" class="opacity-60">... Ver mas</span>
+                  <span v-if="email?.toArray && email?.toArray.length > 0 && email?.toArray[0] !== ''">
+                    <span v-for="(emailAddress, index) in email.toArray.slice(0, 2)" :key="index"
+                      v-html="emailAddress + '</br>'">
                     </span>
+                    <span v-if="email.toArray.length > 2" class="opacity-60">... Ver mas</span>
                   </span>
                   <span v-else class="text-xs flex pt-1 ml-1">N/A</span>
                 </td>

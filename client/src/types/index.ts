@@ -11,7 +11,20 @@ export interface IEmail {
   cc: string
   toArray: string[]
   ccArray: string[]
-  bcc: string
+  x_folder: string
+  x_origin: string
+  x_file_name: string
+  content: string
+}
+
+export interface IHighlightedEmailDetail {
+  id: string
+  message_id: string
+  date: string
+  from: string
+  subject: string
+  toArray: string[]
+  ccArray: string[]
   x_folder: string
   x_origin: string
   x_file_name: string

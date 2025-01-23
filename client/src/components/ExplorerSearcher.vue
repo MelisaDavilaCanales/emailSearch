@@ -65,7 +65,8 @@ watch(selectedSearchTypeOption, (newValue) => {
         </svg>
       </div>
       <!-- Active search field display -->
-      <div v-if="searchFieldActive != ''" class="bg-primarySoft text-white text-xs ml-1 mr-3 py-1 px-2 rounded">
+      <div v-if="searchFieldActive != '' && selectedSearchTypeOption === 'emails'" class=" bg-primarySoft text-white text-xs
+        ml-1 mr-3 py-1 px-2 rounded">
         {{ searchFieldActive }}
         <span @click="handlerClearSearchField"
           class="cursor-pointer text-xs opacity-50 hover:opacity-100 hover:font-bold ml-1"> x

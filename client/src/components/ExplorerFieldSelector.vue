@@ -15,7 +15,6 @@ const searchEmailOptions = [
   { value: 'to', label: 'To' },
   { value: 'subject', label: 'Subject' },
   { value: 'cc', label: 'CC' },
-  { value: 'bcc', label: 'BCC' },
   { value: 'x_folder', label: 'Folder' },
   { value: 'x_origin', label: 'Origin' },
   { value: 'x_file_name', label: 'File name' },
