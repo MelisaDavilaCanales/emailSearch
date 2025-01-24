@@ -135,19 +135,19 @@ const highlightedEmails = computed(() => {
 
           <!-- content -->
           <div class="w-full text-sm pr-2">
-            <p class="block max-h-5">
+            <p class="flex max-h-5">
               <span class="font-bold mr-1">From:</span>
               <span v-if="email?.from && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
                 v-html="email.from"></span>
               <span v-else class="text-xs">N/A</span>
             </p>
-            <p class="block max-h-5">
+            <p class="flex max-h-5">
               <span class="font-bold mr-1">To:</span>
               <span v-if="email?.to && email?.to[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
                 v-html="email.to"></span>
               <span v-else class="text-xs">N/A</span>
             </p>
-            <p class="block max-h-5">
+            <p class="flex max-h-5">
               <span class="font-bold mr-1">Subject:</span>
               <span v-if="email?.subject && email?.subject[0] !== ''" class="truncate whitespace-nowrap overflow-hidden"
                 v-html="email.subject"></span>

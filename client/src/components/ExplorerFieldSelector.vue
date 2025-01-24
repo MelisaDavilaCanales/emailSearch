@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { useSearchTypeStore } from '@/stores/useSearchTypeStore';
@@ -22,6 +22,7 @@ const searchEmailOptions = [
 ];
 
 const selectedOption = ref<string>('');
+const selectKey = ref<number>(0);
 
 onMounted(() => {
   // Set the initial value of the select based on the value of searchFieldActive
@@ -36,13 +37,20 @@ function handleSearchFieldChange(event: Event) {
   selectedOption.value = value;
   setSearchFieldActive(value);
 }
+
+watch(searchFieldActive, () => {
+  if (searchFieldActive.value == '') {
+    console.log("Cambiar Key")
+    selectKey.value++
+  }
+})
 </script>
 
 <template>
   <div class="p-1 w-full flex justify-center font-roboto">
     <div class="flex space-x-2 items-center">
       <p class="text-sm text-gray-800">Search for matches only in the field:</p>
-      <select
+      <select :key="selectKey"
         class="text-sm border border-primarySoft p-1 rounded focus:outline-none focus:ring-1 focus:ring-primarySoft"
         v-model="selectedOption" @change="handleSearchFieldChange">
         <option value="" disabled>Select field</option>

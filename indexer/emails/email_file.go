@@ -75,7 +75,9 @@ func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 		}
 	}
 
-	email.Content = emailContent.String()
+	cleanedContent := cleanContent(emailContent.String())
+
+	email.Content = cleanedContent
 	messageIdField = email.MessageID
 
 	TotalEmails++
@@ -102,7 +104,7 @@ func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 // validateEmailStructure validates the correct structure of the email.
 func validateEmailStructure(messageIdField, content string) error {
 	if messageIdField == "" {
-		return errors.New("estructure invalid: Message-ID field is empty")
+		return errors.New("estructure invalid")
 	}
 
 	if strings.TrimSpace(content) == "" {
@@ -184,6 +186,12 @@ func MapHeaderLine(key headerKey, value string, email *models.Email) error {
 
 func cleanMessageId(inputString string) string {
 	return strings.Trim(inputString, "<>")
+}
+
+// <a href="http://www.barachamismo.org/remove.html">
+func cleanContent(content string) string {
+	// return strings.Trim(content, "href=\"*\"") and !import
+	return content
 }
 
 func convertDateFormat(date string) (time.Time, error) {
