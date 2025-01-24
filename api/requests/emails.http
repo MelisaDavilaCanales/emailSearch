@@ -3,13 +3,13 @@ GET http://localhost:8080/emails?page=1&page_size=3&sort=date&order=asc
 
 
 ###
-GET http://localhost:8080/emails
+GET http://localhost:8080/emailsS
 
-### Email not found
-GET http://localhost:8080/emails/2e7o7WQVlYK
+### Email not foundS
+GET http://localhost:8080/emails/2e7o7WQVlYKS
 
 
-### EMAIL SUCESS
+### EMAIL SUCESSKW
 GET http://localhost:8080/emails/2e7o8GYJZsM
 
 ### EMAIL SUCESS
@@ -20,7 +20,7 @@ GET http://localhost:8080/emails/2e7o7XCBXPz
 
 
 ### EMAILS 
-GET http://localhost:8080/emails?page=1&page_size=2&term=charles&field=from&sort=to&order=desc
+GET http://localhost:8080/emails?page=1&page_size=2&term=ch""arl:es&field=from&sort=to&order=desc
 
 ### EMAILS 
 GET http://localhost:8080/emails?page=503&page_size=20&sort=from&order=asc

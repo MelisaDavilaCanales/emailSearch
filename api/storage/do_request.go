@@ -25,7 +25,11 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		fmt.Println("request error:", err)
+
+		return nil, &models.InternalServerError{
+			Message: "Internal Server Error",
+		}
 	}
 
 	var bodyBuffer bytes.Buffer

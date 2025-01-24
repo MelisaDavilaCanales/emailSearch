@@ -3,6 +3,7 @@ package controllers
 import (
 	"math"
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"github.com/MelisaDavilaCanales/emailSearch/api/constant"
@@ -31,8 +32,24 @@ func getQueryParams(r *http.Request) *models.QueryParams {
 	return params
 }
 
+// Implementación de la función cleanQueryParams
 func cleanQueryParams(params *models.QueryParams) {
-	params = params
+	params.PageNumber = removeUnwantedChars(params.PageNumber)
+	params.PageSize = removeUnwantedChars(params.PageSize)
+	params.SearchTerm = removeUnwantedChars(params.SearchTerm)
+	params.SearchField = removeUnwantedChars(params.SearchField)
+	params.SortField = removeUnwantedChars(params.SortField)
+	params.SortOrder = removeUnwantedChars(params.SortOrder)
+}
+
+// Función auxiliar para limpiar cadenas de texto
+func removeUnwantedChars(input string) string {
+	if input == "" {
+		return input
+	}
+
+	unwantedChars := regexp.MustCompile(constant.UNWANTED_CHARS_EXP)
+	return unwantedChars.ReplaceAllString(input, "")
 }
 
 // processPaginatedParams processes pagination parameters (page and size),
