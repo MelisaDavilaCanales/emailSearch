@@ -92,7 +92,7 @@ export const usePersonStore = defineStore('persons', () => {
       serverError.value = {
         status: true,
         code: 500,
-        message: 'Internal Server Error',
+        message: 'Something went wrong',
       }
     } finally {
       isPersonsLoading.value = false

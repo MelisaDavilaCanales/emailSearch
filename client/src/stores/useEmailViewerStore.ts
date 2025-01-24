@@ -125,7 +125,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       serverError.value = {
         status: true,
         code: 500,
-        message: 'Internal Server Error',
+        message: 'Something went wrong',
       }
     } finally {
       isEmailListLoading.value = false
@@ -184,7 +184,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       serverError.value = {
         status: true,
         code: 500,
-        message: 'Internal Server Error',
+        message: 'Something went wrong',
       }
     } finally {
       isEmailDetailLoading.value = false

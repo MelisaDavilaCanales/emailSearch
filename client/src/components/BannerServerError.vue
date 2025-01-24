@@ -18,7 +18,7 @@ defineProps<Props>();
         </slot>
       </h4>
       <p class="font-roboto  text-grayDark">
-        [ Something went wrong, please try again latter ]
+        [ We're sorry, please try again latter ]
       </p>
     </div>
   </div>

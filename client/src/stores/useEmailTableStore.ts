@@ -100,7 +100,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
       serverError.value = {
         status: true,
         code: 500,
-        message: 'Internal Server Error',
+        message: 'Something went wrong',
       }
     } finally {
       isEmailsLoading.value = false
