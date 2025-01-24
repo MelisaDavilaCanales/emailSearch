@@ -34,7 +34,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   const { formatDate } = useFormatData()
 
   const emailSearchURL = computed(() => {
-    return emailBaseUrl + query.value
+    return emailBaseUrl + cleanedQuery.value
   })
 
   const query = computed(() => {
@@ -52,7 +52,13 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     )
   })
 
+  const cleanedQuery = computed(() => {
+    return query.value.replace(/[{}"":&*]/g, '')
+  })
+
   async function fetchEmails() {
+    console.log('URL: ' + emailSearchURL.value)
+
     emailList.value = []
     isEmailsLoading.value = true
 

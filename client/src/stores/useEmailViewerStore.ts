@@ -41,7 +41,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   const { formatDate, convertToArray } = useFormatData()
 
   const emailSearchURL = computed(() => {
-    return emailBaseUrl + query.value
+    return emailBaseUrl + cleanedQuery.value
   })
 
   const query = computed(() => {
@@ -59,7 +59,12 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     )
   })
 
+  const cleanedQuery = computed(() => {
+    return query.value.replace(/[{}"":&*]/g, '')
+  })
+
   async function fetchEmails() {
+    console.log('URL: ' + emailSearchURL.value)
     emailList.value = []
     isEmailListLoading.value = true
 
@@ -128,11 +133,15 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     }
   }
 
-  async function fetchEmail(message_id: string) {
+  async function fetchEmail(emailId: string) {
+    if (emailDetail.value?.id === emailId) {
+      return
+    }
+
     emailDetail.value = null
     isEmailDetailLoading.value = true
 
-    const response = await fetch(`${emailBaseUrl}/${message_id}`)
+    const response = await fetch(`${emailBaseUrl}/${emailId}`)
 
     try {
       if (!response.ok) {

@@ -44,8 +44,12 @@ export const usePersonStore = defineStore('persons', () => {
     )
   })
 
+  const cleanedQuery = computed(() => {
+    return query.value.replace(/[{}"":&*]/g, '')
+  })
+
   const personSearchURL = computed(() => {
-    return baseUrl + '/persons' + query.value
+    return baseUrl + '/persons' + cleanedQuery.value
   })
 
   async function fetchPersons() {
