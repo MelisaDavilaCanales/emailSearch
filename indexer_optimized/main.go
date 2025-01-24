@@ -131,6 +131,7 @@ func main() {
 // 	regexp := regexp.MustCompile(`(?i)e-mail|<email.>|<\.\s*|<'?'\s*|\s*>`)
 
 // 	for i, email := range *emails {
+// 		// Primero, eliminamos los patrones generales no deseados
 // 		emailClean := regexp.ReplaceAllString(email, "")
 
 // 		emailClean = strings.ReplaceAll(emailClean, "<.", "")
@@ -144,6 +145,7 @@ func main() {
 // func main() {
 // 	// Ejemplo de emails con patrones no deseados
 // 	emails := []string{
+// 		"e-mail <.bettyladish@enron.com>",
 // 		"e-mail <.bettyladish@enron.com>",
 // 		"<.carolyn@enron.com>",
 // 		"e-mail <.alan@enron.com>",

@@ -44,10 +44,6 @@ func StructurePersons(_ int, data models_wp.Result[*models.EmailData]) (models.P
 	cleanPersonName(&namesOfXToField)
 	cleanPersonName(&namesOfXCcField)
 
-	cleanPersonEmail(&emailsOfFromField)
-	cleanPersonEmail(&emailsOfToField)
-	cleanPersonEmail(&emailsOfCcField)
-
 	processAndAppend(emailsOfFromField, namesOfXFromField)
 	processAndAppend(emailsOfToField, namesOfXToField)
 	processAndAppend(emailsOfCcField, namesOfXCcField)
@@ -71,8 +67,9 @@ func cleanPersonName(names *[]string) {
 }
 
 // cleanPersonEmail remove unwanted Chars e.g. e-mail, <email.>, <., <'.' and >
-func cleanPersonEmail(emails *[]string) {
-	regexp := regexp.MustCompile(`(?i)e-mail|<email.>|<\.\s*|<'?'\s*|\s*>`)
+func CleanPersonEmail(emails *[]string) []string {
+	regexp := regexp.MustCompile(constant.PREFIXES_AND_SYMBOLS_REGEXP)
+	newEmails := make([]string, len(*emails))
 
 	for i, email := range *emails {
 		emailClean := regexp.ReplaceAllString(email, "")
@@ -81,8 +78,10 @@ func cleanPersonEmail(emails *[]string) {
 		emailClean = strings.ReplaceAll(emailClean, "<'.", "")
 		emailClean = strings.ReplaceAll(emailClean, ".'", "")
 
-		(*emails)[i] = strings.TrimSpace(emailClean)
+		newEmails[i] = strings.TrimSpace(emailClean)
+
 	}
+	return newEmails
 }
 
 // convertToArray is a function that splits a string containing multiple email addresses and returns a slice of email addresses,
