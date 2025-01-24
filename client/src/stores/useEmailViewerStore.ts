@@ -38,7 +38,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
   const emailBaseUrl = import.meta.env.VITE_API_URL + '/emails'
 
-  const { formatDate, convertToArray } = useFormatData()
+  const { formatDate, convertStringListToArray, cleanQuery } = useFormatData()
 
   const emailSearchURL = computed(() => {
     return emailBaseUrl + cleanedQuery.value
@@ -60,9 +60,8 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   })
 
   const cleanedQuery = computed(() => {
-    return query.value.replace(/[{}"":&*]/g, '')
+    return cleanQuery(query.value)
   })
-
   async function fetchEmails() {
     console.log('URL: ' + emailSearchURL.value)
     emailList.value = []
@@ -160,8 +159,8 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
       if (email !== null) {
         const formattedDate = formatDate(email.date.toString())
-        const toArray = convertToArray(email.to)
-        const ccArray = convertToArray(email.cc)
+        const toArray = convertStringListToArray(email.to)
+        const ccArray = convertStringListToArray(email.cc)
 
         emailDetail.value = {
           id: email.id,

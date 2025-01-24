@@ -2,6 +2,7 @@ import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 import type { IPerson, IRequestError, IServerErrorResponse } from '@/types/index'
+import { useFormatData } from '@/composables/useFormatData'
 
 export const usePersonStore = defineStore('persons', () => {
   const personList = ref<IPerson[]>([])
@@ -29,6 +30,8 @@ export const usePersonStore = defineStore('persons', () => {
 
   const baseUrl = import.meta.env.VITE_API_URL
 
+  const { cleanQuery } = useFormatData()
+
   const query = computed(() => {
     return (
       '?' +
@@ -45,7 +48,7 @@ export const usePersonStore = defineStore('persons', () => {
   })
 
   const cleanedQuery = computed(() => {
-    return query.value.replace(/[{}"":&*]/g, '')
+    return cleanQuery(query.value)
   })
 
   const personSearchURL = computed(() => {

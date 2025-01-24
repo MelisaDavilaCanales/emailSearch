@@ -3,16 +3,23 @@ import { useEmailTableStore } from './useEmailTableStore'
 
 describe('useEmailTableStore', () => {
   let store: ReturnType<typeof useEmailTableStore>
+  let searchParam: string
+  let pageNumber: number
+  let pageSize: number
+  let totalPage: number
+  let setEmailSearchParams: (from: string, term: string) => void
 
   beforeEach(() => {
     store = useEmailTableStore()
+    ;({ searchParam, pageNumber } = store)
+    ;({ pageSize, totalPage, setEmailSearchParams } = store)
   })
 
   it('should initialize with correct default values', () => {
-    expect(store.searchParam).toBe('')
-    expect(store.pageNumber).toBe(1)
-    expect(store.pageSize).toBe(10)
-    expect(store.totalPage).toBe(0)
+    expect(searchParam).toBe('')
+    expect(pageNumber).toBe(1)
+    expect(pageSize).toBe(10)
+    expect(totalPage).toBe(0)
     expect(store.sortField).toBe('date')
     expect(store.sortOrder).toBe('desc')
     expect(store.fetchEmailsError.status).toBe(false)
@@ -20,7 +27,7 @@ describe('useEmailTableStore', () => {
   })
 
   it('should update search parameters correctly', () => {
-    store.setEmailSearchParams('from', 'charles')
+    setEmailSearchParams('from', 'charles')
     expect(store.searchParam).toBe('&field=from&term=charles')
     expect(store.pageNumber).toBe(1)
   })

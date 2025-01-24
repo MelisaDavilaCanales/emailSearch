@@ -7,9 +7,13 @@ export const useFormatData = () => {
     return formattedDate
   }
 
-  const convertToArray = (emails: string): string[] => {
+  const convertStringListToArray = (emails: string): string[] => {
     return emails.split(',').map((email: string) => email.trim())
   }
 
-  return { formatDate, convertToArray }
+  const cleanQuery = (query: string): string => {
+    return query.replace(/[{}"":*]/g, '')
+  }
+
+  return { formatDate, convertStringListToArray, cleanQuery }
 }

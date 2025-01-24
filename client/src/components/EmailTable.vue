@@ -36,6 +36,15 @@ const showEmailDetail = (emailId: string) => {
   setSelectedItemType('email')
 }
 
+const handleRowClick = (emailId: string) => {
+  showEmailDetail(emailId)
+
+  const section = document.getElementById('viewer');
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
 const tableHeaders = [
   { field: 'date', label: 'Date' },
   { field: 'from', label: 'From' },
@@ -86,7 +95,7 @@ onBeforeMount(async () => {
               </tr>
             </thead>
             <tbody class="text-gray-600 ">
-              <tr @click="showEmailDetail(email.id)" v-for="(email, index) in highlightedEmails" :key="email.id"
+              <tr @click="handleRowClick(email.id)" v-for="(email, index) in highlightedEmails" :key="email.id"
                 class="border-b hover:bg-gray-50 cursor-pointer">
                 <td class="overflow-x-hidden w-7 pl-3 pr-8 py-2 align-top font-semibold">{{ index + 1 }}</td>
                 <td class="overflow-x-hidden px-2 py-2 align-top flex-nowrap" v-html="email.date"></td>

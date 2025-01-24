@@ -50,6 +50,15 @@ const showPersonDetail = (personEmail: string) => {
   setSelectedItemType('person')
 }
 
+const handleRowClick = (personEmail: string) => {
+  showPersonDetail(personEmail)
+
+  const section = document.getElementById('viewer');
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
 const tableHeaders = [
   { field: 'email', label: 'Email' },
   { field: 'name', label: 'Name' },
@@ -111,7 +120,7 @@ onBeforeMount(async () => {
             </thead>
             <tbody class="text-gray-600">
               <tr v-for="(person, index) in highlightedPersons" :key="person.id"
-                class="border-b hover:bg-gray-50 cursor-pointer" @click="showPersonDetail(person.email)">
+                class="border-b hover:bg-gray-50 cursor-pointer" @click="handleRowClick(person.email)">
                 <td class="px-2 pl-3 pr-2 align-center align-top">{{ index + 1 }}</td>
                 <td class="overflow-x-hidden break-words px-2 py-2 align-top text-nowrap space-x-1">
                   <font-awesome-icon icon="user" />

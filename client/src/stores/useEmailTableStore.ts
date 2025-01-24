@@ -31,7 +31,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
 
   const emailBaseUrl = import.meta.env.VITE_API_URL + '/emails'
 
-  const { formatDate } = useFormatData()
+  const { formatDate, cleanQuery } = useFormatData()
 
   const emailSearchURL = computed(() => {
     return emailBaseUrl + cleanedQuery.value
@@ -53,7 +53,7 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   })
 
   const cleanedQuery = computed(() => {
-    return query.value.replace(/[{}"":&*]/g, '')
+    return cleanQuery(query.value)
   })
 
   async function fetchEmails() {

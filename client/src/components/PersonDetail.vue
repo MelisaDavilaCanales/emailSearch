@@ -23,6 +23,11 @@ const { searchTerm } = storeToRefs(useSearchTypeStore())
 
 const { highlightText } = useHighlight()
 
+// const buttons = [
+//   { field: 'from', label: 'Sent' },
+//   { field: 'to', label: 'Received' },
+//   { field: 'cc', label: 'Copied' },
+// ]
 
 const showEmailDetail = (emailId: string) => {
   fetchEmail(emailId)
@@ -58,7 +63,7 @@ const highlightedEmails = computed(() => {
     </div>
 
     <!-- person's emails -->
-    <div class="flex justify-between space-x-2 my-1 pr-4">
+    <div class="sm:flex justify-between space-x-2 my-1 pr-4">
       <!-- type emails title -->
       <div class="flex items-end pt-6">
         <p class="text-primaryMiddle text-sm font-semibold">
@@ -68,8 +73,17 @@ const highlightedEmails = computed(() => {
         </p>
       </div>
 
+
+
       <!-- button's section to filter emails by type -->
       <div class="space-x-2">
+
+        <!-- <button v-for="{ field, label } in buttons" :key="field" class="text-white text-xs py-1 px-3 rounded"
+          :class="emailListType === field ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
+          :disabled="emailListType === field" @click="setEmailListType(field)">
+          {{ label }}
+        </button> -->
+
         <button class="text-white text-xs py-1 px-3 rounded"
           :class="emailListType === 'from' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
           :disabled="emailListType === 'from'" @click="setEmailListType('from')">
@@ -142,7 +156,8 @@ const highlightedEmails = computed(() => {
           </div>
 
           <!-- date -->
-          <span v-html="email.date" class="absolute top-2 right-4 text-xs text-gray-600 lg:hidden xl:block"></span>
+          <span v-html="email.date"
+            class="hidden sm:block absolute top-2 right-4 text-xs text-gray-600 lg:hidden xl:block"></span>
 
           <div class="absolute top-0 right-0 h-full w-4 bg-graySoft border-r-8 border-grayExtraSoft"></div>
         </div>

@@ -16,7 +16,7 @@ const { isEmailDetailLoading, fetchEmailsError } = storeToRefs(useEmailViewerSto
 </script>
 
 <template>
-  <div class="h-screen flex flex-col items-center justify-center md:h-full  py-4 px-4 space-y-2">
+  <div id="viewer" class="h-screen flex flex-col items-center justify-center md:h-full  py-4 px-4 space-y-2">
     <div :class="{ 'h-[95%] overflow-hidden w-full ': isItemSelected }"
       class="h-[90%] w-full bg-grayExtraSoft rounded-md p-4">
       <LoadingSpinner v-if="isEmailSelected && isEmailDetailLoading" />
