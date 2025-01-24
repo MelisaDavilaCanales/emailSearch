@@ -25,7 +25,8 @@ func GetPersons(params models.SearchParams) (*models.PersonHitsData, error) {
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, fmt.Errorf("decoding response body: %s", err)
+		fmt.Printf("decoding response body: %s", err)
+		return nil, fmt.Errorf("decoding response body")
 	}
 
 	return &ResponseData.PersonHitsData, nil
@@ -68,20 +69,4 @@ func buildPersonQuery(params models.SearchParams) string {
 			"size": %d,
 			"_source": []
 		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
-
 }
-
-// Its success to get personns with the PersonTable but get incorrect results
-// return fmt.Sprintf(`
-// 	{
-// 		"search_type": "querystring",
-// 		"query": {
-// 			"query_string": {
-// 				"query": "%s:%s"
-// 			}
-// 		},
-// 		"sort_fields": ["%s"],
-// 		"from": %d,
-// 		"max_results": %d,
-// 		"_source": []
-// 	}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)

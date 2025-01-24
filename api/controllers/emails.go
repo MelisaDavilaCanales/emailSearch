@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -118,6 +119,7 @@ func GetEmail(w http.ResponseWriter, r *http.Request) {
 
 		responseError := models.NewResponseError(http.StatusInternalServerError, "Error getting email", err)
 		http.Error(w, responseError.Error(), responseError.StatusCode)
+		fmt.Println(err)
 
 		return
 	}
@@ -129,6 +131,20 @@ func GetEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := models.NewResponse(mssSearchSuccess, email)
+	newEmail := models.EmailResponse{
+		ID:        email.ID,
+		MessageID: email.MessageID,
+		Date:      email.Date,
+		From:      email.From,
+		To:        email.To,
+		Subject:   email.Subject,
+		Cc:        email.Cc,
+		XFolder:   email.XFolder,
+		XOrigin:   email.XOrigin,
+		XFileName: email.XFileName,
+		Content:   email.Content,
+	}
+
+	response := models.NewResponse(mssSearchSuccess, newEmail)
 	render.JSON(w, r, response)
 }

@@ -23,6 +23,21 @@ type Email struct {
 	Content                 string `json:"content"`
 }
 
+// Email is the struct for an email document with all its fields
+type EmailResponse struct {
+	ID        string `json:"id"`
+	MessageID string `json:"message_id"`
+	Date      string `json:"date"`
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Subject   string `json:"subject"`
+	Cc        string `json:"cc"`
+	XFolder   string `json:"x_folder"`
+	XOrigin   string `json:"x_origin"`
+	XFileName string `json:"x_file_name"`
+	Content   string `json:"content"`
+}
+
 // EmailSummary is the struct for a summarized email document with only the most important fields
 type EmailSummary struct {
 	Id      string `json:"id"`

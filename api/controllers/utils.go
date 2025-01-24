@@ -9,7 +9,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/api/models"
 )
 
-func getQueryParams(r *http.Request) models.QueryParams {
+func getQueryParams(r *http.Request) *models.QueryParams {
 	pageNumberStr := r.URL.Query().Get(constant.PAGE_NUMBER_PARAM)
 	pageSizeStr := r.URL.Query().Get(constant.PAGE_SIZE_PARAM)
 	searchTerm := r.URL.Query().Get(constant.SEARCH_TERM_PARAM)
@@ -17,7 +17,7 @@ func getQueryParams(r *http.Request) models.QueryParams {
 	sortField := r.URL.Query().Get(constant.SORT_FIELD_PARAM)
 	sortOrder := r.URL.Query().Get(constant.SORT_ORDER_PARAM)
 
-	return models.QueryParams{
+	params := &models.QueryParams{
 		PageNumber:  pageNumberStr,
 		PageSize:    pageSizeStr,
 		SearchTerm:  searchTerm,
@@ -25,11 +25,19 @@ func getQueryParams(r *http.Request) models.QueryParams {
 		SortField:   sortField,
 		SortOrder:   sortOrder,
 	}
+
+	cleanQueryParams(params)
+
+	return params
 }
 
-// ProcessPaginatedParams processes pagination parameters (page and size),
+func cleanQueryParams(params *models.QueryParams) {
+	params = params
+}
+
+// processPaginatedParams processes pagination parameters (page and size),
 // setting limits on values if they are invalid or out of range.
-func processPaginatedParams(pageParam, sizeParam string) models.PaginationParams {
+func processPaginatedParams(pageParam, sizeParam string) *models.PaginationParams {
 	if pageParam == "" {
 		pageParam = "1"
 	}
@@ -55,7 +63,7 @@ func processPaginatedParams(pageParam, sizeParam string) models.PaginationParams
 	from := (page - 1) * pageSize
 	max := pageSize
 
-	return models.PaginationParams{
+	return &models.PaginationParams{
 		PageNumber:  page,
 		PageSize:    pageSize,
 		ResultsFrom: from,

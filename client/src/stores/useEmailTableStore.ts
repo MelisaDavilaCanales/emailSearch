@@ -57,8 +57,6 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   })
 
   async function fetchEmails() {
-    console.log('URL: ' + emailSearchURL.value)
-
     emailList.value = []
     isEmailsLoading.value = true
 

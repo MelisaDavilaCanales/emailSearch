@@ -41,7 +41,8 @@ func GetMail(id string) (*models.Email, error) {
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, fmt.Errorf("%s: decoding response body", err)
+		fmt.Printf("decoding response body: %s", err)
+		return nil, fmt.Errorf("decoding response body")
 	}
 
 	email := &models.Email{
@@ -84,7 +85,8 @@ func GetEmails(params models.SearchParams) (*models.EmailHitsData, error) {
 
 	err = json.NewDecoder(res.Body).Decode(&ResponseData)
 	if err != nil {
-		return nil, fmt.Errorf("%s: decoding response body", err)
+		fmt.Printf("decoding response body: %s", err)
+		return nil, fmt.Errorf("decoding response body")
 	}
 
 	return &ResponseData.EmailHitsData, nil
@@ -129,50 +131,3 @@ func buildEmailQuery(params models.SearchParams) string {
 			"_source": [ "to", "from","date", "subject"]
 		}`, params.SearchField, params.SearchTerm, sort, params.ResultsFrom, params.MaxResults)
 }
-
-// QUERY SIN TERMINO OPCION INICIAL
-
-// fmt.Sprintf(`
-// 	{
-// 		"search_type": "matchall",
-// 		"sort_fields": ["%s"],
-// 		"from": %d,
-// 		"max_results": %d,
-// 		"_source": [ "to", "from","date", "subject"]
-// 	}`, sort, params.ResultsFrom, params.MaxResults)
-
-// EL MEJOR HASTA AHORA ES ESTE DE ABAJO => flexible -parcial por tokens - completos -no errores (datos incorrectos)
-// {
-// 	"search_type": "querystring",
-// 	"query": {
-// 	  "match": {
-// 		"from": {
-// 		  "query": "charles@capstoneenergy.com",
-// 		  "operator": "AND"
-// 		}
-// 	  }
-// 	}
-
-// "analyze_wildcard": true,
-// "default_operator": "AND"
-
-// "query": {
-//     "match": {
-//       "from": "charles@capstoneenergy.com"
-//     }
-//   },
-
-// SOLUCION PARA NO TRARE DATOS CON COINDIDENCIA EXACTA PERO NO PARCIALES
-// nO SON NECESARIOS LOS OTROS 2
-// "query": "%s:\"%s\"",
-
-// Match flexible - erroneos
-
-// PRIMERA OPCION FUNCIONAL - SOLO BUSQUEDAD COMPLETAS
-// "search_type": "querystring",
-// 			"query": {
-// 				"query_string": {
-// 					"query": "%s:%s"
-// 				}
-// 			},
-// 			"sort_fields": ["%s"],

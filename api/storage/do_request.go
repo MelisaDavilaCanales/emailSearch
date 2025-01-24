@@ -38,15 +38,21 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 	resp.Body = io.NopCloser(&bodyBuffer)
 
+	// Betwen 400-500
 	if resp.StatusCode >= 400 && resp.StatusCode < 500 {
+		fmt.Printf("Status code: %d. /\n Response content: %v", resp.StatusCode, bodyContent)
+
 		return nil, &models.NotFoundError{
-			Message: string(bodyContent),
+			Message: "Not Found",
 		}
 	}
 
+	// Whatever, at less between 200-299
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		fmt.Printf("Status code: %d. /\n Response content: %v", resp.StatusCode, bodyContent)
+
 		return nil, &models.InternalServerError{
-			Message: "internalServerError",
+			Message: "Internal Server Error",
 		}
 	}
 

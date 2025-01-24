@@ -63,7 +63,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     return cleanQuery(query.value)
   })
   async function fetchEmails() {
-    console.log('URL: ' + emailSearchURL.value)
     emailList.value = []
     isEmailListLoading.value = true
 
