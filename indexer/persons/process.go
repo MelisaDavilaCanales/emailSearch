@@ -70,18 +70,18 @@ func cleanNamePerson(names *[]string) {
 	}
 }
 
-// cleanPersonEmail is a function that cleans up the emails of individuals by removing any unwanted characters or tags.
+// cleanPersonEmail remove unwanted Chars e.g. e-mail, <email.>, <., <'.' and >
 func cleanPersonEmail(emails *[]string) {
+	regexp := regexp.MustCompile(`(?i)e-mail|<email.>|<\.\s*|<'?'\s*|\s*>`)
+
 	for i, email := range *emails {
-		regexp := regexp.MustCompile(constant.PREFIXES_AND_SYMBOLS_REGEXP)
-		matches := regexp.FindStringSubmatch(email)
+		emailClean := regexp.ReplaceAllString(email, "")
 
-		if len(matches) > 0 {
-			emailClean := regexp.ReplaceAllString(email, "")
-			(*emails)[i] = strings.TrimSpace(emailClean)
-		}
+		emailClean = strings.ReplaceAll(emailClean, "<.", "")
+		emailClean = strings.ReplaceAll(emailClean, "<'.", "")
+		emailClean = strings.ReplaceAll(emailClean, ".'", "")
 
-		(*emails)[i] = strings.TrimSpace(email)
+		(*emails)[i] = strings.TrimSpace(emailClean)
 	}
 }
 
