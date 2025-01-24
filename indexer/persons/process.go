@@ -44,9 +44,9 @@ func StructurePersons(_ int, data models_wp.Result[*models.EmailData]) (models.P
 	cleanNamePerson(&namesOfXToField)
 	cleanNamePerson(&namesOfXCcField)
 
-	cleanEmailPerson(&emailsOfFromField)
-	cleanEmailPerson(&emailsOfToField)
-	cleanEmailPerson(&emailsOfCcField)
+	cleanPersonEmail(&emailsOfFromField)
+	cleanPersonEmail(&emailsOfToField)
+	cleanPersonEmail(&emailsOfCcField)
 
 	processAndAppend(emailsOfFromField, namesOfXFromField)
 	processAndAppend(emailsOfToField, namesOfXToField)
@@ -70,18 +70,18 @@ func cleanNamePerson(names *[]string) {
 	}
 }
 
-// cleanEmailPerson is a function that cleans up the emails of individuals by removing any unwanted characters or tags.
-func cleanEmailPerson(emails *[]string) {
-	for i, name := range *emails {
-		re := regexp.MustCompile(constant.EMAIL_WORD_REGEX)
-		matches := re.FindStringSubmatch(name)
+// cleanPersonEmail is a function that cleans up the emails of individuals by removing any unwanted characters or tags.
+func cleanPersonEmail(emails *[]string) {
+	for i, email := range *emails {
+		regexp := regexp.MustCompile(constant.PREFIXES_AND_SYMBOLS_REGEXP)
+		matches := regexp.FindStringSubmatch(email)
 
 		if len(matches) > 0 {
-			nameClean := re.ReplaceAllString(name, "")
-			(*emails)[i] = strings.TrimSpace(nameClean)
+			emailClean := regexp.ReplaceAllString(email, "")
+			(*emails)[i] = strings.TrimSpace(emailClean)
 		}
 
-		(*emails)[i] = strings.TrimSpace(name)
+		(*emails)[i] = strings.TrimSpace(email)
 	}
 }
 

@@ -31,22 +31,22 @@ func StructurePersons(_ int, data models_wp.Result[*models.EmailData]) (models.P
 
 	email := data.Value.EmailStruct
 
-	emailsOfFromField := splitAndClean(email.From)
-	namesOfXFromField := splitAndClean(email.XFrom)
+	emailsOfFromField := convertToArray(email.From)
+	namesOfXFromField := convertToArray(email.XFrom)
 
-	emailsOfToField := splitAndClean(email.To)
-	namesOfXToField := splitAndClean(email.XTo)
+	emailsOfToField := convertToArray(email.To)
+	namesOfXToField := convertToArray(email.XTo)
 
-	emailsOfCcField := splitAndClean(email.Cc)
-	namesOfXCcField := splitAndClean(email.XCc)
+	emailsOfCcField := convertToArray(email.Cc)
+	namesOfXCcField := convertToArray(email.XCc)
 
-	cleanNamePerson(&namesOfXFromField)
-	cleanNamePerson(&namesOfXToField)
-	cleanNamePerson(&namesOfXCcField)
+	cleanPersonName(&namesOfXFromField)
+	cleanPersonName(&namesOfXToField)
+	cleanPersonName(&namesOfXCcField)
 
-	cleanEmailPerson(&emailsOfFromField)
-	cleanEmailPerson(&emailsOfToField)
-	cleanEmailPerson(&emailsOfCcField)
+	cleanPersonEmail(&emailsOfFromField)
+	cleanPersonEmail(&emailsOfToField)
+	cleanPersonEmail(&emailsOfCcField)
 
 	processAndAppend(emailsOfFromField, namesOfXFromField)
 	processAndAppend(emailsOfToField, namesOfXToField)
@@ -55,8 +55,8 @@ func StructurePersons(_ int, data models_wp.Result[*models.EmailData]) (models.P
 	return models.Person{}, nil
 }
 
-// cleanNamePerson is a function that cleans up the names of individuals by removing any unwanted characters or tags.
-func cleanNamePerson(names *[]string) {
+// cleanPersonName is a function that cleans up the names of individuals by removing any unwanted characters or tags e.g. < >
+func cleanPersonName(names *[]string) {
 	for i, name := range *names {
 		re := regexp.MustCompile(constant.TAG_CONTENT_REGEX)
 		matches := re.FindStringSubmatch(name)
@@ -70,33 +70,28 @@ func cleanNamePerson(names *[]string) {
 	}
 }
 
-// cleanEmailPerson is a function that cleans up the emails of individuals by removing any unwanted characters or tags.
-func cleanEmailPerson(emails *[]string) {
-	for i, name := range *emails {
-		re := regexp.MustCompile(constant.EMAIL_WORD_REGEX)
-		matches := re.FindStringSubmatch(name)
+// cleanPersonEmail is a function that cleans up the emails of individuals by removing any unwanted characters or tags.
+func cleanPersonEmail(emails *[]string) {
+	for i, email := range *emails {
+		regexp := regexp.MustCompile(constant.PREFIXES_AND_SYMBOLS_REGEXP)
+		matches := regexp.FindStringSubmatch(email)
 
 		if len(matches) > 0 {
-			nameClean := re.ReplaceAllString(name, "")
-			(*emails)[i] = strings.TrimSpace(nameClean)
+			emailClean := regexp.ReplaceAllString(email, "")
+			(*emails)[i] = strings.TrimSpace(emailClean)
 		}
 
-		(*emails)[i] = strings.TrimSpace(name)
+		(*emails)[i] = strings.TrimSpace(email)
 	}
 }
 
-// splitAndClean is a function that splits a string containing multiple email addresses and returns a slice of email addresses,
-// each cleaned of surrounding spaces.
-func splitAndClean(input string) []string {
+// convertToArray is a function that splits a string containing multiple email addresses and returns a slice of email addresses,
+func convertToArray(input string) []string {
 	if input == "" {
 		return []string{}
 	}
 
 	values := strings.Split(input, ", ")
-	for i := range values {
-		values[i] = strings.TrimSpace(values[i])
-	}
-
 	return values
 }
 

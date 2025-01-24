@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -82,7 +83,7 @@ func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 
 	TotalEmails++
 
-	err = validateEmailStructure(messageIdField, emailContent.String())
+	err = validateEmailStructure(messageIdField, email.Content)
 	if err != nil {
 		TotalEmailsInvalid++
 
@@ -188,9 +189,13 @@ func cleanMessageId(inputString string) string {
 	return strings.Trim(inputString, "<>")
 }
 
-// <a href="http://www.barachamismo.org/remove.html">
 func cleanContent(content string) string {
-	// return strings.Trim(content, "href=\"*\"") and !import
+	hrefRegex := regexp.MustCompile(`\s*href="[^"]*"`)
+	importantRegex := regexp.MustCompile(`\s*!important`)
+
+	content = hrefRegex.ReplaceAllString(content, "")
+	content = importantRegex.ReplaceAllString(content, "")
+
 	return content
 }
 
