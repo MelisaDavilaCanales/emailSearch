@@ -1,0 +1,11 @@
+services:
+  client:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${API_URL}
+    container_name: client
+    environment:
+      - VITE_API_URL=${API_URL}
+    ports:
+      - 80:80
