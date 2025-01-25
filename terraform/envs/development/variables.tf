@@ -18,7 +18,7 @@ variable "region" {
 
 variable "project" {
   description = "the name project"
-  default     = "msc" #MailScout
+  default     = "searcher"
 }
 
 variable "environment" {

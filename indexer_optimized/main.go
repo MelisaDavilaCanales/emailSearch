@@ -18,7 +18,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
-func main() {
+func Main2() {
 
 	// cpuFile, memFile, traceFile := profiling.StartProfiling()
 	// defer profiling.StopProfiling(cpuFile, memFile, traceFile)
@@ -111,9 +111,4 @@ func main() {
 	fmt.Printf("TotalEmails: %v\n", emails.TotalEmails)
 	fmt.Printf("TotalEmailsValid: %v\n", emails.TotalEmailsValid)
 	fmt.Printf("TotalEmailsInvalid: %v\n", emails.TotalEmailsInvalid)
-	fmt.Printf("--- EMAIL_BATCH_SIZE ---: %v\n", constant.EMAIL_BATCH_SIZE)
-	fmt.Printf("--- PROCESS_EMAILS_WORKERS_COUNT ---: %v\n", constant.PROCESS_EMAILS_WORKERS_COUNT)
-	fmt.Printf("--- SEND_EMAILS_WORKERS_COUNT ---: %v\n", constant.SEND_EMAILS_WORKERS_COUNT)
-	fmt.Printf("--- STRUCTURE_PERSONS_WORKERS_COUNT ---: %v\n", constant.STRUCTURE_PERSONS_WORKERS_COUNT)
-	fmt.Printf("--- BUFFER_CAPACITY ---: %v\n", constant.BUFFER_CAPACITY)
 }

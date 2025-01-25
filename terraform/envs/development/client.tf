@@ -2,33 +2,43 @@ resource "aws_instance" "ec2-client" {
 
   ami                         = var.ami_id
   instance_type               = var.instance_type
-  subnet_id                   = module.vpc.public_subnets[0]
-  vpc_security_group_ids      = [module.sg-client.security_group_id]
+  subnet_id                   = aws_subnet.subnet-client.id
   associate_public_ip_address = true
   key_name                    = var.ssh_public_key_name
+  security_groups             = ["${aws_security_group.sg-client.id}", "${aws_security_group.sg-ssh.id}"]
 
   tags = merge(
     var.tags,
     {
-      name = "ec2-client-${var.project}-${var.environment}"
+      Name = "ec2-client-${var.project}-${var.environment}"
     }
   )
 
 }
 
-module "sg-client" {
-  source = "terraform-aws-modules/security-group/aws"
+resource "aws_eip" "eip-ec2-client" {
+  instance = aws_instance.ec2-client.id
+  vpc      = true
+}
 
-  name        = "sg_client_${var.project}_${var.environment}"
-  description = "Security group for client"
-  vpc_id      = module.vpc.vpc_id
+resource "aws_security_group" "sg-client" {
+  vpc_id = aws_vpc.vpc.id
+}
 
-  # Ingress rules
-  ingress_cidr_blocks = ["0.0.0.0/0"]   # Allow all public IPs (for web access)
-  ingress_rules       = ["http-80-tcp"] # Allow HTTP traffic on port 80
+resource "aws_security_group_rule" "client_http_inbound" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg-client.id
+}
 
-  # Egress rules (default allows all outbound traffic)
-  egress_rules = ["all-all"]
-
-  tags = var.tags
+resource "aws_security_group_rule" "client_to_api" {
+  type                     = "egress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.sg-client.id
+  security_group_id        = aws_security_group.sg-api.id
 }

@@ -2,40 +2,43 @@ resource "aws_instance" "ec2-storage" {
 
   ami                         = var.ami_id
   instance_type               = var.instance_type
-  subnet_id                   = module.vpc.public_subnets[2]
-  vpc_security_group_ids      = [module.sg-storage.security_group_id]
+  subnet_id                   = aws_subnet.subnet-storage.id
   associate_public_ip_address = true
   key_name                    = var.ssh_public_key_name
+  security_groups             = ["${aws_security_group.sg-storage.id}", "${aws_security_group.sg-ssh.id}"]
 
   tags = merge(
     var.tags,
     {
-      name = "ec2-storage-${var.project}-${var.environment}"
+      Name = "ec2-storage-${var.project}-${var.environment}"
     }
   )
 
 }
 
-module "sg-storage" {
-  source = "terraform-aws-modules/security-group/aws"
+resource "aws_eip" "eip-ec2-storage" {
+  instance = aws_instance.ec2-storage.id
+  vpc      = true
+}
 
-  name        = "sg_storage_${var.project}_${var.environment}"
-  description = "Security group for Storage"
-  vpc_id      = module.vpc.vpc_id
+resource "aws_security_group" "sg-storage" {
+  vpc_id = aws_vpc.vpc.id
+}
 
-  # Ingress rules for Storage
-  ingress_with_cidr_blocks = [
-    {
-      from_port   = 4080
-      to_port     = 4080
-      protocol    = "tcp"
-      description = "Allows connection to the Storage API"
-      cidr_blocks = "10.0.0.0/16" # Allow access only from API and other internal services
-    },
-  ]
+resource "aws_security_group_rule" "storage_inbound_for_api" {
+  type                     = "ingress"
+  from_port                = 4080
+  to_port                  = 4080
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.sg-api.id
+  security_group_id        = aws_security_group.sg-storage.id
+}
 
-  # Egress rules (default allows all outbound traffic)
-  egress_rules = ["all-all"]
-
-  tags = var.tags
+resource "aws_security_group_rule" "storage_inbound_for_indexer" {
+  type                     = "ingress"
+  from_port                = 4080
+  to_port                  = 4080
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.sg-indexer.id
+  security_group_id        = aws_security_group.sg-storage.id
 }
