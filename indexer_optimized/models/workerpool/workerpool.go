@@ -1,8 +1,8 @@
 package models
 
 import (
-	"sync"
 	"runtime"
+	"sync"
 )
 
 type WorkerPool[Input any, Output any] struct {

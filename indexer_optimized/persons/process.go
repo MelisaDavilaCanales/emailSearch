@@ -60,8 +60,8 @@ func CleanPersonEmail(emails *[]string) []string {
 		emailClean = strings.ReplaceAll(emailClean, ".'", "")
 
 		newEmails[i] = strings.TrimSpace(emailClean)
-
 	}
+
 	return newEmails
 }
 
@@ -72,6 +72,7 @@ func convertToArray(input string) []string {
 	}
 
 	values := strings.Split(input, ", ")
+
 	return values
 }
 

@@ -43,11 +43,9 @@ func setGlobalEnvVars() {
 	CREATE_INDEX_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index"
 	CHECK_INDEX_EXISTS_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index/"
 	TRY_CONNECTION_API_URL = os.Getenv("ZINC_SEARCH_API_URL") + "index/"
-
 }
 
 func SetEnvVars() error {
-
 	if os.Getenv("APP_MODE") != "release" {
 		err := godotenv.Load()
 		if err != nil {

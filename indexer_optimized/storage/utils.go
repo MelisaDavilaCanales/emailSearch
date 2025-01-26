@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/config"
 )
@@ -22,6 +21,7 @@ func TryConnectionAPI() error {
 	}
 
 	fmt.Println("Connection to database successful.")
+
 	return nil
 }
 
@@ -46,37 +46,6 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 	// PrintLogs(res)
 
 	return res, nil
-}
-
-// CreateIndex creates an index with the specified name and data.
-func CreateIndex(indexName, indexDataStr string) (string, error) {
-	isExist := checkIndexExists(indexName)
-	if isExist {
-		return fmt.Sprintf("Index %s already exists", indexName), nil
-	}
-
-	url := config.CREATE_INDEX_API_URL
-
-	indexData := strings.NewReader(indexDataStr)
-
-	res, err := DoRequest(http.MethodPost, url, indexData)
-	if err != nil {
-		return "", fmt.Errorf("create index request %w", err)
-	}
-	defer res.Body.Close() // nolint: errcheck
-
-	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("create index response status: %s", res.Status)
-	}
-
-	return "Index created successfully", nil
-}
-
-func checkIndexExists(indexName string) bool {
-	url := config.CHECK_INDEX_EXISTS_API_URL + indexName
-	resp, _ := DoRequest(http.MethodGet, url, nil)
-
-	return resp.StatusCode == 200
 }
 
 // PrintLogs prints the response logs, can be used for debugging.

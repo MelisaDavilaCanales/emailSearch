@@ -17,6 +17,7 @@ func CreateEmailIndex() error {
 	}
 
 	fmt.Println("Email index:", mssg)
+
 	return nil
 }
 

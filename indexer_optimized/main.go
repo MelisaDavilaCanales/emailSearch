@@ -18,10 +18,10 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
-func main() {
-	// cpuFile, memFile, traceFile := profiling.StartProfiling()
-	// defer profiling.StopProfiling(cpuFile, memFile, traceFile)
+// cpuFile, memFile, traceFile := profiling.StartProfiling()
+// defer profiling.StopProfiling(cpuFile, memFile, traceFile)
 
+func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	fmt.Println("Number of CPUs: ", runtime.NumCPU())
 
@@ -72,6 +72,7 @@ func main() {
 				subDirPath := filepath.Join(directory, file.Name())
 
 				wgProcessEmailDirectory.Add(1)
+
 				go func(path string) {
 					defer wgProcessEmailDirectory.Done()
 					emails.ProcessSubDirectory(path, emailPathCh)

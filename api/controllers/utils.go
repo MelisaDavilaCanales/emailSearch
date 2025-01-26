@@ -49,6 +49,7 @@ func removeUnwantedChars(input string) string {
 	}
 
 	unwantedChars := regexp.MustCompile(constant.UNWANTED_CHARS_EXP)
+
 	return unwantedChars.ReplaceAllString(input, "")
 }
 
