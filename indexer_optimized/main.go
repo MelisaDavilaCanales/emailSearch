@@ -18,8 +18,7 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
-func Main2() {
-
+func main() {
 	// cpuFile, memFile, traceFile := profiling.StartProfiling()
 	// defer profiling.StopProfiling(cpuFile, memFile, traceFile)
 
