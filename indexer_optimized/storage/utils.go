@@ -97,6 +97,7 @@ func PrintLogs(resp *http.Response) {
 		prettyJSON, err := json.MarshalIndent(jsonBody, "", "  ")
 		if err != nil {
 			fmt.Println("Response Body (as string):", string(bodyContent))
+			return
 		}
 
 		fmt.Println("Response Body (as JSON):", string(prettyJSON))
