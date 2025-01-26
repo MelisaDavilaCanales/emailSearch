@@ -40,30 +40,11 @@ func StructurePersons(_ int, data models_wp.Result[*models.EmailData]) (models.P
 	emailsOfCcField := convertToArray(email.Cc)
 	namesOfXCcField := convertToArray(email.XCc)
 
-	cleanPersonName(&namesOfXFromField)
-	cleanPersonName(&namesOfXToField)
-	cleanPersonName(&namesOfXCcField)
-
 	processAndAppend(emailsOfFromField, namesOfXFromField)
 	processAndAppend(emailsOfToField, namesOfXToField)
 	processAndAppend(emailsOfCcField, namesOfXCcField)
 
 	return models.Person{}, nil
-}
-
-// cleanPersonName is a function that cleans up the names of individuals by removing any unwanted characters or tags e.g. < >
-func cleanPersonName(names *[]string) {
-	for i, name := range *names {
-		re := regexp.MustCompile(constant.TAG_CONTENT_REGEX)
-		matches := re.FindStringSubmatch(name)
-
-		if len(matches) > 0 {
-			nameClean := re.ReplaceAllString(name, "")
-			(*names)[i] = strings.TrimSpace(nameClean)
-		}
-
-		(*names)[i] = strings.TrimSpace(name)
-	}
 }
 
 // cleanPersonEmail remove unwanted Chars e.g. e-mail, <email.>, <., <'.' and >

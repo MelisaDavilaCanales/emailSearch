@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"net/http"
@@ -32,19 +31,9 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 		}
 	}
 
-	var bodyBuffer bytes.Buffer
-	tee := io.TeeReader(resp.Body, &bodyBuffer)
-
-	bodyContent, readErr := io.ReadAll(tee)
-	if readErr != nil {
-		return resp, fmt.Errorf("reading response body: %s", readErr)
-	}
-
-	resp.Body = io.NopCloser(&bodyBuffer)
-
 	// Betwen 400-500
 	if resp.StatusCode >= 400 && resp.StatusCode < 500 {
-		fmt.Printf("Status code: %d. /\n Response content: %v", resp.StatusCode, bodyContent)
+		PrintLogs(resp)
 
 		return nil, &models.NotFoundError{
 			Message: "Not Found",
@@ -53,7 +42,7 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 	// Whatever, at less between 200-299
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		fmt.Printf("Status code: %d. /\n Response content: %v", resp.StatusCode, bodyContent)
+		PrintLogs(resp)
 
 		return nil, &models.InternalServerError{
 			Message: "Internal Server Error",
