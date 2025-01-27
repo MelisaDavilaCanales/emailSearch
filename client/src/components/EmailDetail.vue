@@ -102,7 +102,7 @@ const highlightedEmailDetail = computed<IHighlightedEmailDetail>(() => {
 
         <!-- Email content -->
         <div class="custom-scrollbar mt-2">
-          <p class="font-bold sticky top-0 bg-grayExtraSoft z-10">Contenido:</p>
+          <p class="font-bold sticky top-0 bg-grayExtraSoft z-10">Content:</p>
           <p class="pr-2" v-html="highlightedEmailDetail?.content || 'No content available'"></p>
         </div>
       </div>

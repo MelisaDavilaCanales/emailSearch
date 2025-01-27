@@ -43,8 +43,6 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 		return nil, err
 	}
 
-	// PrintLogs(res)
-
 	return res, nil
 }
 

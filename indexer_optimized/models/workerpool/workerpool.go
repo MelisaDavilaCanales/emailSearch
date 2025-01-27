@@ -1,7 +1,6 @@
 package models
 
 import (
-	"runtime"
 	"sync"
 )
 
@@ -46,8 +45,6 @@ func (wp *WorkerPool[Input, Output]) Start() {
 
 	go func() {
 		wp.wg.Wait()
-
-		runtime.GC()
 
 		if len(wp.resultChList) > 0 {
 			for _, ch := range wp.resultChList {

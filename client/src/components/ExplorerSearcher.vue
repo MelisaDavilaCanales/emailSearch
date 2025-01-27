@@ -54,16 +54,16 @@ const searchHandler = () => {
 
 const isSearchTermInvalid = (term: string) => {
   if (/[?={}"":&*]/.test(term)) {
-    const chars = term.match(/[?={}"":&*]/g);
+    const chars = term.match(/[?={}"":&*]/g)
 
-    const uniqueChars = chars ? [...new Set(chars)].join(' ') : '';
+    const uniqueChars = chars ? [...new Set(chars)].join(' ') : ''
 
-    invalidChars.value = uniqueChars;
-    return true;
+    invalidChars.value = uniqueChars
+    return true
   }
 
-  return false;
-};
+  return false
+}
 
 
 const cleanSearchTerm = (term: string) => {

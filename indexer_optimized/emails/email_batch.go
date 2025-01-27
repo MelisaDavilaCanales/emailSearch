@@ -61,7 +61,8 @@ func addToEmailBatch(idBatch int, emailData *models.EmailData) (*models.EmailBat
 		return &models.EmailBatch{}, fmt.Errorf("get batch: %w", err)
 	}
 
-	if err = myBatch.AddItem(*emailData); err != nil {
+	err = myBatch.AddItem(*emailData)
+	if err != nil {
 		return nil, fmt.Errorf("add item: %w", err)
 	}
 

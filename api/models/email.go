@@ -23,7 +23,7 @@ type Email struct {
 	Content                 string `json:"content"`
 }
 
-// Email is the struct for an email document with all its fields
+// Email is the struct for an email that is returned in the response of the API
 type EmailResponse struct {
 	ID        string `json:"id"`
 	MessageID string `json:"message_id"`

@@ -66,6 +66,6 @@ describe('usePersonStore', () => {
     global.fetch = vi.fn().mockRejectedValueOnce(new Error('Internal Server Error'))
     await store.fetchPersons()
     expect(store.serverError.status).toBe(true)
-    expect(store.serverError.message).toBe('Internal Server Error')
+    expect(store.serverError.message).toBe('Something went wrong')
   })
 })

@@ -76,12 +76,11 @@ func ProcessEmailsFiles(_ int, path string) (*models.EmailData, error) {
 		}
 	}
 
+	TotalEmails++
 	cleanedContent := cleanContent(emailContent.String())
 
 	email.Content = cleanedContent
 	messageIdField = email.MessageID
-
-	TotalEmails++
 
 	err = validateEmailStructure(messageIdField, email.Content)
 	if err != nil {
@@ -190,8 +189,8 @@ func cleanMessageId(inputString string) string {
 }
 
 func cleanContent(content string) string {
-	hrefRegex := regexp.MustCompile(`\s*href="[^"]*"`)
-	importantRegex := regexp.MustCompile(`\s*!important`)
+	hrefRegex := regexp.MustCompile(constant.HREF_REGEXEP)
+	importantRegex := regexp.MustCompile(constant.IMPORTATNT_REGEXP)
 
 	content = hrefRegex.ReplaceAllString(content, "")
 	content = importantRegex.ReplaceAllString(content, "")
@@ -201,6 +200,8 @@ func cleanContent(content string) string {
 
 func convertDateFormat(date string) (time.Time, error) {
 	time, err := time.Parse(constant.DATE_FORMAT, date)
+
+	fmt.Println("FORMATED DATE: ", time)
 
 	return time, err
 }

@@ -64,12 +64,13 @@ export const useEmailTableStore = defineStore('emailTable', () => {
       const response = await fetch(emailSearchURL.value)
 
       if (!response.ok) {
-        const responseData: IServerErrorResponse = await response.json()
+        const responseData: IRequestError = await response.json()
         fetchEmailsError.value = {
           status: true,
           message: responseData.message,
         }
         isEmailsLoading.value = false
+
         return
       }
 

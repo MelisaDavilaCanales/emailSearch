@@ -62,6 +62,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   const cleanedQuery = computed(() => {
     return cleanQuery(query.value)
   })
+
   async function fetchEmails() {
     emailList.value = []
     isEmailListLoading.value = true
@@ -143,7 +144,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
     try {
       if (!response.ok) {
-        const responseData: IServerErrorResponse = await response.json()
+        const responseData: IRequestError = await response.json()
         fetchEmailsError.value = {
           status: true,
           message: responseData.message,

@@ -96,7 +96,7 @@ onBeforeMount(async () => {
             </thead>
             <tbody class="text-gray-600 ">
               <tr @click="handleRowClick(email.id)" v-for="(email, index) in highlightedEmails" :key="email.id"
-                class="border-b hover:bg-gray-50 cursor-pointer">
+                class="border-b hover:bg-gray-100 cursor-pointer">
                 <td class="overflow-x-hidden w-7 pl-3 pr-8 py-2 align-top font-semibold">{{ index + 1 }}</td>
                 <td class="overflow-x-hidden px-2 py-2 align-top flex-nowrap" v-html="email.date"></td>
                 <td class="overflow-x-hidden px-2 py-2 align-top" v-html="email.from"></td>

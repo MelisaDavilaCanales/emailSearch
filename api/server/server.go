@@ -24,8 +24,8 @@ func NewServer() Server {
 	router.Use(middleware.CleanPath)
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://*", "http://*"},
-		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodOptions},
+		AllowedOrigins:   []string{config.CLIENT_API_URL},
+		AllowedMethods:   []string{http.MethodGet, http.MethodOptions},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
@@ -47,7 +47,6 @@ func AddRoutes(router *chi.Mux) {
 	})
 
 	router.NotFound(func(w http.ResponseWriter, _ *http.Request) {
-		// http.ServeFile(w, r, "/frontend/index.html")
 		w.Write([]byte("404 Not Found")) //nolint:errcheck
 	})
 

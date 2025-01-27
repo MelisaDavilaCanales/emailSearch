@@ -14,7 +14,7 @@ var (
 	API_PORT string
 
 	// API_PORT_DEFAULT is the default port where the API will run.
-	API_PORT_DEFAULT = "8080"
+	API_PORT_DEFAULT string
 
 	// DB_USER is the username to connect to the database.
 	DB_USER string
@@ -30,6 +30,9 @@ var (
 
 	// GET_PERSONS_API_URL represents the URL to get persons.
 	GET_PERSONS_API_URL string
+
+	// CLIENT_API_URL represents the URL to the client API.
+	CLIENT_API_URL string
 )
 
 func setGlobalEnvVars() {
@@ -42,6 +45,9 @@ func setGlobalEnvVars() {
 	GET_EMAILS_API_URL = API_AGGREGATION_URL + constant.EMAIL_INDEX_NAME + "/_search"
 	GET_EMAIL_API_URL = API_URL + constant.EMAIL_INDEX_NAME + "/_doc/"
 	GET_PERSONS_API_URL = API_AGGREGATION_URL + constant.PERSON_INDEX_NAME + "/_search"
+
+	CLIENT_API_URL = os.Getenv("CLIENT_API_URL")
+	API_PORT_DEFAULT = "8080"
 
 	if os.Getenv("API_PORT") == "" {
 		API_PORT = API_PORT_DEFAULT

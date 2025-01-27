@@ -120,7 +120,7 @@ onBeforeMount(async () => {
             </thead>
             <tbody class="text-gray-600">
               <tr v-for="(person, index) in highlightedPersons" :key="person.id"
-                class="border-b hover:bg-gray-50 cursor-pointer" @click="handleRowClick(person.email)">
+                class="border-b hover:bg-gray-100 cursor-pointer" @click="handleRowClick(person.email)">
                 <td class="px-2 pl-3 pr-2 align-center align-top">{{ index + 1 }}</td>
                 <td class="overflow-x-hidden break-words px-2 py-2 align-top text-nowrap space-x-1">
                   <font-awesome-icon icon="user" />

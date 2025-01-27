@@ -32,7 +32,6 @@ func getQueryParams(r *http.Request) *models.QueryParams {
 	return params
 }
 
-// Implementación de la función cleanQueryParams
 func cleanQueryParams(params *models.QueryParams) {
 	params.PageNumber = removeUnwantedChars(params.PageNumber)
 	params.PageSize = removeUnwantedChars(params.PageSize)
@@ -42,7 +41,6 @@ func cleanQueryParams(params *models.QueryParams) {
 	params.SortOrder = removeUnwantedChars(params.SortOrder)
 }
 
-// Función auxiliar para limpiar cadenas de texto
 func removeUnwantedChars(input string) string {
 	if input == "" {
 		return input

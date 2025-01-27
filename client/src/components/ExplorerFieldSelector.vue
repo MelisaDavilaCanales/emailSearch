@@ -10,7 +10,6 @@ const { searchFieldActive } = storeToRefs(useSearchTypeStore());
 const searchEmailOptions = [
   { value: '_all', label: '[all fields]' },
   { value: 'message_id', label: 'Message ID' },
-  { value: 'date', label: 'Date' },
   { value: 'from', label: 'From' },
   { value: 'to', label: 'To' },
   { value: 'subject', label: 'Subject' },

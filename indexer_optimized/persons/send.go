@@ -20,7 +20,8 @@ func BuildAndSendPersonBulk() {
 		})
 	}
 
-	if err := storage.SendBulk(personBulk); err != nil {
+	err := storage.SendBulk(personBulk)
+	if err != nil {
 		fmt.Println(err)
 	}
 }
