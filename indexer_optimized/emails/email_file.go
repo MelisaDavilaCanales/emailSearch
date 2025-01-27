@@ -201,7 +201,5 @@ func cleanContent(content string) string {
 func convertDateFormat(date string) (time.Time, error) {
 	time, err := time.Parse(constant.DATE_FORMAT, date)
 
-	fmt.Println("FORMATED DATE: ", time)
-
 	return time, err
 }

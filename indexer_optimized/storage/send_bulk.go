@@ -35,12 +35,12 @@ func SendBulk[T validBulkData](bulk T) error {
 	}
 	defer resp.Body.Close() // nolint: errcheck
 
-	// switch any(bulk).(type) {
-	// case *models.PersonBulkData:
-	// 	fmt.Println("Send bulk of Persons completed")
-	// case *models.EmailBulkData:
-	// 	fmt.Println("Send bulk of Emails completed")
-	// }
+	switch any(bulk).(type) {
+	case *models.PersonBulkData:
+		fmt.Println("Send bulk of Persons completed")
+	case *models.EmailBulkData:
+		fmt.Println("Send bulk of Emails completed")
+	}
 
 	return nil
 }
