@@ -15,14 +15,13 @@ import (
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/models"
 	models_wp "github.com/MelisaDavilaCanales/emailSearch/indexer/models/workerpool"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/persons"
-	"github.com/MelisaDavilaCanales/emailSearch/indexer/profiling"
 	"github.com/MelisaDavilaCanales/emailSearch/indexer/storage"
 )
 
-func main() {
-	cpuFile, memFile, traceFile := profiling.StartProfiling()
-	defer profiling.StopProfiling(cpuFile, memFile, traceFile)
+// cpuFile, memFile, traceFile := profiling.StartProfiling()
+// defer profiling.StopProfiling(cpuFile, memFile, traceFile)
 
+func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	fmt.Println("Number of CPUs: ", runtime.NumCPU())
 

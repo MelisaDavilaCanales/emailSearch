@@ -36,7 +36,7 @@ func buildEmailIndex() string {
 				},
 				"date": {
 					"type": "date",
-					"format":"2006-01-02T15:04:05Z",
+					"format":"2006-01-02T15:04:05Z07:00",
 					"index": true,
 					"sortable": true,
 					"highlightable": true

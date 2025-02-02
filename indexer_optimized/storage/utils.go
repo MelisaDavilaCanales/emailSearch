@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,13 +9,9 @@ import (
 )
 
 func TryConnectionAPI() error {
-	res, err := DoRequest(http.MethodGet, config.TRY_CONNECTION_API_URL, nil)
+	_, err := DoRequest(http.MethodGet, config.TRY_CONNECTION_API_URL, nil)
 	if err != nil {
 		return err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("try connection status: %s", res.Status)
 	}
 
 	fmt.Println("Connection to database successful.")
@@ -43,32 +37,14 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 		return nil, err
 	}
 
-	return res, nil
-}
-
-// PrintLogs prints the response logs, can be used for debugging.
-func PrintLogs(resp *http.Response) {
-	var bodyBuffer bytes.Buffer
-	tee := io.TeeReader(resp.Body, &bodyBuffer)
-
-	bodyContent, readErr := io.ReadAll(tee)
-	if readErr != nil {
-		fmt.Println("read response body %w", readErr)
-	}
-
-	fmt.Println("=========================================")
-	fmt.Println("Response StatusCode:", resp.StatusCode)
-
-	var jsonBody interface{}
-	if jsonErr := json.Unmarshal(bodyContent, &jsonBody); jsonErr == nil {
-		prettyJSON, err := json.MarshalIndent(jsonBody, "", "  ")
+	if res.StatusCode != http.StatusOK {
+		responseBody, err := io.ReadAll(res.Body)
 		if err != nil {
-			fmt.Println("Response Body (as string):", string(bodyContent))
-			return
+			return nil, fmt.Errorf("request error, status code: %d", res.StatusCode)
 		}
 
-		fmt.Println("Response Body (as JSON):", string(prettyJSON))
+		return nil, fmt.Errorf("staus code %d: %s", res.StatusCode, string(responseBody))
 	}
 
-	fmt.Println("=========================================")
+	return res, nil
 }

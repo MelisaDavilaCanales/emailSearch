@@ -19,14 +19,9 @@ func CreateIndex(indexName, indexDataStr string) (string, error) {
 
 	indexData := strings.NewReader(indexDataStr)
 
-	res, err := DoRequest(http.MethodPost, url, indexData)
+	_, err := DoRequest(http.MethodPost, url, indexData) // nolint: errcheck
 	if err != nil {
 		return "", fmt.Errorf("create index request %w", err)
-	}
-	defer res.Body.Close() // nolint: errcheck
-
-	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("create index response status: %s", res.Status)
 	}
 
 	return "Index created successfully", nil
@@ -34,7 +29,7 @@ func CreateIndex(indexName, indexDataStr string) (string, error) {
 
 func checkIndexExists(indexName string) bool {
 	url := config.CHECK_INDEX_EXISTS_API_URL + indexName
-	resp, _ := DoRequest(http.MethodGet, url, nil) // nolint: errcheck
+	_, err := DoRequest(http.MethodGet, url, nil) // nolint: errcheck
 
-	return resp.StatusCode == 200
+	return err == nil
 }

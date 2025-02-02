@@ -3,25 +3,27 @@ package profiling
 import (
 	"fmt"
 	"os"
+	"runtime"
+	"runtime/pprof"
 	"runtime/trace"
 )
 
 func StartProfiling() (cpuFile, memFile, traceFile *os.File) {
-	// cpuFile, err := os.Create("cpu.prof")
-	// if err != nil {
-	// 	fmt.Println("Error creating CPU profile file:", err)
-	// }
+	cpuFile, err := os.Create("cpu.prof")
+	if err != nil {
+		fmt.Println("Error creating CPU profile file:", err)
+	}
 
-	// if err := pprof.StartCPUProfile(cpuFile); err != nil {
-	// 	fmt.Println("Error starting CPU profiling:", err)
-	// }
+	if err := pprof.StartCPUProfile(cpuFile); err != nil {
+		fmt.Println("Error starting CPU profiling:", err)
+	}
 
-	// memFile, err = os.Create("mem.prof")
-	// if err != nil {
-	// 	fmt.Println("Error creating memory profile file:", err)
-	// }
+	memFile, err = os.Create("mem.prof")
+	if err != nil {
+		fmt.Println("Error creating memory profile file:", err)
+	}
 
-	traceFile, err := os.Create("trace.out")
+	traceFile, err = os.Create("trace.out")
 	if err != nil {
 		fmt.Println("Error creating trace file:", err)
 	}
@@ -34,21 +36,21 @@ func StartProfiling() (cpuFile, memFile, traceFile *os.File) {
 }
 
 func StopProfiling(cpuFile, memFile, traceFile *os.File) {
-	// pprof.StopCPUProfile()
+	pprof.StopCPUProfile()
 
-	// if cpuFile != nil {
-	// 	cpuFile.Close() // nolint: errcheck
-	// }
+	if cpuFile != nil {
+		cpuFile.Close() // nolint: errcheck
+	}
 
-	// runtime.GC()
+	runtime.GC()
 
-	// if memFile != nil {
-	// 	if err := pprof.WriteHeapProfile(memFile); err != nil {
-	// 		fmt.Println("Error writing memory profile:", err)
-	// 	}
+	if memFile != nil {
+		if err := pprof.WriteHeapProfile(memFile); err != nil {
+			fmt.Println("Error writing memory profile:", err)
+		}
 
-	// 	memFile.Close() // nolint: errcheck
-	// }
+		memFile.Close() // nolint: errcheck
+	}
 
 	trace.Stop()
 

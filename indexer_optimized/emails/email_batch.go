@@ -45,6 +45,8 @@ func ProcessAndSendEmails(idWorker int, data models_wp.Result[*models.EmailData]
 				LogErrorToCSV(emailData.EmailPath, fmt.Errorf("send data bulk: %w", err))
 			}
 
+			fmt.Println(err)
+
 			return false, fmt.Errorf("send data bulk: %w", err)
 		}
 
