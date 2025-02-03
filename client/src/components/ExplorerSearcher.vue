@@ -32,44 +32,37 @@ const searchHandler = () => {
     return
   }
 
-  if (isSearchTermInvalid(currentSearchTerm.value)) {
-    isInputInvalid.value = true
-    return;
-  }
-
-  const cleanedSearchTerm = cleanSearchTerm(currentSearchTerm.value)
-
   previousSearchTerm.value = currentSearchTerm.value
   previousSearchFieldActive.value = searchFieldActive.value
   previousSearchType.value = searchType.value
 
   if (searchType.value === 'emails') {
-    setEmailSearchParams(searchFieldActive.value, cleanedSearchTerm)
+    setEmailSearchParams(searchFieldActive.value, currentSearchTerm.value)
   }
 
   if (searchType.value === 'persons') {
-    setPersonSearchParams(searchFieldActive.value, cleanedSearchTerm)
+    setPersonSearchParams(currentSearchTerm.value)
   }
 }
 
-const isSearchTermInvalid = (term: string) => {
-  if (/[?={}"":&*]/.test(term)) {
-    const chars = term.match(/[?={}"":&*]/g)
+// const isSearchTermInvalid = (term: string) => {
+//   if (/[?={}"":&*]/.test(term)) {
+//     const chars = term.match(/[?={}"":&*]/g)
 
-    const uniqueChars = chars ? [...new Set(chars)].join(' ') : ''
+//     const uniqueChars = chars ? [...new Set(chars)].join(' ') : ''
 
-    invalidChars.value = uniqueChars
-    return true
-  }
+//     invalidChars.value = uniqueChars
+//     return true
+//   }
 
-  return false
-}
+//   return false
+// }
 
 
-const cleanSearchTerm = (term: string) => {
-  const cleanedTerm = term.replace(/[?={}"":&*]/g, '');
-  return cleanedTerm
-}
+// const cleanSearchTerm = (term: string) => {
+//   const cleanedTerm = term.replace(/[?={}"":&*]/g, '');
+//   return cleanedTerm
+// }
 
 const handlerClearSearchField = () => {
   setSearchFieldActive('');

@@ -14,7 +14,7 @@ describe('usePersonStore', () => {
     expect(store.totalPage).toBe(0)
     expect(store.pageNumber).toBe(1)
     expect(store.pageSize).toBe(0)
-    expect(store.searchParam).toBe('')
+    expect(store.searchTerm).toBe('')
     expect(store.sortField).toBe('name')
     expect(store.sortOrder).toBe('asc')
     expect(store.isPersonsLoading).toBe(false)
@@ -23,8 +23,8 @@ describe('usePersonStore', () => {
   })
 
   it('should update search parameters correctly', () => {
-    store.setPersonSearchParams('name', 'John')
-    expect(store.searchParam).toBe('&field=name&term=John')
+    store.setPersonSearchParams('John')
+    expect(store.searchTerm).toBe('John')
     expect(store.pageNumber).toBe(1)
   })
 

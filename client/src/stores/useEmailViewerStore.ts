@@ -13,7 +13,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   const isEmailListLoading = ref<boolean>(false)
   const isFetchEmailsByDefault = ref<boolean>(false)
 
-  const searchParam = ref<string>('')
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(0)
   const totalPages = ref<number>(0)
@@ -38,29 +37,23 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
   const emailBaseUrl = import.meta.env.VITE_API_URL + '/emails'
 
-  const { formatDate, convertStringListToArray, cleanQuery } = useFormatData()
+  const params = new URLSearchParams()
+
+  const { formatDate, convertStringListToArray } = useFormatData()
 
   const emailSearchURL = computed(() => {
-    return emailBaseUrl + cleanedQuery.value
+    return emailBaseUrl + '?' + query.value
   })
 
   const query = computed(() => {
-    return (
-      '?' +
-      'page=' +
-      pageNumber.value +
-      '&page_size=' +
-      pageSize.value +
-      searchParam.value +
-      '&sort=' +
-      sortField.value +
-      '&order=' +
-      sortOrder.value
-    )
-  })
+    params.set('term', searchTerm.value)
+    params.set('field', searchField.value)
+    params.set('page', String(pageNumber.value))
+    params.set('page_size', String(pageSize.value))
+    params.set('sort', sortField.value)
+    params.set('order', sortOrder.value)
 
-  const cleanedQuery = computed(() => {
-    return cleanQuery(query.value)
+    return params.toString()
   })
 
   async function fetchEmails() {
@@ -68,6 +61,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     isEmailListLoading.value = true
 
     try {
+      console.log('Fetch Emails URL: ', emailSearchURL.value)
       const response = await fetch(emailSearchURL.value)
 
       if (!response.ok) {
@@ -87,12 +81,10 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       if (isFetchEmailsByDefault.value && emails === null) {
         if (searchField.value === 'from') {
           searchField.value = 'to'
-          searchParam.value = '&field=to&term=' + searchTerm.value
           return
         }
         if (searchField.value === 'to') {
           searchField.value = 'cc'
-          searchParam.value = '&field=cc&term=' + searchTerm.value
           return
         }
       }
@@ -121,7 +113,9 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       totalPages.value = data.data?.total_pages || 0
 
       restoreFetchError()
-    } catch {
+    } catch (e) {
+      console.log('Fetch Emails ERROR: ', e)
+
       serverError.value = {
         status: true,
         code: 500,
@@ -140,6 +134,7 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     emailDetail.value = null
     isEmailDetailLoading.value = true
 
+    console.log('Fetch Email URL', `${emailBaseUrl}/${emailId}`)
     const response = await fetch(`${emailBaseUrl}/${emailId}`)
 
     try {
@@ -180,7 +175,8 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
       }
 
       restoreFetchError()
-    } catch {
+    } catch (e) {
+      console.log('Fetch Email ERROR', e)
       serverError.value = {
         status: true,
         code: 500,
@@ -200,8 +196,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
   function setEmailListType(field: string) {
     emailListType.value = field
-
-    searchParam.value = '&field=' + field + '&term=' + searchTerm.value
     searchField.value = field
   }
 
@@ -210,7 +204,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
 
     searchTerm.value = term
     searchField.value = field
-    searchParam.value = '&field=' + field + '&term=' + term
   }
 
   function setFetchEmailsListByDefault(value: boolean) {
@@ -264,8 +257,8 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
     isEmailListLoading,
     pageNumber,
     pageSize,
-    searchParam,
     searchTerm,
+    searchField,
     serverError,
     totalPages,
 

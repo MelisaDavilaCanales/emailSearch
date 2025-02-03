@@ -10,7 +10,6 @@ export const useEmailTableStore = defineStore('emailTable', () => {
   const pageNumber = ref<number>(1)
   const pageSize = ref<number>(10)
   const totalPage = ref<number>(0)
-  const searchParam = ref<string>('')
   const searchTerm = ref<string>('')
   const searchField = ref<string>('')
   const sortField = ref<string>('date')
@@ -29,34 +28,29 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     message: '',
   })
 
-  const emailBaseUrl = import.meta.env.VITE_API_URL + '/emails'
+  const emailBaseUrl = import.meta.env.VITE_API_URL + '/emails?'
 
-  const { formatDate, cleanQuery } = useFormatData()
+  const params = new URLSearchParams()
+
+  const { formatDate } = useFormatData()
 
   const emailSearchURL = computed(() => {
-    return emailBaseUrl + cleanedQuery.value
+    return emailBaseUrl + query.value
   })
 
   const query = computed(() => {
-    return (
-      '?' +
-      'page=' +
-      pageNumber.value +
-      '&page_size=' +
-      pageSize.value +
-      searchParam.value +
-      '&sort=' +
-      sortField.value +
-      '&order=' +
-      sortOrder.value
-    )
-  })
+    params.set('field', searchField.value)
+    params.set('term', searchTerm.value)
+    params.set('page', String(pageNumber.value))
+    params.set('page_size', String(pageSize.value))
+    params.set('sort', sortField.value)
+    params.set('order', sortOrder.value)
 
-  const cleanedQuery = computed(() => {
-    return cleanQuery(query.value)
+    return params.toString()
   })
 
   async function fetchEmails() {
+    console.log('Fetch Emails URL', emailSearchURL.value)
     emailList.value = []
     isEmailsLoading.value = true
 
@@ -95,7 +89,9 @@ export const useEmailTableStore = defineStore('emailTable', () => {
       totalPage.value = data.data?.total_pages || 0
 
       restoreFetchError()
-    } catch {
+    } catch (e) {
+      console.log('Fetch Emails ERROR: ', e)
+
       serverError.value = {
         status: true,
         code: 500,
@@ -113,16 +109,11 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     }
   }
 
-  function setEmailSearchField(field: string) {
-    searchField.value = field
-  }
-
   function setEmailSearchParams(field: string, term: string) {
     pageNumber.value = 1
 
     searchTerm.value = term
     searchField.value = field
-    searchParam.value = '&field=' + field + '&term=' + term
   }
 
   function sortEmailsByField(field: string) {
@@ -162,14 +153,13 @@ export const useEmailTableStore = defineStore('emailTable', () => {
     pageNumber,
     pageSize,
     searchField,
-    searchParam,
+    searchTerm,
     serverError,
     sortField,
     sortOrder,
     totalPage,
 
     fetchEmails,
-    setEmailSearchField,
     setEmailSearchParams,
     setNextPage,
     setPageSize,

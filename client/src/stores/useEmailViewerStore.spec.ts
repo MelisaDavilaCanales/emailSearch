@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useEmailViewerStore } from './useEmailViewerStore'
 
 // Mock global fetch for API calls
@@ -12,12 +12,7 @@ describe('useEmailViewerStore', () => {
     vi.clearAllMocks()
   })
 
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should initialize with correct default values', () => {
-    expect(store.searchParam).toBe('')
     expect(store.pageNumber).toBe(1)
     expect(store.pageSize).toBe(0)
     expect(store.totalPages).toBe(0)
@@ -28,14 +23,14 @@ describe('useEmailViewerStore', () => {
 
   it('should update search parameters correctly with setEmailSearchParams', () => {
     store.setEmailSearchParams('from', 'charles')
-    expect(store.searchParam).toBe('&field=from&term=charles')
+    expect(store.searchTerm).toBe('charles')
+    expect(store.searchField).toBe('from')
     expect(store.pageNumber).toBe(1)
   })
 
   it('should update email list type correctly with setEmailListType', () => {
     store.setEmailListType('to')
     expect(store.emailListType).toBe('to')
-    expect(store.searchParam).toBe('&field=to&term=')
   })
 
   it('should toggle visibility of all sent emails correctly', () => {
