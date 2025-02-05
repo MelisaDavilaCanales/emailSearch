@@ -33,7 +33,8 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 	// Betwen 400-500
 	if resp.StatusCode >= 400 && resp.StatusCode < 500 {
-		PrintLogs(resp)
+		bodyContent, _ := io.ReadAll(resp.Body) // nolint:errcheck
+		PrintLogs(bodyContent, resp.StatusCode)
 
 		return nil, &models.NotFoundError{
 			Message: "Not Found",
@@ -42,7 +43,8 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 	// Whatever, at less between 200-299
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		PrintLogs(resp)
+		bodyContent, _ := io.ReadAll(resp.Body) // nolint:errcheck
+		PrintLogs(bodyContent, resp.StatusCode)
 
 		return nil, &models.InternalServerError{
 			Message: "Internal Server Error",

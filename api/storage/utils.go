@@ -1,11 +1,8 @@
 package storage
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 )
 
 func buildSort(sortField, sortOrder, sortFieldDefault, sortOrderDefault string) string {
@@ -27,17 +24,9 @@ func buildSort(sortField, sortOrder, sortFieldDefault, sortOrderDefault string) 
 }
 
 // PrintLogs prints the response status code and body content, can be used for debugging.
-func PrintLogs(resp *http.Response) {
-	var bodyBuffer bytes.Buffer
-	tee := io.TeeReader(resp.Body, &bodyBuffer)
-
-	bodyContent, readErr := io.ReadAll(tee)
-	if readErr != nil {
-		fmt.Println("read response body %w", readErr)
-	}
-
+func PrintLogs(bodyContent []byte, status int) {
 	fmt.Println("=========================================")
-	fmt.Println("Response StatusCode:", resp.StatusCode)
+	fmt.Println("Response StatusCode:", status)
 
 	var jsonBody interface{}
 	if jsonErr := json.Unmarshal(bodyContent, &jsonBody); jsonErr == nil {
@@ -46,7 +35,7 @@ func PrintLogs(resp *http.Response) {
 			fmt.Println("Response Body (as string):", string(bodyContent))
 		}
 
-		fmt.Println("Response Body (as JSON):", string(prettyJSON))
+		fmt.Println("Response Body:", string(prettyJSON))
 	}
 
 	fmt.Println("=========================================")

@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -32,19 +33,37 @@ func DoRequest(method string, url string, data io.Reader) (*http.Response, error
 
 	client := &http.Client{}
 
-	res, err := client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
-	if res.StatusCode != http.StatusOK {
-		responseBody, err := io.ReadAll(res.Body)
+	if resp.StatusCode != http.StatusOK {
+		bodyContent, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return nil, fmt.Errorf("request error, status code: %d", res.StatusCode)
+			return nil, fmt.Errorf("request error, status code: %d", resp.StatusCode)
 		}
 
-		return nil, fmt.Errorf("staus code %d: %s", res.StatusCode, string(responseBody))
+		return nil, fmt.Errorf("staus code %d: %s", resp.StatusCode, string(bodyContent))
 	}
 
-	return res, nil
+	return resp, nil
+}
+
+// PrintLogs prints the response status code and body content, can be used for debugging.
+func PrintLogs(bodyContent []byte, status int) {
+	fmt.Println("=========================================")
+	fmt.Println("Response StatusCode:", status)
+
+	var jsonBody interface{}
+	if jsonErr := json.Unmarshal(bodyContent, &jsonBody); jsonErr == nil {
+		prettyJSON, err := json.MarshalIndent(jsonBody, "", "  ")
+		if err != nil {
+			fmt.Println("Response Body (as string):", string(bodyContent))
+		}
+
+		fmt.Println("Response Body:", string(prettyJSON))
+	}
+
+	fmt.Println("=========================================")
 }
