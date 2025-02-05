@@ -23,11 +23,11 @@ const { searchTerm } = storeToRefs(useSearchTypeStore())
 
 const { highlightText } = useHighlight()
 
-// const buttons = [
-//   { field: 'from', label: 'Sent' },
-//   { field: 'to', label: 'Received' },
-//   { field: 'cc', label: 'Copied' },
-// ]
+const buttons = [
+  { field: 'from', label: 'Sent' },
+  { field: 'to', label: 'Received' },
+  { field: 'cc', label: 'Copied' },
+]
 
 const showEmailDetail = (emailId: string) => {
   fetchEmail(emailId)
@@ -73,31 +73,12 @@ const highlightedEmails = computed(() => {
         </p>
       </div>
 
-
-
       <!-- button's section to filter emails by type -->
       <div class="space-x-2">
-
-        <!-- <button v-for="{ field, label } in buttons" :key="field" class="text-white text-xs py-1 px-3 rounded"
+        <button v-for="{ field, label } in buttons" :key="field" class="text-white text-xs py-1 px-3 rounded"
           :class="emailListType === field ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
           :disabled="emailListType === field" @click="setEmailListType(field)">
           {{ label }}
-        </button> -->
-
-        <button class="text-white text-xs py-1 px-3 rounded"
-          :class="emailListType === 'from' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
-          :disabled="emailListType === 'from'" @click="setEmailListType('from')">
-          Sent
-        </button>
-        <button class="text-white text-xs py-1 px-3 rounded"
-          :class="emailListType === 'to' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
-          :disabled="emailListType === 'to'" @click="setEmailListType('to')">
-          Received
-        </button>
-        <button class="text-white text-xs py-1 px-3 rounded"
-          :class="emailListType === 'cc' ? 'bg-primary cursor-not-allowed' : 'bg-primarySoft hover:bg-primary/80'"
-          :disabled="emailListType === 'cc'" @click="setEmailListType('cc')">
-          Copied
         </button>
       </div>
     </div>

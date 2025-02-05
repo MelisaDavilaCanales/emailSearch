@@ -242,7 +242,6 @@ export const useEmailViewerStore = defineStore('emailViewer', () => {
   })
 
   watch(emailSearchURL, fetchEmails)
-  watch(emailListType, fetchEmails)
 
   return {
     emailDetail,
